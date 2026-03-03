@@ -116,7 +116,7 @@
       margin-bottom: 0.3rem;
     }
 
-    section pre {
+    section pre, section .codigo {
       background-color: #1a202c;
       color: #a0aec0;
       font-family: 'Courier New', monospace;
@@ -181,6 +181,52 @@
     button[type="submit"]:hover {
       background-color: #1a4a8a;
     }
+
+    #questionario {
+      border-left-color: #6b46c1;
+    }
+
+    #questionario h2 {
+      color: #6b46c1;
+    }
+
+    .questao {
+      margin-bottom: 1.5rem;
+      padding-bottom: 1.5rem;
+      border-bottom: 1px solid #e2e8f0;
+    }
+
+    .questao:last-of-type {
+      border-bottom: none;
+    }
+
+    .questao p {
+      font-weight: bold;
+      color: #1a365d;
+      margin-bottom: 0.6rem;
+    }
+
+    .questao label {
+      display: block;
+      font-weight: normal;
+      margin-bottom: 0.2rem;
+    }
+
+    #resultado {
+      display: none;
+      margin-top: 1.5rem;
+      padding: 1.2rem 1.5rem;
+      border-radius: 8px;
+      border: 1px solid #e2e8f0;
+      background-color: #f7fafc;
+    }
+
+    #resultado p {
+      margin: 0;
+      font-weight: bold;
+      font-size: 1rem;
+      color: #1a365d;
+    }
   </style>
 </head>
 
@@ -203,6 +249,7 @@ fundamentais para a eficiência de sistemas de busca, bancos de dados e processa
       <li><a href="#secao3">Insertion Sort</a></li>
       <li><a href="#secao4">Quick Sort</a></li>
       <li><a href="#secao5">Merge Sort</a></li>
+      <li><a href="#questionario">Questionário</a></li>
       <li><a href="#avaliacao">Avaliação</a></li>
     </ul>
   </nav>
@@ -222,7 +269,7 @@ fundamentais para a eficiência de sistemas de busca, bancos de dados e processa
       </ol>
 
       <h4>// implementação em C</h4>
-      <pre><code>void bubbleSort(int v[], int n) {
+      <pre>void bubbleSort(int v[], int n) {
     int i, j, temp;
     for (i = 0; i &lt; n - 1; i++) {
         for (j = 0; j &lt; n - 1 - i; j++) {
@@ -233,7 +280,7 @@ fundamentais para a eficiência de sistemas de busca, bancos de dados e processa
             }
         }
     }
-}</code></pre>
+}</pre>
     </section>
 
     <section id="secao2">
@@ -241,7 +288,7 @@ fundamentais para a eficiência de sistemas de busca, bancos de dados e processa
       <p>O Selection Sort divide o vetor em duas partes: a parte ordenada (à esquerda) e a parte desordenada (à direita). A cada iteração, ele encontra o menor elemento da parte desordenada e o coloca no final da parte ordenada.</p>
 
       <h4>// implementação em C</h4>
-      <pre><code>void selectionSort(int v[], int n) {
+      <pre>void selectionSort(int v[], int n) {
     int i, j, minIdx, temp;
     for (i = 0; i &lt; n - 1; i++) {
         minIdx = i;
@@ -251,7 +298,7 @@ fundamentais para a eficiência de sistemas de busca, bancos de dados e processa
         v[minIdx] = v[i];
         v[i]      = temp;
     }
-}</code></pre>
+}</pre>
     </section>
 
     <section id="secao3">
@@ -259,7 +306,7 @@ fundamentais para a eficiência de sistemas de busca, bancos de dados e processa
       <p>O Insertion Sort constrói o vetor ordenado elemento por elemento. A cada passo, o elemento atual é inserido na posição correta dentro da parte já ordenada. É análogo a como as pessoas ordenam cartas de baralho na mão.</p>
 
       <h4>// implementação em C</h4>
-      <pre><code>void insertionSort(int v[], int n) {
+      <pre>void insertionSort(int v[], int n) {
     int i, key, j;
     for (i = 1; i &lt; n; i++) {
         key = v[i];
@@ -270,7 +317,7 @@ fundamentais para a eficiência de sistemas de busca, bancos de dados e processa
         }
         v[j + 1] = key;
     }
-}</code></pre>
+}</pre>
     </section>
 
     <section id="secao4">
@@ -278,7 +325,7 @@ fundamentais para a eficiência de sistemas de busca, bancos de dados e processa
       <p>Proposto por Tony Hoare em 1959, o Quick Sort é o algoritmo de ordenação de propósito geral mais amplamente utilizado. Ele adota a estratégia dividir para conquistar: escolhe um elemento como pivô e particiona o vetor em dois sub-vetores — elementos menores à esquerda e maiores à direita — depois ordena recursivamente cada parte.</p>
 
       <h4>// implementação em C</h4>
-      <pre><code>int partition(int v[], int low, int high) {
+      <pre>int partition(int v[], int low, int high) {
     int pivot = v[high], i = low - 1, j, temp;
     for (j = low; j &lt; high; j++) {
         if (v[j] &lt;= pivot) {
@@ -296,7 +343,7 @@ void quickSort(int v[], int low, int high) {
         quickSort(v, low, pi - 1);
         quickSort(v, pi + 1, high);
     }
-}</code></pre>
+}</pre>
     </section>
 
     <section id="secao5">
@@ -304,7 +351,7 @@ void quickSort(int v[], int low, int high) {
       <p>Criado por John von Neumann em 1945, o Merge Sort também usa dividir para conquistar. Ele divide o vetor ao meio recursivamente até ter sub-vetores de 1 elemento, depois os intercala (merge) em ordem. É garantidamente O(n log n) em todos os casos, mas exige memória auxiliar O(n).</p>
 
       <h4>// implementação em C</h4>
-      <pre><code>void merge(int v[], int l, int m, int r) {
+      <pre>void merge(int v[], int l, int m, int r) {
     int n1 = m-l+1, n2 = r-m, i, j, k;
     int L[n1], R[n2];
     for (i=0; i&lt;n1; i++) L[i] = v[l+i];
@@ -323,7 +370,70 @@ void mergeSort(int v[], int l, int r) {
         mergeSort(v, m+1, r);
         merge(v, l, m, r);
     }
-}</code></pre>
+}</pre>
+    </section>
+
+    <section id="questionario">
+      <h2>Questionário</h2>
+      <p>Responda as questões abaixo sobre os algoritmos de ordenação estudados.</p>
+
+      <form id="form-questionario">
+
+        <div class="questao">
+          <p>Q1. Qual algoritmo de ordenação recebe o nome de "bolha" por causa do comportamento dos seus elementos durante a ordenação?</p>
+          <label><input type="radio" name="q1" value="a"> a) Selection Sort</label>
+          <label><input type="radio" name="q1" value="b"> b) Bubble Sort</label>
+          <label><input type="radio" name="q1" value="c"> c) Insertion Sort</label>
+          <label><input type="radio" name="q1" value="d"> d) Merge Sort</label>
+        </div>
+
+        <div class="questao">
+          <p>Q2. O Selection Sort funciona encontrando, a cada iteração, qual elemento da parte desordenada do vetor?</p>
+          <label><input type="radio" name="q2" value="a"> a) O maior elemento</label>
+          <label><input type="radio" name="q2" value="b"> b) O elemento do meio</label>
+          <label><input type="radio" name="q2" value="c"> c) O menor elemento</label>
+          <label><input type="radio" name="q2" value="d"> d) O último elemento</label>
+        </div>
+
+        <div class="questao">
+          <p>Q3. Qual algoritmo é comparado à forma como pessoas ordenam cartas de baralho na mão?</p>
+          <label><input type="radio" name="q3" value="a"> a) Bubble Sort</label>
+          <label><input type="radio" name="q3" value="b"> b) Quick Sort</label>
+          <label><input type="radio" name="q3" value="c"> c) Merge Sort</label>
+          <label><input type="radio" name="q3" value="d"> d) Insertion Sort</label>
+        </div>
+
+        <div class="questao">
+          <p>Q4. O Quick Sort foi proposto por qual cientista da computação?</p>
+          <label><input type="radio" name="q4" value="a"> a) John von Neumann</label>
+          <label><input type="radio" name="q4" value="b"> b) Donald Knuth</label>
+          <label><input type="radio" name="q4" value="c"> c) Tony Hoare</label>
+          <label><input type="radio" name="q4" value="d"> d) Alan Turing</label>
+        </div>
+
+        <div class="questao">
+          <p>Q5. O Merge Sort é garantidamente O(n log n) em todos os casos, porém possui qual desvantagem em relação aos outros algoritmos?</p>
+          <label><input type="radio" name="q5" value="a"> a) É o algoritmo mais lento na prática</label>
+          <label><input type="radio" name="q5" value="b"> b) Exige memória auxiliar O(n)</label>
+          <label><input type="radio" name="q5" value="c"> c) Não funciona com vetores de inteiros</label>
+          <label><input type="radio" name="q5" value="d"> d) Só funciona com vetores já parcialmente ordenados</label>
+        </div>
+
+        <div class="questao">
+          <p>Q6. Qual é a estratégia adotada tanto pelo Quick Sort quanto pelo Merge Sort?</p>
+          <label><input type="radio" name="q6" value="a"> a) Ordenação por troca direta</label>
+          <label><input type="radio" name="q6" value="b"> b) Busca binária</label>
+          <label><input type="radio" name="q6" value="c"> c) Dividir para conquistar</label>
+          <label><input type="radio" name="q6" value="d"> d) Ordenação por seleção mínima</label>
+        </div>
+
+        <button type="submit">Ver Resultado</button>
+
+        <div id="resultado">
+          <p id="texto-resultado"></p>
+        </div>
+
+      </form>
     </section>
 
     <section id="avaliacao">
@@ -349,8 +459,28 @@ void mergeSort(int v[], int l, int r) {
 
   </main>
 
+  <script>
+    const gabarito = { q1: 'b', q2: 'c', q3: 'd', q4: 'c', q5: 'b', q6: 'c' };
+
+    document.getElementById('form-questionario').addEventListener('submit', function(e) {
+      e.preventDefault();
+      let acertos = 0;
+      const total = Object.keys(gabarito).length;
+
+      for (const questao in gabarito) {
+        const selecionada = document.querySelector('input[name="' + questao + '"]:checked');
+        if (selecionada && selecionada.value === gabarito[questao]) {
+          acertos++;
+        }
+      }
+
+      const resultado = document.getElementById('resultado');
+      const texto = document.getElementById('texto-resultado');
+      texto.textContent = 'Você acertou ' + acertos + ' de ' + total + ' questões.';
+      resultado.style.display = 'block';
+      resultado.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    });
+  </script>
+
 </body>
 </html>
-
-
-
