@@ -222,7 +222,7 @@ fundamentais para a eficiência de sistemas de busca, bancos de dados e processa
       </ol>
 
       <h4>// implementação em C</h4>
-      <pre>void bubbleSort(int v[], int n) {
+      <pre><code>void bubbleSort(int v[], int n) {
     int i, j, temp;
     for (i = 0; i &lt; n - 1; i++) {
         for (j = 0; j &lt; n - 1 - i; j++) {
@@ -233,7 +233,7 @@ fundamentais para a eficiência de sistemas de busca, bancos de dados e processa
             }
         }
     }
-}</pre>
+}</code></pre>
     </section>
 
     <section id="secao2">
@@ -241,7 +241,7 @@ fundamentais para a eficiência de sistemas de busca, bancos de dados e processa
       <p>O Selection Sort divide o vetor em duas partes: a parte ordenada (à esquerda) e a parte desordenada (à direita). A cada iteração, ele encontra o menor elemento da parte desordenada e o coloca no final da parte ordenada.</p>
 
       <h4>// implementação em C</h4>
-      <pre>void selectionSort(int v[], int n) {
+      <pre><code>void selectionSort(int v[], int n) {
     int i, j, minIdx, temp;
     for (i = 0; i &lt; n - 1; i++) {
         minIdx = i;
@@ -251,7 +251,7 @@ fundamentais para a eficiência de sistemas de busca, bancos de dados e processa
         v[minIdx] = v[i];
         v[i]      = temp;
     }
-}</pre>
+}</code></pre>
     </section>
 
     <section id="secao3">
@@ -259,7 +259,7 @@ fundamentais para a eficiência de sistemas de busca, bancos de dados e processa
       <p>O Insertion Sort constrói o vetor ordenado elemento por elemento. A cada passo, o elemento atual é inserido na posição correta dentro da parte já ordenada. É análogo a como as pessoas ordenam cartas de baralho na mão.</p>
 
       <h4>// implementação em C</h4>
-      <pre>void insertionSort(int v[], int n) {
+      <pre><code>void insertionSort(int v[], int n) {
     int i, key, j;
     for (i = 1; i &lt; n; i++) {
         key = v[i];
@@ -270,7 +270,7 @@ fundamentais para a eficiência de sistemas de busca, bancos de dados e processa
         }
         v[j + 1] = key;
     }
-}</pre>
+}</code></pre>
     </section>
 
     <section id="secao4">
@@ -278,7 +278,7 @@ fundamentais para a eficiência de sistemas de busca, bancos de dados e processa
       <p>Proposto por Tony Hoare em 1959, o Quick Sort é o algoritmo de ordenação de propósito geral mais amplamente utilizado. Ele adota a estratégia dividir para conquistar: escolhe um elemento como pivô e particiona o vetor em dois sub-vetores — elementos menores à esquerda e maiores à direita — depois ordena recursivamente cada parte.</p>
 
       <h4>// implementação em C</h4>
-      <pre>int partition(int v[], int low, int high) {
+      <pre><code>int partition(int v[], int low, int high) {
     int pivot = v[high], i = low - 1, j, temp;
     for (j = low; j &lt; high; j++) {
         if (v[j] &lt;= pivot) {
@@ -296,7 +296,7 @@ void quickSort(int v[], int low, int high) {
         quickSort(v, low, pi - 1);
         quickSort(v, pi + 1, high);
     }
-}</pre>
+}</code></pre>
     </section>
 
     <section id="secao5">
@@ -304,7 +304,7 @@ void quickSort(int v[], int low, int high) {
       <p>Criado por John von Neumann em 1945, o Merge Sort também usa dividir para conquistar. Ele divide o vetor ao meio recursivamente até ter sub-vetores de 1 elemento, depois os intercala (merge) em ordem. É garantidamente O(n log n) em todos os casos, mas exige memória auxiliar O(n).</p>
 
       <h4>// implementação em C</h4>
-      <pre>void merge(int v[], int l, int m, int r) {
+      <pre><code>void merge(int v[], int l, int m, int r) {
     int n1 = m-l+1, n2 = r-m, i, j, k;
     int L[n1], R[n2];
     for (i=0; i&lt;n1; i++) L[i] = v[l+i];
@@ -323,7 +323,7 @@ void mergeSort(int v[], int l, int r) {
         mergeSort(v, m+1, r);
         merge(v, l, m, r);
     }
-}</pre>
+}</code></pre>
     </section>
 
     <section id="avaliacao">
@@ -351,5 +351,6 @@ void mergeSort(int v[], int l, int r) {
 
 </body>
 </html>
+
 
 
