@@ -1,59 +1,150 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-
 <head>
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Portfólio de Tarefas</title>
-
   <style>
-    /* ── BASE ── */
+    :root {
+      --verde:       #00ff41;
+      --verde-dim:   #00aa2a;
+      --verde-muted: #005514;
+      --fundo:       #050a05;
+      --fundo2:      #0a100a;
+      --borda:       #1a2e1a;
+      --texto:       #c8e6c8;
+      --muted:       #5a7a5a;
+      --ciano:       #00ffff;
+      --vermelho:    #ff3333;
+    }
+
     * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+
+    /* ── SCANLINE ── */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(0,0,0,0.08) 2px,
+        rgba(0,0,0,0.08) 4px
+      );
+      pointer-events: none;
+      z-index: 9999;
+    }
 
     body {
-      background-color: #f0f4f8;
-      color: #2d3748;
-      font-family: Georgia, serif;
-      font-size: 16px;
+      background-color: var(--fundo);
+      color: var(--texto);
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 15px;
       line-height: 1.8;
     }
 
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--fundo); }
+    ::-webkit-scrollbar-thumb { background: var(--verde-muted); }
+
+    /* ── BOOT SCREEN ── */
+    #boot {
+      position: fixed;
+      inset: 0;
+      background: var(--fundo);
+      z-index: 10000;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 3rem;
+      font-family: 'Courier New', monospace;
+      font-size: 0.85rem;
+      color: var(--verde);
+      gap: 0.15rem;
+    }
+
+    #boot .boot-line {
+      opacity: 0;
+      white-space: nowrap;
+    }
+
+    #boot .ok    { color: var(--verde); }
+    #boot .warn  { color: #ffcc00; }
+    #boot .barra { color: var(--muted); }
+
     /* ── HEADER ── */
     header {
-      background-color: #1a365d;
-      color: #ffffff;
+      background-color: var(--fundo2);
+      border-bottom: 1px solid var(--verde-muted);
       padding: 3rem 2rem;
       text-align: center;
+      position: relative;
+      z-index: 1;
+    }
+
+    header::before {
+      content: '// PORTFOLIO.exe';
+      display: block;
+      font-size: 0.65rem;
+      color: var(--verde-muted);
+      letter-spacing: 0.2em;
+      margin-bottom: 1rem;
     }
 
     header h1 {
       font-size: 2rem;
-      color: #90cdf4;
+      color: var(--verde);
       margin-bottom: 0.5rem;
+      letter-spacing: 0.05em;
+      min-height: 2.5rem;
+    }
+
+    /* cursor piscando após digitação */
+    .cursor::after {
+      content: '█';
+      animation: blink 0.8s step-start infinite;
+      color: var(--verde);
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50%       { opacity: 0; }
     }
 
     header p {
-      color: #bee3f8;
-      font-size: 0.95rem;
+      color: var(--muted);
+      font-size: 0.85rem;
     }
+
+    header p::before { content: '> '; color: var(--verde); }
 
     /* ── MAIN ── */
     main {
       max-width: 860px;
       margin: 2.5rem auto;
       padding: 0 1.5rem 3rem;
+      position: relative;
+      z-index: 1;
     }
 
     h2 {
-      font-size: 1.2rem;
-      color: #1a365d;
-      margin-bottom: 1.2rem;
+      font-size: 0.85rem;
+      color: var(--verde);
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      margin-bottom: 1.5rem;
       padding-bottom: 0.5rem;
-      border-bottom: 1px solid #e2e8f0;
+      border-bottom: 1px dashed var(--borda);
     }
 
-    /* ── GRID DE CARDS ── */
+    h2::before { content: '## '; color: var(--verde-muted); }
+
+    /* ── GRID ── */
     .grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
@@ -62,66 +153,121 @@
 
     /* ── CARD ── */
     .card {
-      background-color: #ffffff;
-      border-radius: 10px;
-      border-left: 5px solid #2b6cb0;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+      background-color: var(--fundo2);
+      border: 1px solid var(--borda);
+      border-left: 3px solid var(--verde);
       padding: 1.5rem;
       text-decoration: none;
       color: inherit;
       display: block;
-      transition: transform 0.2s, box-shadow 0.2s;
+      transition: border-color 0.2s, background 0.2s;
+      position: relative;
+      overflow: hidden;
     }
 
     .card:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 6px 16px rgba(0,0,0,0.12);
+      border-color: var(--verde);
+      background-color: rgba(0,255,65,0.04);
+      box-shadow: 0 0 12px rgba(0,255,65,0.08);
+      animation: glitch-card 1.2s steps(1) infinite;
     }
 
+    /* ── GLITCH DO CARD (suave) ── */
+    @keyframes glitch-card {
+      0%   { transform: translate(0); filter: none; }
+      10%  { transform: translate(-1px, 0); }
+      20%  { transform: translate(0); }
+      85%  { transform: translate(0); filter: none; }
+      90%  { transform: translate(1px, 0); filter: hue-rotate(30deg); }
+      100% { transform: translate(0); filter: none; }
+    }
+
+    /* ── MATRIX CANVAS ── */
+    #matrix {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      z-index: 0;
+      opacity: 0.13;
+      pointer-events: none;
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: var(--verde);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.3s ease;
+    }
+
+    .card:hover::before { transform: scaleX(1); }
+
     .card .numero {
-      font-family: 'Courier New', monospace;
       font-size: 0.72rem;
-      color: #2b6cb0;
-      margin-bottom: 0.4rem;
+      color: var(--verde-muted);
+      margin-bottom: 0.5rem;
+      letter-spacing: 0.05em;
     }
 
     .card h3 {
-      font-size: 1rem;
-      color: #1a365d;
+      font-size: 0.95rem;
+      color: var(--ciano);
       margin-bottom: 0.4rem;
     }
 
+    .card h3::before { content: '→ '; color: var(--verde-muted); }
+
     .card p {
-      font-size: 0.88rem;
-      color: #718096;
-      line-height: 1.5;
+      font-size: 0.82rem;
+      color: var(--muted);
+      line-height: 1.6;
     }
 
     /* ── FOOTER ── */
     footer {
       text-align: center;
       padding: 2rem;
-      font-family: 'Courier New', monospace;
-      font-size: 0.75rem;
-      color: #a0aec0;
-      border-top: 1px solid #e2e8f0;
+      font-size: 0.72rem;
+      color: var(--verde-muted);
+      border-top: 1px solid var(--borda);
+      position: relative;
+      z-index: 1;
     }
+
+    footer p::before { content: '// '; }
   </style>
 </head>
-
 <body>
 
+  <!-- MATRIX CANVAS -->
+  <canvas id="matrix"></canvas>
+
+  <!-- BOOT SCREEN -->
+  <div id="boot">
+    <span class="boot-line barra">========================================</span>
+    <span class="boot-line ok">[  OK  ] Inicializando sistema...</span>
+    <span class="boot-line ok">[  OK  ] Carregando kernel v2.6.0</span>
+    <span class="boot-line warn">[ WARN ] Memória disponível: 640KB</span>
+    <span class="boot-line ok">[  OK  ] Montando sistema de arquivos...</span>
+    <span class="boot-line ok">[  OK  ] Conectando à rede...</span>
+    <span class="boot-line warn">[ WARN ] Conexão estabelecida em 2400 baud</span>
+    <span class="boot-line ok">[  OK  ] Carregando PORTFOLIO.exe</span>
+    <span class="boot-line barra">========================================</span>
+    <span class="boot-line ok" style="margin-top:0.5rem">Bem-vindo, usuário.</span>
+  </div>
+
   <header>
-    <h1>Portfólio de Tarefas</h1>
+    <h1 id="titulo" class="cursor"></h1>
     <p>Programação Front-End 2026 &mdash; UniCesumar</p>
   </header>
 
   <main>
     <h2>Tarefas publicadas</h2>
-
     <div class="grid">
 
-      <!-- CARD DE TAREFA — duplique este bloco para adicionar novas tarefas -->
       <a class="card" href="tarefa1/">
         <div class="numero">// tarefa 01</div>
         <h3>Meus Colecionáveis</h3>
@@ -133,7 +279,13 @@
         <h3>Métodos de Ordenação em C</h3>
         <p>Bubble, Selection, Insertion, Quick e Merge Sort.</p>
       </a>
-      
+
+      <a class="card" href="tarefa3/">
+        <div class="numero">// tarefa 03</div>
+        <h3>Nada Sobre Nada em Computação</h3>
+        <p>Aplicar um CSS maneiro no site feio</p>
+      </a>
+
     </div>
   </main>
 
@@ -141,9 +293,68 @@
     <p>Cauê Licce &mdash; CaueLicce.github.io</p>
   </footer>
 
+  <script>
+    /* ── MATRIX RAIN ── */
+    const canvas  = document.getElementById('matrix');
+    const ctx     = canvas.getContext('2d');
+    const chars   = '01'.split('');
+    const fontSize = 13;
+    let colunas, gotas;
+
+    function redimensionar() {
+      canvas.width  = window.innerWidth;
+      canvas.height = window.innerHeight;
+      colunas = Math.floor(canvas.width / fontSize);
+      gotas   = Array(colunas).fill(1);
+    }
+
+    redimensionar();
+    window.addEventListener('resize', redimensionar);
+
+    function desenharMatrix() {
+      ctx.fillStyle = 'rgba(5, 10, 5, 0.05)';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = '#00ff41';
+      ctx.font = fontSize + 'px Courier New';
+
+      gotas.forEach((y, i) => {
+        const char = chars[Math.floor(Math.random() * chars.length)];
+        ctx.fillText(char, i * fontSize, y * fontSize);
+        if (y * fontSize > canvas.height && Math.random() > 0.975) gotas[i] = 0;
+        gotas[i]++;
+      });
+    }
+
+    setInterval(desenharMatrix, 45);
+
+    /* ── BOOT ANIMATION ── */
+    const linhas = document.querySelectorAll('.boot-line');
+    const boot   = document.getElementById('boot');
+
+    linhas.forEach((linha, i) => {
+      setTimeout(() => {
+        linha.style.opacity = '1';
+      }, i * 180);
+    });
+
+    setTimeout(() => {
+      boot.style.transition = 'opacity 0.5s';
+      boot.style.opacity = '0';
+      setTimeout(() => boot.style.display = 'none', 500);
+      digitarTitulo('Portfólio de Tarefas');
+    }, linhas.length * 180 + 600);
+
+    /* ── EFEITO DE DIGITAÇÃO ── */
+    function digitarTitulo(texto) {
+      const el = document.getElementById('titulo');
+      let i = 0;
+      const intervalo = setInterval(() => {
+        el.textContent += texto[i];
+        i++;
+        if (i >= texto.length) clearInterval(intervalo);
+      }, 80);
+    }
+  </script>
+
 </body>
 </html>
-
-
-
-
