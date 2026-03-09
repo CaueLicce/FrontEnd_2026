@@ -68,11 +68,7 @@
       gap: 0.15rem;
     }
 
-    #boot .boot-line {
-      opacity: 0;
-      white-space: nowrap;
-    }
-
+    #boot .boot-line { opacity: 0; white-space: nowrap; }
     #boot .ok    { color: var(--verde); }
     #boot .warn  { color: #ffcc00; }
     #boot .barra { color: var(--muted); }
@@ -104,7 +100,6 @@
       min-height: 2.5rem;
     }
 
-    /* cursor piscando após digitação */
     .cursor::after {
       content: '█';
       animation: blink 0.8s step-start infinite;
@@ -116,11 +111,7 @@
       50%       { opacity: 0; }
     }
 
-    header p {
-      color: var(--muted);
-      font-size: 0.85rem;
-    }
-
+    header p { color: var(--muted); font-size: 0.85rem; }
     header p::before { content: '> '; color: var(--verde); }
 
     /* ── MAIN ── */
@@ -160,38 +151,19 @@
       text-decoration: none;
       color: inherit;
       display: block;
-      transition: border-color 0.2s, background 0.2s;
       position: relative;
       overflow: hidden;
+      transition: border-color 0.2s, background 0.2s;
+      isolation: isolate;
     }
 
     .card:hover {
       border-color: var(--verde);
       background-color: rgba(0,255,65,0.04);
       box-shadow: 0 0 12px rgba(0,255,65,0.08);
-      animation: glitch-card 1.2s steps(1) infinite;
     }
 
-    /* ── GLITCH DO CARD (suave) ── */
-    @keyframes glitch-card {
-      0%   { transform: translate(0); filter: none; }
-      10%  { transform: translate(-1px, 0); }
-      20%  { transform: translate(0); }
-      85%  { transform: translate(0); filter: none; }
-      90%  { transform: translate(1px, 0); filter: hue-rotate(30deg); }
-      100% { transform: translate(0); filter: none; }
-    }
-
-    /* ── MATRIX CANVAS ── */
-    #matrix {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      z-index: 0;
-      opacity: 0.13;
-      pointer-events: none;
-    }
-
+    /* linha verde deslizando no topo */
     .card::before {
       content: '';
       position: absolute;
@@ -201,9 +173,34 @@
       transform: scaleX(0);
       transform-origin: left;
       transition: transform 0.3s ease;
+      z-index: 2;
+      pointer-events: none;
     }
 
     .card:hover::before { transform: scaleX(1); }
+
+    .card-inner { position: relative; }
+
+    /* ── OVERLAY (telão quebrado) ── */
+    .card-overlay {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      opacity: 0;
+      z-index: 1;
+      background-image: repeating-linear-gradient(
+        90deg,
+        transparent,
+        transparent calc(33% - 1px),
+        rgba(0,255,65,0.3) calc(33% - 1px),
+        rgba(0,255,65,0.3) 33%,
+        transparent 33%,
+        transparent calc(66% - 1px),
+        rgba(0,255,255,0.25) calc(66% - 1px),
+        rgba(0,255,255,0.25) 66%,
+        transparent 66%
+      );
+    }
 
     .card .numero {
       font-size: 0.72rem;
@@ -226,6 +223,80 @@
       line-height: 1.6;
     }
 
+    /* ── KEYFRAMES DE GLITCH ── */
+
+    @keyframes fase-drift {
+      0%   { clip-path: none; transform: translate(0); filter: none; }
+      20%  { clip-path: inset(15% 0 65% 0); transform: translateX(3px);  filter: hue-rotate(60deg); }
+      40%  { clip-path: inset(0 0 80% 0);   transform: translateX(-2px); filter: none; }
+      60%  { clip-path: inset(42% 0 30% 0); transform: translateX(3px);  filter: hue-rotate(100deg); }
+      80%  { clip-path: none; transform: translate(0); filter: none; }
+      100% { clip-path: none; transform: translate(0); filter: none; }
+    }
+
+    @keyframes fase-overexpose {
+      0%   { filter: none; background-color: var(--fundo2); }
+      25%  { filter: brightness(2.5) saturate(0); background-color: #152515; }
+      50%  { filter: brightness(1.5) hue-rotate(40deg); }
+      70%  { filter: none; background-color: var(--fundo2); }
+      85%  { filter: brightness(1.15); }
+      100% { filter: none; }
+    }
+
+    @keyframes fase-corrupcao {
+      0%   { opacity: 1; letter-spacing: normal; filter: none; }
+      30%  { opacity: 0.4; letter-spacing: 0.2em; filter: blur(0.6px); }
+      55%  { opacity: 0.75; letter-spacing: -0.06em; filter: none; }
+      75%  { opacity: 1; letter-spacing: normal; }
+      100% { opacity: 1; }
+    }
+
+    @keyframes fase-frag {
+      0%   { clip-path: none; transform: translate(0); filter: none; }
+      18%  { clip-path: inset(10% 5% 60% 8%);  transform: translate(-2px, 1px); }
+      35%  { clip-path: inset(50% 8% 10% 5%);  transform: translate(3px, -1px); filter: hue-rotate(50deg); }
+      52%  { clip-path: inset(25% 55% 24% 0);  transform: translate(0, 2px); }
+      68%  { clip-path: inset(0 0 70% 40%);    transform: translate(-2px, 0); filter: brightness(1.3); }
+      80%  { clip-path: none; transform: translate(0); filter: none; }
+      100% { clip-path: none; transform: translate(0); filter: none; }
+    }
+
+    @keyframes fase-telao {
+      0%,10%  { opacity: 0; }
+      20%     { opacity: 0.7; }
+      50%     { opacity: 0.35; }
+      75%     { opacity: 0.55; }
+      90%     { opacity: 0; }
+      100%    { opacity: 0; }
+    }
+
+    @keyframes fase-telao-card {
+      0%   { filter: none; }
+      20%  { filter: brightness(1.2) contrast(1.05); }
+      50%  { filter: hue-rotate(30deg) brightness(1.05); }
+      80%  { filter: none; }
+      100% { filter: none; }
+    }
+
+    /* classes aplicadas via JS */
+    .glitch-drift     { animation: fase-drift       0.5s steps(1) 1 forwards; }
+    .glitch-expose    { animation: fase-overexpose   0.6s steps(1) 1 forwards; }
+    .glitch-frag      { animation: fase-frag         0.5s steps(1) 1 forwards; }
+    .glitch-telao     { animation: fase-telao-card   0.6s steps(1) 1 forwards; }
+    .overlay-telao    { animation: fase-telao        0.6s steps(1) 1 forwards; }
+
+    .glitch-corrupcao { animation: fase-corrupcao   0.55s steps(1) 1 forwards; }
+
+    /* ── MATRIX CANVAS ── */
+    #matrix {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      z-index: 0;
+      opacity: 0.13;
+      pointer-events: none;
+    }
+
     /* ── FOOTER ── */
     footer {
       text-align: center;
@@ -242,10 +313,8 @@
 </head>
 <body>
 
-  <!-- MATRIX CANVAS -->
   <canvas id="matrix"></canvas>
 
-  <!-- BOOT SCREEN -->
   <div id="boot">
     <span class="boot-line barra">========================================</span>
     <span class="boot-line ok">[  OK  ] Inicializando sistema...</span>
@@ -269,21 +338,30 @@
     <div class="grid">
 
       <a class="card" href="tarefa1/">
-        <div class="numero">// tarefa 01</div>
-        <h3>Meus Colecionáveis</h3>
-        <p>Colecionáveis.</p>
+        <div class="card-overlay"></div>
+        <div class="card-inner">
+          <div class="numero">// tarefa 01</div>
+          <h3>Meus Colecionáveis</h3>
+          <p>Colecionáveis.</p>
+        </div>
       </a>
 
       <a class="card" href="tarefa2/">
-        <div class="numero">// tarefa 02</div>
-        <h3>Métodos de Ordenação em C</h3>
-        <p>Bubble, Selection, Insertion, Quick e Merge Sort.</p>
+        <div class="card-overlay"></div>
+        <div class="card-inner">
+          <div class="numero">// tarefa 02</div>
+          <h3>Métodos de Ordenação em C</h3>
+          <p>Bubble, Selection, Insertion, Quick e Merge Sort.</p>
+        </div>
       </a>
 
       <a class="card" href="tarefa3/">
-        <div class="numero">// tarefa 03</div>
-        <h3>Nada Sobre Nada em Computação</h3>
-        <p>Aplicar um CSS Maneiro no Site.</p>
+        <div class="card-overlay"></div>
+        <div class="card-inner">
+          <div class="numero">// tarefa 03</div>
+          <h3>Nada Sobre Nada em Computação</h3>
+          <p>Aplicar um CSS Maneiro no Site.</p>
+        </div>
       </a>
 
     </div>
@@ -296,9 +374,9 @@
 
   <script>
     /* ── MATRIX RAIN ── */
-    const canvas  = document.getElementById('matrix');
-    const ctx     = canvas.getContext('2d');
-    const chars   = '01'.split('');
+    const canvas   = document.getElementById('matrix');
+    const ctx      = canvas.getContext('2d');
+    const chars    = '01'.split('');
     const fontSize = 13;
     let colunas, gotas;
 
@@ -317,7 +395,6 @@
       ctx.fillRect(0, 0, canvas.width, canvas.height);
       ctx.fillStyle = '#00ff41';
       ctx.font = fontSize + 'px Courier New';
-
       gotas.forEach((y, i) => {
         const char = chars[Math.floor(Math.random() * chars.length)];
         ctx.fillText(char, i * fontSize, y * fontSize);
@@ -333,9 +410,7 @@
     const boot   = document.getElementById('boot');
 
     linhas.forEach((linha, i) => {
-      setTimeout(() => {
-        linha.style.opacity = '1';
-      }, i * 180);
+      setTimeout(() => { linha.style.opacity = '1'; }, i * 180);
     });
 
     setTimeout(() => {
@@ -345,7 +420,6 @@
       digitarTitulo('Portfólio de Tarefas');
     }, linhas.length * 180 + 600);
 
-    /* ── EFEITO DE DIGITAÇÃO ── */
     function digitarTitulo(texto) {
       const el = document.getElementById('titulo');
       let i = 0;
@@ -355,9 +429,101 @@
         if (i >= texto.length) clearInterval(intervalo);
       }, 80);
     }
+
+    /* ── GLITCH MIX POR CARD ── */
+    function pausa(ms) {
+      return new Promise(r => setTimeout(r, ms));
+    }
+
+    function criarFases(card, overlay) {
+      const inner  = card.querySelector('.card-inner');
+      const h3     = card.querySelector('h3');
+      const p      = card.querySelector('p');
+      const numero = card.querySelector('.numero');
+
+      return [
+        {
+          nome: 'drift',
+          dur: 500,
+          aplicar() { card.classList.add('glitch-drift'); },
+          limpar()  { card.classList.remove('glitch-drift'); }
+        },
+        {
+          nome: 'overexposure',
+          dur: 600,
+          aplicar() { card.classList.add('glitch-expose'); },
+          limpar()  { card.classList.remove('glitch-expose'); }
+        },
+        {
+          nome: 'corrupcao',
+          dur: 550,
+          aplicar() {
+            h3.classList.add('glitch-corrupcao');
+            p.classList.add('glitch-corrupcao');
+            numero.classList.add('glitch-corrupcao');
+          },
+          limpar() {
+            h3.classList.remove('glitch-corrupcao');
+            p.classList.remove('glitch-corrupcao');
+            numero.classList.remove('glitch-corrupcao');
+          }
+        },
+        {
+          nome: 'fragmentacao',
+          dur: 500,
+          aplicar() { card.classList.add('glitch-frag'); },
+          limpar()  { card.classList.remove('glitch-frag'); }
+        },
+        {
+          nome: 'telao',
+          dur: 600,
+          aplicar() {
+            card.classList.add('glitch-telao');
+            overlay.classList.add('overlay-telao');
+          },
+          limpar() {
+            card.classList.remove('glitch-telao');
+            overlay.classList.remove('overlay-telao');
+          }
+        }
+      ];
+    }
+
+    async function loopCard(card, overlay) {
+      const fases = criarFases(card, overlay);
+
+      while (true) {
+        // intervalo aleatório entre 2s e 20s
+        const espera = Math.floor(Math.random() * (20000 - 2000)) + 2000;
+        await pausa(espera);
+
+        // 15% chance de sequência: 8% = 3 fases, 7% = 2 fases, 85% = 1 fase
+        const raro = Math.random();
+        const qtd  = raro < 0.08 ? 3 : raro < 0.15 ? 2 : 1;
+
+        const embaralhadas = [...fases].sort(() => Math.random() - 0.5);
+        const selecionadas = embaralhadas.slice(0, qtd);
+
+        for (let i = 0; i < selecionadas.length; i++) {
+          const fase = selecionadas[i];
+          fase.aplicar();
+          await pausa(fase.dur);
+          fase.limpar();
+
+          // pausa curta entre efeitos em sequência
+          if (i < selecionadas.length - 1) {
+            await pausa(Math.floor(Math.random() * 120) + 80);
+          }
+        }
+      }
+    }
+
+    // inicia um loop independente para cada card
+    document.querySelectorAll('.card').forEach(card => {
+      const overlay = card.querySelector('.card-overlay');
+      loopCard(card, overlay);
+    });
   </script>
 
 </body>
 </html>
-
-
