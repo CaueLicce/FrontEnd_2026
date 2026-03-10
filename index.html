@@ -309,9 +309,125 @@
     }
 
     footer p::before { content: '// '; }
+    /* ── TV SHUTDOWN OVERLAY ── */
+    #tv-shutdown {
+      position: fixed;
+      inset: 0;
+      z-index: 99998;
+      pointer-events: none;
+      display: none;
+    }
+
+    /* camada de distorção/conteúdo */
+    #tv-page-wrap {
+      position: fixed;
+      inset: 0;
+      z-index: 1;
+      transform-origin: center center;
+      pointer-events: none;
+    }
+
+    /* linha horizontal branca (o "tubo") */
+    #tv-line {
+      position: fixed;
+      left: 0; right: 0;
+      top: 50%;
+      height: 3px;
+      background: white;
+      transform: translateY(-50%) scaleX(1);
+      transform-origin: center;
+      opacity: 0;
+      z-index: 99999;
+      box-shadow: 0 0 12px 4px rgba(255,255,255,0.8),
+                  0 0 30px 10px rgba(200,255,200,0.4);
+      pointer-events: none;
+    }
+
+    /* fade para preto final */
+    #tv-blackout {
+      position: fixed;
+      inset: 0;
+      background: black;
+      opacity: 0;
+      z-index: 99997;
+      pointer-events: none;
+    }
+
+    /* congela todos os efeitos de glitch dos cards */
+    .tv-congelado .card,
+    .tv-congelado .card h3,
+    .tv-congelado .card p,
+    .tv-congelado .card .numero,
+    .tv-congelado .card-overlay {
+      animation-play-state: paused !important;
+    }
+    .tv-frozen {
+      transform: skewX(-1.5deg) translateX(4px) !important;
+      filter: brightness(1.25) hue-rotate(15deg) !important;
+    }
+
+    /* ── OVERLAYS RGB + ESTÁTICA ── */
+    #tv-rgb-r, #tv-rgb-c {
+      position: fixed;
+      inset: 0;
+      z-index: 99996;
+      pointer-events: none;
+      opacity: 0;
+      mix-blend-mode: screen;
+    }
+
+    #tv-rgb-r { background: rgba(255,0,0,0.2); }
+    #tv-rgb-c { background: rgba(0,255,255,0.2); }
+
+    #tv-static {
+      position: fixed;
+      inset: 0;
+      z-index: 99995;
+      pointer-events: none;
+      opacity: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='0.5' fill='%2300ff41'/%3E%3C/svg%3E");
+      background-size: 120px 120px;
+      mix-blend-mode: overlay;
+    }
+
+    /* ── CONTAINER DAS FATIAS ── */
+    #tv-slices {
+      position: fixed;
+      inset: 0;
+      z-index: 99994;
+      pointer-events: none;
+      overflow: hidden;
+    }
+
+    /* cada fatia é uma cópia do fundo deslocada */
+    .tv-slice {
+      position: absolute;
+      left: 0; right: 0;
+      background: var(--fundo2);
+      opacity: 0;
+      transition: none;
+    }
+
+    /* colapso vertical — página encolhe para linha */
+    .tv-collapse {
+      animation: tv-colapso 0.35s cubic-bezier(0.4, 0, 1, 1) forwards !important;
+    }
+
+    @keyframes tv-colapso {
+      0%   { transform: scaleY(1);    filter: brightness(1); }
+      40%  { transform: scaleY(0.08); filter: brightness(2.5); }
+      100% { transform: scaleY(0);    filter: brightness(4); }
+    }
   </style>
 </head>
 <body>
+
+  <div id="tv-blackout"></div>
+  <div id="tv-rgb-r"></div>
+  <div id="tv-rgb-c"></div>
+  <div id="tv-static"></div>
+  <div id="tv-slices"></div>
+  <div id="tv-line"></div>
 
   <canvas id="matrix"></canvas>
 
@@ -522,6 +638,148 @@
     document.querySelectorAll('.card').forEach(card => {
       const overlay = card.querySelector('.card-overlay');
       loopCard(card, overlay);
+    });
+
+    /* ── TV SHUTDOWN AO CLICAR NO CARD ── */
+    let navegando = false;
+
+    function tvShutdown(destino) {
+      if (navegando) return;
+      navegando = true;
+
+      const corpo    = document.body;
+      const linha    = document.getElementById('tv-line');
+      const blackout = document.getElementById('tv-blackout');
+      const rgbR     = document.getElementById('tv-rgb-r');
+      const rgbC     = document.getElementById('tv-rgb-c');
+      const estatica = document.getElementById('tv-static');
+      const slicesCt = document.getElementById('tv-slices');
+
+      // ── CRIA AS FATIAS ──
+      // Cada fatia é uma faixa horizontal que copia a cor de fundo
+      // e desloca para o lado, simulando o efeito de separação
+      const NUM_SLICES = 8;
+      const sliceEls = [];
+      const alturaSlice = Math.ceil(window.innerHeight / NUM_SLICES);
+
+      for (let i = 0; i < NUM_SLICES; i++) {
+        const s = document.createElement('div');
+        s.className = 'tv-slice';
+        s.style.top    = (i * alturaSlice) + 'px';
+        s.style.height = alturaSlice + 'px';
+        // cor alternada ligeiramente diferente para dar profundidade
+        s.style.background = i % 2 === 0
+          ? 'rgba(10,16,10,0.92)'
+          : 'rgba(5,10,5,0.88)';
+        slicesCt.appendChild(s);
+        sliceEls.push(s);
+      }
+
+      // deslocamentos aleatórios fixos por fatia (não mudam a cada frame)
+      const sliceOffsets = sliceEls.map(() => {
+        const dir  = Math.random() > 0.5 ? 1 : -1;
+        const dist = Math.floor(Math.random() * 55 + 15); // 15–70px
+        return dir * dist;
+      });
+
+      // congela animações dos cards imediatamente
+      corpo.classList.add('tv-congelado');
+      let t = 0;
+      const SLICE_DUR  = 900;
+      const TICK       = 55; // ms por frame
+
+      const tickSlice = setInterval(() => {
+        t += TICK;
+
+        sliceEls.forEach((s, i) => {
+          // cada fatia aparece/desaparece aleatoriamente
+          const visible = Math.random() > 0.35;
+          if (visible) {
+            // varia o offset para cada frame — jitter pequeno
+            const jitter = Math.random() * 10 - 5;
+            const tx = sliceOffsets[i] + jitter;
+            s.style.opacity   = (Math.random() * 0.5 + 0.5).toFixed(2);
+            s.style.transform = `translateX(${tx}px)`;
+            s.style.filter    = Math.random() > 0.7
+              ? `hue-rotate(${Math.random()*80}deg) brightness(${0.9 + Math.random()})`
+              : 'none';
+          } else {
+            s.style.opacity = '0';
+          }
+        });
+
+        // RGB split pulsa junto
+        if (Math.random() > 0.4) {
+          rgbR.style.opacity   = (Math.random() * 0.5).toFixed(2);
+          rgbC.style.opacity   = (Math.random() * 0.5).toFixed(2);
+          rgbR.style.transform = `translateX(${(Math.random()*14 - 7).toFixed(1)}px)`;
+          rgbC.style.transform = `translateX(${(Math.random()*-14 + 7).toFixed(1)}px)`;
+        } else {
+          rgbR.style.opacity = '0';
+          rgbC.style.opacity = '0';
+        }
+
+        // estática aleatória
+        if (Math.random() > 0.5) {
+          estatica.style.opacity = (Math.random() * 0.35).toFixed(2);
+          estatica.style.backgroundPosition = `${Math.random()*100}px ${Math.random()*100}px`;
+        } else {
+          estatica.style.opacity = '0';
+        }
+
+        if (t >= SLICE_DUR) {
+          clearInterval(tickSlice);
+
+          // ── FASE 2: FREEZE (500ms) ──
+          // fatias ficam paradas em posição deslocada
+          sliceEls.forEach((s, i) => {
+            s.style.opacity   = (Math.random() * 0.3 + 0.6).toFixed(2);
+            s.style.transform = `translateX(${sliceOffsets[i]}px)`;
+            s.style.filter    = 'none';
+          });
+          rgbR.style.opacity = '0.25';
+          rgbC.style.opacity = '0.2';
+          estatica.style.opacity = '0.15';
+
+          setTimeout(() => {
+            // limpa fatias e overlays
+            sliceEls.forEach(s => s.style.opacity = '0');
+            rgbR.style.opacity = '0';
+            rgbC.style.opacity = '0';
+            estatica.style.opacity = '0';
+
+            // ── FASE 3: COLAPSO VERTICAL (350ms) ──
+            corpo.classList.add('tv-collapse');
+
+            setTimeout(() => { linha.style.opacity = '1'; }, 150);
+
+            // ── FASE 4: LINHA ENCOLHE PARA PONTO (200ms) ──
+            setTimeout(() => {
+              linha.style.transition = 'transform 0.2s ease-in, opacity 0.2s ease-in, height 0.15s ease-in';
+              linha.style.transform  = 'translateY(-50%) scaleX(0.02)';
+              linha.style.height     = '2px';
+
+              // ── FASE 5: FADE PARA PRETO + NAVEGA ──
+              setTimeout(() => {
+                linha.style.opacity = '0';
+                blackout.style.transition = 'opacity 0.25s ease-in';
+                blackout.style.opacity    = '1';
+
+                setTimeout(() => { window.location.href = destino; }, 280);
+              }, 200);
+
+            }, 350);
+
+          }, 900); // duração do freeze
+        }
+      }, TICK);
+    }
+
+    document.querySelectorAll('.card').forEach(card => {
+      card.addEventListener('click', function(e) {
+        e.preventDefault();
+        tvShutdown(this.getAttribute('href'));
+      });
     });
   </script>
 
