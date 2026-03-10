@@ -521,7 +521,7 @@
       });
     }
 
-    setInterval(desenharMatrix, 45);
+    const matrixInterval = setInterval(desenharMatrix, 45);
 
     /* ── BOOT ANIMATION ── */
     const linhas = document.querySelectorAll('.boot-line');
@@ -686,6 +686,8 @@
 
       // congela todas as animações da página imediatamente
       corpo.classList.add('tv-congelado');
+      document.getElementById('titulo').classList.add('cursor-frozen');
+      clearInterval(matrixInterval);
       let t = 0;
       const SLICE_DUR  = 900;
       const TICK       = 55; // ms por frame
