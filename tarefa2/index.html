@@ -38,6 +38,54 @@
       font-size: 0.95rem;
     }
 
+    /* ── BOTÃO VOLTAR ── */
+    .btn-voltar {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-family: 'Courier New', monospace;
+      font-size: 0.78rem;
+      color: #bee3f8;
+      text-decoration: none;
+      letter-spacing: 0.06em;
+      padding: 0.4rem 1rem;
+      border: 1px solid #4a7fad;
+      background: transparent;
+      margin-bottom: 1.5rem;
+      transition: color 0.2s, border-color 0.2s, background 0.2s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn-voltar::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 1px;
+      background: #90cdf4;
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.25s ease;
+    }
+
+    .btn-voltar:hover {
+      color: #ffffff;
+      border-color: #90cdf4;
+      background: rgba(144, 205, 244, 0.08);
+    }
+
+    .btn-voltar:hover::before {
+      transform: scaleX(1);
+    }
+
+    .btn-voltar .seta {
+      transition: transform 0.2s;
+    }
+
+    .btn-voltar:hover .seta {
+      transform: translateX(-3px);
+    }
+
     nav {
       background-color: #2b4c7e;
       padding: 0.8rem 2rem;
@@ -233,6 +281,10 @@
 <body>
 
   <header>
+    <a class="btn-voltar" href="../">
+      <span class="seta">←</span>
+      <span>voltar ao portfólio</span>
+    </a>
     <h1>Métodos de Ordenação em C</h1>
     <p>Os métodos de ordenação (ou algoritmos de ordenação) são procedimentos computacionais que
 reorganizam um conjunto de elementos segundo uma ordem definida — crescente, decrescente ou
