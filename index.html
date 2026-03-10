@@ -353,19 +353,15 @@
       pointer-events: none;
     }
 
-    /* congela todos os efeitos de glitch dos cards e animações do título */
-    .tv-congelado .card,
-    .tv-congelado .card h3,
-    .tv-congelado .card p,
-    .tv-congelado .card .numero,
-    .tv-congelado .card-overlay {
+    /* congela TODAS as animações da página de uma vez */
+    .tv-congelado * {
       animation-play-state: paused !important;
     }
 
-    /* congela o cursor do título diretamente no elemento */
-    .cursor-frozen::after {
-      animation: none !important;
-      opacity: 1;
+    /* pseudo-elementos não são cobertos pelo * — trata separado */
+    .tv-congelado *::before,
+    .tv-congelado *::after {
+      animation-play-state: paused !important;
     }
     .tv-frozen {
       transform: skewX(-1.5deg) translateX(4px) !important;
@@ -688,9 +684,8 @@
         return dir * dist;
       });
 
-      // congela animações dos cards e cursor do título imediatamente
+      // congela todas as animações da página imediatamente
       corpo.classList.add('tv-congelado');
-      document.getElementById('titulo').classList.add('cursor-frozen');
       let t = 0;
       const SLICE_DUR  = 900;
       const TICK       = 55; // ms por frame
