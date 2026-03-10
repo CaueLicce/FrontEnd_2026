@@ -32,10 +32,47 @@
                 a {
                         text-decoration: none;
                         color: #A0522D;
-                }		
+                }
+
+                /* ── BOTÃO VOLTAR ── */
+                .btn-voltar {
+                        display: inline-flex;
+                        align-items: center;
+                        gap: 0.5rem;
+                        font-family: "Comic Sans MS";
+                        font-size: 0.85rem;
+                        color: #A0522D;
+                        text-decoration: none;
+                        padding: 0.45rem 1.1rem;
+                        border: 2px solid #D8BFD8;
+                        border-radius: 20px;
+                        background-color: #FFFACD;
+                        margin: 1.2rem auto 0.5rem auto;
+                        transition: background-color 0.2s, border-color 0.2s, color 0.2s;
+                }
+
+                .btn-voltar:hover {
+                        background-color: #D8BFD8;
+                        border-color: #A0522D;
+                        color: #fff;
+                }
+
+                .btn-voltar .seta {
+                        transition: transform 0.2s;
+                }
+
+                .btn-voltar:hover .seta {
+                        transform: translateX(-3px);
+                }
 	</style>
 </head>
 <body>
+
+        <a class="btn-voltar" href="../">
+          <span class="seta">←</span>
+          <span>voltar ao portfólio</span>
+        </a>
+
 	<h1>Meus Colecionáveis</h1>
         <h3>Funkos</h3>
 	<ul>
