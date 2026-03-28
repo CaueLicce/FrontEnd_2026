@@ -1,41 +1,35 @@
-// ── ELEMENTOS ──────────────────────────────────────────
-const b             = document.getElementById('b');
-const statusTxt     = document.getElementById('status-txt');
-const barraFome     = document.getElementById('barra-fome');
-const criaturaWrap  = document.getElementById('criatura-wrap');
-const overlay       = document.getElementById('overlay-morte');
-const btnReiniciar  = document.getElementById('btn-reiniciar');
-const bandeja       = document.getElementById('bandeja');
-const slotComida    = document.getElementById('slot-comida');
-const dragClone     = document.getElementById('drag-clone');
-const dragCloneImg  = dragClone.querySelector('img');
-const tela          = document.getElementById('tela');
+const b            = document.getElementById('b');
+const statusTxt    = document.getElementById('status-txt');
+const barraFome    = document.getElementById('barra-fome');
+const criaturaWrap = document.getElementById('criatura-wrap');
+const overlay      = document.getElementById('overlay-morte');
+const btnReiniciar = document.getElementById('btn-reiniciar');
+const bandeja      = document.getElementById('bandeja');
+const slotComida   = document.getElementById('slot-comida');
+const dragClone    = document.getElementById('drag-clone');
+const dragCloneImg = dragClone.querySelector('img');
+const tela         = document.getElementById('tela');
 
-// ── IMAGENS DOS ESTADOS ────────────────────────────────
 const estados = {
-  normal:   'criatura.png',
-  bravo:    'criatura_brava.png',
-  morto:    'criatura_morta.png',
-  comendo:  'criatura_comendo.png',
+  normal:  'criatura.png',
+  bravo:   'criatura_brava.png',
+  morto:   'criatura_morta.png',
+  comendo: 'criatura_comendo.png',
 };
 
-// ── CONFIGURAÇÃO DE TEMPO ──────────────────────────────
-const TEMPO_BRAVO  = 30; // segundos até ficar bravo
-const TEMPO_MORTO  = 60; // segundos até morrer
-const TEMPO_COMENDO = 3; // segundos no estado comendo
+const TEMPO_BRAVO   = 30;
+const TEMPO_MORTO   = 60;
+const TEMPO_COMENDO = 3;
 
-// ── ESTADO DO JOGO ─────────────────────────────────────
-let contador   = 0;
-let estado     = 'normal';
-let intervalo  = null;
+let contador    = 0;
+let estado      = 'normal';
+let intervalo   = null;
 let timeComendo = null;
 
-// ── INICIAR / REINICIAR ────────────────────────────────
 function iniciar() {
   contador = 0;
   estado   = 'normal';
 
-  // interface
   btnReiniciar.style.display = 'none';
   bandeja.style.display      = 'flex';
   overlay.classList.remove('ativo');
@@ -45,11 +39,9 @@ function iniciar() {
   aplicarEstado('normal');
   atualizarBarra();
 
-  // limpa timers anteriores
   if (intervalo)   clearInterval(intervalo);
   if (timeComendo) clearTimeout(timeComendo);
 
-  // loop principal
   intervalo = setInterval(() => {
     if (estado === 'comendo' || estado === 'morto') return;
 
@@ -64,13 +56,10 @@ function iniciar() {
   }, 1000);
 }
 
-// ── MUDAR ESTADO VISUAL ────────────────────────────────
 function aplicarEstado(novoEstado) {
-  // remove animações anteriores
   b.classList.remove('pulsando', 'tremendo', 'comendo-anim');
   estado = novoEstado;
-
-  b.src = estados[novoEstado];
+  b.src  = estados[novoEstado];
 
   switch (novoEstado) {
     case 'normal':
@@ -78,19 +67,16 @@ function aplicarEstado(novoEstado) {
       statusTxt.style.color = '#806040';
       b.classList.add('pulsando');
       break;
-
     case 'bravo':
       statusTxt.textContent = '⚠ COM FOME';
       statusTxt.style.color = '#cc4400';
       b.classList.add('tremendo');
       break;
-
     case 'comendo':
       statusTxt.textContent = '😋 COMENDO...';
       statusTxt.style.color = '#80b040';
       b.classList.add('comendo-anim');
       break;
-
     case 'morto':
       statusTxt.textContent = '✖ MORTO';
       statusTxt.style.color = '#555';
@@ -99,7 +85,6 @@ function aplicarEstado(novoEstado) {
   }
 }
 
-// ── MORRER ─────────────────────────────────────────────
 function morrer() {
   clearInterval(intervalo);
   aplicarEstado('morto');
@@ -109,18 +94,13 @@ function morrer() {
   atualizarBarra();
 }
 
-// ── ALIMENTAR ──────────────────────────────────────────
 function alimentar() {
   if (estado === 'morto') return;
 
-  // reseta o contador
   contador = 0;
   atualizarBarra();
-
-  // partículas
   emitirParticulas();
 
-  // estado comendo temporário
   if (timeComendo) clearTimeout(timeComendo);
   aplicarEstado('comendo');
 
@@ -129,7 +109,6 @@ function alimentar() {
   }, TEMPO_COMENDO * 1000);
 }
 
-// ── BARRA DE FOME ──────────────────────────────────────
 function atualizarBarra() {
   const pct = Math.max(0, 1 - contador / TEMPO_MORTO);
   barraFome.style.width = (pct * 100) + '%';
@@ -143,14 +122,13 @@ function atualizarBarra() {
   }
 }
 
-// ── PARTÍCULAS ─────────────────────────────────────────
 function emitirParticulas() {
   const icones = ['⚙', '🔩', '✨', '⚡'];
   for (let i = 0; i < 5; i++) {
     setTimeout(() => {
       const p = document.createElement('div');
-      p.className = 'particula';
-      p.textContent = icones[Math.floor(Math.random() * icones.length)];
+      p.className    = 'particula';
+      p.textContent  = icones[Math.floor(Math.random() * icones.length)];
       p.style.left   = (160 + Math.random() * 100) + 'px';
       p.style.bottom = (180 + Math.random() * 60)  + 'px';
       tela.appendChild(p);
@@ -159,11 +137,8 @@ function emitirParticulas() {
   }
 }
 
-// ── DRAG AND DROP ──────────────────────────────────────
-let arrastando   = false;
-let cloneVisivel = false;
+let arrastando = false;
 
-// inicia o arrasto
 slotComida.addEventListener('mousedown', (e) => {
   if (estado === 'morto') return;
   e.preventDefault();
@@ -181,35 +156,31 @@ slotComida.addEventListener('mousedown', (e) => {
 function onMouseMove(e) {
   moverClone(e.clientX, e.clientY);
 
-  // verifica se está sobre a criatura
   const rect = criaturaWrap.getBoundingClientRect();
-  const sobreCriatura =
+  const sobre =
     e.clientX >= rect.left && e.clientX <= rect.right &&
     e.clientY >= rect.top  && e.clientY <= rect.bottom;
 
-  criaturaWrap.classList.toggle('drag-over', sobreCriatura);
+  criaturaWrap.classList.toggle('drag-over', sobre);
 }
 
 function onMouseUp(e) {
   document.removeEventListener('mousemove', onMouseMove);
   document.removeEventListener('mouseup',   onMouseUp);
 
-  // esconde clone e restaura slot
   dragClone.style.display = 'none';
   slotComida.classList.remove('invisivel');
   criaturaWrap.classList.remove('drag-over');
   arrastando = false;
 
-  // verifica se soltou sobre a criatura
   const rect = criaturaWrap.getBoundingClientRect();
-  const sobreCriatura =
+  const sobre =
     e.clientX >= rect.left && e.clientX <= rect.right &&
     e.clientY >= rect.top  && e.clientY <= rect.bottom;
 
-  if (sobreCriatura) alimentar();
+  if (sobre) alimentar();
 }
 
-// suporte a touch
 slotComida.addEventListener('touchstart', (e) => {
   if (estado === 'morto') return;
   e.preventDefault();
@@ -251,8 +222,6 @@ function moverClone(x, y) {
   dragClone.style.top  = y + 'px';
 }
 
-// ── BOTÃO REINICIAR ────────────────────────────────────
 btnReiniciar.addEventListener('click', iniciar);
 
-// ── INICIAR ────────────────────────────────────────────
 iniciar();
