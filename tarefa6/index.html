@@ -15,6 +15,7 @@
       font-family: 'Courier New', monospace;
     }
 
+    /* ── TELA ── */
     #tela {
       position: relative;
       width: 420px; height: 600px;
@@ -27,6 +28,7 @@
         inset 0 0 60px rgba(0,0,0,0.6);
     }
 
+    /* scanlines */
     #tela::after {
       content: '';
       position: absolute; inset: 0;
@@ -38,11 +40,13 @@
       z-index: 50;
     }
 
+    /* ── BACKGROUND ── */
     #bg {
       position: absolute; inset: 0;
       width: 100%; height: 100%;
     }
 
+    /* ── HUD ── */
     #hud {
       position: absolute;
       top: 16px; left: 16px; right: 16px;
@@ -79,6 +83,7 @@
       letter-spacing: 0.08em;
     }
 
+    /* ── CRIATURA ── */
     #criatura-wrap {
       position: absolute;
       bottom: 118px; left: 50%;
@@ -105,10 +110,12 @@
       z-index: 2;
     }
 
+    /* drop highlight */
     #criatura-wrap.drag-over #b {
       filter: drop-shadow(0 0 20px rgba(255,210,50,1));
     }
 
+    /* animações */
     @keyframes pulsar {
       0%,100% { transform: scale(1); }
       50%      { transform: scale(1.04); }
@@ -130,6 +137,7 @@
     #b.tremendo  { animation: tremer 0.5s ease-in-out infinite; }
     #b.comendo-anim { animation: comer 0.4s ease-in-out 3; }
 
+    /* ── BANDEJA DE COMIDA ── */
     #bandeja {
       position: absolute;
       bottom: 24px; left: 50%;
@@ -162,6 +170,7 @@
     .comida-slot:active { cursor: grabbing; }
     .comida-slot.invisivel { visibility: hidden; }
 
+    /* clone de arrasto */
     #drag-clone {
       position: fixed;
       width: 72px; height: 72px;
@@ -177,6 +186,30 @@
       object-fit: contain;
     }
 
+    /* ── BOTÃO VOLTAR ── */
+    #btn-voltar {
+      position: absolute;
+      top: 14px; right: 16px;
+      padding: 5px 12px;
+      background: transparent;
+      color: #a07040;
+      border: 1px solid #3a2010;
+      border-radius: 6px;
+      font-family: 'Courier New', monospace;
+      font-size: 10px; letter-spacing: 0.12em;
+      text-transform: uppercase;
+      text-decoration: none;
+      z-index: 20;
+      transition: color 0.2s, border-color 0.2s, background 0.2s;
+    }
+
+    #btn-voltar:hover {
+      color: #ffaa50;
+      border-color: #ff6a00;
+      background: rgba(255,100,0,0.08);
+    }
+
+    /* ── BOTÃO REINICIAR ── */
     #btn-reiniciar {
       position: absolute;
       bottom: 32px; left: 50%;
@@ -199,6 +232,7 @@
       box-shadow: 0 0 36px rgba(255,70,0,0.7);
     }
 
+    /* ── OVERLAY MORTE ── */
     #overlay-morte {
       position: absolute; inset: 0;
       background: rgba(0,0,0,0);
@@ -208,6 +242,7 @@
     }
     #overlay-morte.ativo { background: rgba(0,0,0,0.5); }
 
+    /* ── PARTÍCULAS ── */
     .particula {
       position: absolute;
       pointer-events: none;
@@ -228,6 +263,7 @@
 
 <div id="tela">
 
+  <!-- BACKGROUND SVG -->
   <svg id="bg" viewBox="0 0 420 600" xmlns="http://www.w3.org/2000/svg">
     <defs>
       <linearGradient id="ceuGrad" x1="0" y1="0" x2="0" y2="1">
@@ -249,44 +285,51 @@
       </filter>
     </defs>
 
+    <!-- fundo -->
     <rect width="420" height="600" fill="url(#ceuGrad)"/>
 
+    <!-- teto irregular -->
     <path d="M0,0 L0,85 Q35,55 70,75 Q105,95 140,58 Q170,30 205,68 Q240,95 275,48 Q305,18 340,62 Q370,88 420,60 L420,0 Z" fill="#120a05"/>
     <path d="M0,0 L0,62 Q30,40 62,57 Q95,73 128,36 Q158,12 188,48 Q218,72 252,28 Q282,0 315,40 Q345,70 380,34 Q400,14 420,44 L420,0 Z" fill="#0d0704"/>
 
+    <!-- estalactites -->
     <polygon points="75,0 91,50 107,0"   fill="#1a0d06"/>
     <polygon points="152,0 164,38 176,0" fill="#1a0d06"/>
     <polygon points="228,0 243,58 258,0" fill="#180c05"/>
     <polygon points="308,0 319,44 330,0" fill="#1a0d06"/>
     <polygon points="368,0 380,32 392,0" fill="#190c05"/>
-
+    <!-- veias de magma nos estalactites -->
     <line x1="91"  y1="0" x2="91"  y2="46" stroke="#ff6a00" stroke-width="0.6" opacity="0.35"/>
     <line x1="164" y1="0" x2="164" y2="35" stroke="#ff8800" stroke-width="0.6" opacity="0.28"/>
     <line x1="243" y1="0" x2="243" y2="54" stroke="#ff6a00" stroke-width="0.6" opacity="0.35"/>
     <line x1="319" y1="0" x2="319" y2="40" stroke="#ff7700" stroke-width="0.6" opacity="0.30"/>
 
+    <!-- paredes laterais -->
     <path d="M0,80 Q22,125 5,175 Q-8,228 8,288 Q18,345 2,405 L0,600 L52,600 L52,405 Q62,335 48,275 Q36,215 52,162 Q66,112 48,78 Z" fill="#150b04"/>
     <path d="M420,80 Q398,125 415,175 Q428,228 412,288 Q402,345 418,405 L420,600 L368,600 L368,405 Q358,335 372,275 Q384,215 368,162 Q354,112 372,78 Z" fill="#150b04"/>
 
+    <!-- fendas de magma — parede esquerda -->
     <path d="M0,195 Q16,188 28,206 Q40,224 22,242 Q6,258 0,252" fill="#ff4400" opacity="0.65" filter="url(#glow)"/>
     <path d="M0,195 Q13,190 23,207 Q33,221 18,238 Q5,254 0,252" fill="#ffaa00" opacity="0.45"/>
     <path d="M0,315 Q20,305 33,322 Q46,340 30,355 Q14,368 0,360" fill="#ff5500" opacity="0.60" filter="url(#glow)"/>
     <path d="M0,315 Q16,308 27,322 Q38,336 24,350 Q10,362 0,360" fill="#ffbb00" opacity="0.38"/>
 
+    <!-- fendas de magma — parede direita -->
     <path d="M420,158 Q403,150 390,168 Q377,187 394,204 Q410,220 420,214" fill="#ff4400" opacity="0.65" filter="url(#glow)"/>
     <path d="M420,158 Q406,153 394,169 Q382,185 397,202 Q412,217 420,214" fill="#ffaa00" opacity="0.45"/>
     <path d="M420,285 Q400,277 386,295 Q373,314 390,330 Q406,345 420,338" fill="#ff5500" opacity="0.60" filter="url(#glow)"/>
 
-
+    <!-- tubulação esquerda -->
     <rect x="10" y="135" width="13" height="195" rx="4" fill="#231205" stroke="#4a2808" stroke-width="1"/>
     <rect x="10" y="182" width="13" height="16"  rx="2" fill="#3a1e08" stroke="#5a3010" stroke-width="1"/>
     <rect x="10" y="264" width="13" height="16"  rx="2" fill="#3a1e08" stroke="#5a3010" stroke-width="1"/>
     <circle cx="16" cy="190" r="3.5" fill="#1a0c04" stroke="#6a3a18" stroke-width="1"/>
     <circle cx="16" cy="272" r="3.5" fill="#1a0c04" stroke="#6a3a18" stroke-width="1"/>
-
+    <!-- brilho de vapor -->
     <circle cx="16" cy="135" r="8" fill="#ff6600" opacity="0.35" filter="url(#glowSoft)"/>
     <circle cx="16" cy="135" r="4" fill="#ffcc00" opacity="0.25"/>
 
+    <!-- tubulação direita -->
     <rect x="397" y="148" width="13" height="178" rx="4" fill="#231205" stroke="#4a2808" stroke-width="1"/>
     <rect x="397" y="194" width="13" height="16"  rx="2" fill="#3a1e08" stroke="#5a3010" stroke-width="1"/>
     <rect x="397" y="278" width="13" height="16"  rx="2" fill="#3a1e08" stroke="#5a3010" stroke-width="1"/>
@@ -294,6 +337,7 @@
     <circle cx="403" cy="286" r="3.5" fill="#1a0c04" stroke="#6a3a18" stroke-width="1"/>
     <circle cx="403" cy="148" r="8" fill="#ff6600" opacity="0.32" filter="url(#glowSoft)"/>
 
+    <!-- engrenagens decorativas na parede -->
     <g opacity="0.18" transform="translate(30,420) rotate(15)">
       <circle cx="0" cy="0" r="16" fill="none" stroke="#c08030" stroke-width="3"/>
       <circle cx="0" cy="0" r="6"  fill="#c08030"/>
@@ -311,23 +355,31 @@
       <line x1="14"  y1="0" x2="20"  y2="0"  stroke="#c08030" stroke-width="2.5"/>
     </g>
 
+    <!-- piso vulcânico -->
     <path d="M0,490 Q55,470 118,486 Q182,502 245,478 Q305,456 368,472 Q395,480 420,462 L420,600 L0,600 Z" fill="#1c0d05"/>
     <path d="M0,512 Q70,494 142,510 Q215,526 288,505 Q348,488 420,504 L420,600 L0,600 Z" fill="#130906"/>
     <path d="M0,535 Q80,520 160,538 Q240,556 320,535 Q375,520 420,532 L420,600 L0,600 Z" fill="#0d0705"/>
 
+    <!-- fendas de magma no chão -->
     <path d="M55,512 Q88,500 130,514 Q155,522 148,530 Q138,540 105,534 Q68,528 55,512Z" fill="#ff4400" opacity="0.55" filter="url(#glow)"/>
     <path d="M68,512 Q95,504 128,515 Q148,521 142,528 Q134,536 108,531 Q76,525 68,512Z" fill="#ffaa00" opacity="0.4"/>
     <path d="M255,498 Q295,485 338,502 Q360,512 354,522 Q342,534 305,526 Q265,518 255,498Z" fill="#ff5500" opacity="0.50" filter="url(#glow)"/>
     <path d="M268,499 Q302,488 335,503 Q354,511 349,520 Q339,530 308,524 Q272,516 268,499Z" fill="#ffbb00" opacity="0.38"/>
-
+    <!-- fenda pequena central -->
     <path d="M178,530 Q200,522 222,532 Q230,538 224,544 Q210,550 196,546 Q180,540 178,530Z" fill="#ff4400" opacity="0.45" filter="url(#glow)"/>
 
+    <!-- brilho ambiente do magma embaixo -->
     <ellipse cx="210" cy="600" rx="200" ry="60" fill="#ff4400" opacity="0.12" filter="url(#glowSoft)"/>
     <ellipse cx="210" cy="580" rx="140" ry="35" fill="#ff6600" opacity="0.08"/>
   </svg>
 
+  <!-- BOTÃO VOLTAR -->
+  <a id="btn-voltar" href="../">← Portfólio</a>
+
+  <!-- OVERLAY MORTE -->
   <div id="overlay-morte"></div>
 
+  <!-- HUD -->
   <div id="hud">
     <div id="hud-row">
       <span id="hud-label">⚡ Fome</span>
@@ -338,18 +390,22 @@
     <div id="status-txt">● NORMAL</div>
   </div>
 
+  <!-- SOMBRA -->
   <div id="sombra"></div>
 
+  <!-- CRIATURA -->
   <div id="criatura-wrap">
     <img id="b" src="criatura.png" alt="bichinho">
   </div>
 
+  <!-- BANDEJA -->
   <div id="bandeja">
     <div class="comida-slot" id="slot-comida">
       <img src="comida.png" alt="comida">
     </div>
   </div>
 
+  <!-- BOTÃO REINICIAR -->
   <button id="btn-reiniciar">🔄 Reiniciar</button>
 
 </div>
@@ -357,4 +413,3 @@
 <script src="script.js"></script>
 </body>
 </html>
-
