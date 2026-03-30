@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Métodos de Ordenação em C</title>
+
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background-color: #f0f4f8;
+      color: #2d3748;
+      font-family: Georgia, serif;
+      font-size: 16px;
+      line-height: 1.8;
+    }
+
+    header {
+      background-color: #1a365d;
+      color: #ffffff;
+      padding: 2.5rem 2rem;
+      text-align: center;
+    }
+
+    header h1 {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+      color: #90cdf4;
+    }
+
+    header p {
+      max-width: 800px;
+      margin: 0 auto 0.8rem;
+      color: #bee3f8;
+      font-size: 0.95rem;
+    }
+
+    /* ── BOTÃO VOLTAR ── */
+    .btn-voltar {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-family: 'Courier New', monospace;
+      font-size: 0.78rem;
+      color: #bee3f8;
+      text-decoration: none;
+      letter-spacing: 0.06em;
+      padding: 0.4rem 1rem;
+      border: 1px solid #4a7fad;
+      background: transparent;
+      margin-bottom: 1.5rem;
+      transition: color 0.2s, border-color 0.2s, background 0.2s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn-voltar::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 1px;
+      background: #90cdf4;
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.25s ease;
+    }
+
+    .btn-voltar:hover {
+      color: #ffffff;
+      border-color: #90cdf4;
+      background: rgba(144, 205, 244, 0.08);
+    }
+
+    .btn-voltar:hover::before {
+      transform: scaleX(1);
+    }
+
+    .btn-voltar .seta {
+      transition: transform 0.2s;
+    }
+
+    .btn-voltar:hover .seta {
+      transform: translateX(-3px);
+    }
+
+    nav {
+      background-color: #2b4c7e;
+      padding: 0.8rem 2rem;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    nav ul {
+      list-style: none;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 0.5rem 1.5rem;
+    }
+
+    nav ul li a {
+      color: #bee3f8;
+      text-decoration: none;
+      font-family: 'Courier New', monospace;
+      font-size: 0.85rem;
+      padding: 0.2rem 0;
+      border-bottom: 2px solid transparent;
+      transition: color 0.2s, border-color 0.2s;
+    }
+
+    nav ul li a:hover {
+      color: #ffffff;
+      border-bottom-color: #90cdf4;
+    }
+
+    main {
+      max-width: 860px;
+      margin: 2.5rem auto;
+      padding: 0 1.5rem 3rem;
+    }
+
+    section {
+      background-color: #ffffff;
+      border-radius: 10px;
+      padding: 2rem;
+      margin-bottom: 2rem;
+      border-left: 5px solid #2b6cb0;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+    }
+
+    section h2 {
+      font-size: 1.5rem;
+      color: #1a365d;
+      margin-bottom: 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid #e2e8f0;
+    }
+
+    section p {
+      color: #4a5568;
+      margin-bottom: 1rem;
+    }
+
+    section h4 {
+      font-family: 'Courier New', monospace;
+      font-size: 0.78rem;
+      color: #718096;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin: 1.2rem 0 0.5rem;
+    }
+
+    ol {
+      padding-left: 1.5rem;
+      margin-bottom: 1rem;
+    }
+
+    ol li {
+      color: #4a5568;
+      margin-bottom: 0.3rem;
+    }
+
+    section pre, section .codigo {
+      background-color: #1a202c;
+      color: #a0aec0;
+      font-family: 'Courier New', monospace;
+      font-size: 0.83rem;
+      line-height: 1.7;
+      padding: 1.2rem 1.4rem;
+      border-radius: 0 8px 8px 8px;
+      border-left: 3px solid #4299e1;
+      overflow-x: auto;
+      white-space: pre;
+      margin-top: 0.5rem;
+    }
+
+    #avaliacao {
+      border-left-color: #276749;
+    }
+
+    #avaliacao h2 {
+      color: #276749;
+    }
+
+    fieldset {
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 1.2rem 1.5rem;
+      margin-top: 1rem;
+    }
+
+    legend {
+      font-size: 0.85rem;
+      font-weight: bold;
+      color: #2b6cb0;
+      padding: 0 0.5rem;
+    }
+
+    fieldset p { margin-bottom: 0.6rem; }
+
+    label {
+      color: #4a5568;
+      font-size: 0.95rem;
+      cursor: pointer;
+    }
+
+    input[type="radio"] {
+      accent-color: #2b6cb0;
+      margin-right: 0.3rem;
+    }
+
+    button[type="submit"] {
+      background-color: #2b6cb0;
+      color: #ffffff;
+      font-family: Georgia, serif;
+      font-size: 0.95rem;
+      padding: 0.7rem 2rem;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-top: 0.5rem;
+      transition: background-color 0.2s;
+    }
+
+    button[type="submit"]:hover {
+      background-color: #1a4a8a;
+    }
+
+    #questionario {
+      border-left-color: #6b46c1;
+    }
+
+    #questionario h2 {
+      color: #6b46c1;
+    }
+
+    .questao {
+      margin-bottom: 1.5rem;
+      padding-bottom: 1.5rem;
+      border-bottom: 1px solid #e2e8f0;
+    }
+
+    .questao:last-of-type {
+      border-bottom: none;
+    }
+
+    .questao p {
+      font-weight: bold;
+      color: #1a365d;
+      margin-bottom: 0.6rem;
+    }
+
+    .questao label {
+      display: block;
+      font-weight: normal;
+      margin-bottom: 0.2rem;
+    }
+
+    #resultado {
+      display: none;
+      margin-top: 1.5rem;
+      padding: 1.2rem 1.5rem;
+      border-radius: 8px;
+      border: 1px solid #e2e8f0;
+      background-color: #f7fafc;
+    }
+
+    #resultado p {
+      margin: 0;
+      font-weight: bold;
+      font-size: 1rem;
+      color: #1a365d;
+    }
+  </style>
+</head>
+
+<body>
+
+  <header>
+    <a class="btn-voltar" href="../">
+      <span class="seta">←</span>
+      <span>voltar ao portfólio</span>
+    </a>
+    <h1>Métodos de Ordenação em C</h1>
+    <p>Os métodos de ordenação (ou algoritmos de ordenação) são procedimentos computacionais que
+reorganizam um conjunto de elementos segundo uma ordem definida — crescente, decrescente ou
+lexicográfica. Em C, esses algoritmos são aplicados diretamente sobre vetores (arrays) e são
+fundamentais para a eficiência de sistemas de busca, bancos de dados e processamento de dados.</p>
+
+    <p>Os métodos de ordenação são separados em dois grupos, os métodos simples (Bubble, Selection e Insertion), e os métodos complexos (Quick e Merge), os métodos mais simples, ao contrário dos complexos, são mais fáceis de implementar no código, mas, tem eficiência reduzida comparado aos métodos mais complexos.</p>
+  </header>
+
+  <nav>
+    <ul>
+      <li><a href="#secao1">Bubble Sort</a></li>
+      <li><a href="#secao2">Selection Sort</a></li>
+      <li><a href="#secao3">Insertion Sort</a></li>
+      <li><a href="#secao4">Quick Sort</a></li>
+      <li><a href="#secao5">Merge Sort</a></li>
+      <li><a href="#questionario">Questionário</a></li>
+      <li><a href="#avaliacao">Avaliação</a></li>
+    </ul>
+  </nav>
+
+  <main>
+
+    <section id="secao1">
+      <h2>Bubble Sort</h2>
+      <p>Um dos algoritmos mais intuitivos. Ele percorre repetidamente o vetor, comparando pares de elementos adjacentes e trocando-os quando estão fora de ordem. A cada passagem completa, o maior elemento restante "sobe" para sua posição final — daí o nome bolha.</p>
+
+      <h4>// funcionamento passo a passo</h4>
+      <ol>
+        <li>Compare o elemento da posição <strong>i</strong> com o da posição <strong>i+1</strong>.</li>
+        <li>Se estiverem fora de ordem, troque-os.</li>
+        <li>Repita para todos os pares adjacentes do início ao fim.</li>
+        <li>A cada passagem, o vetor ativo é reduzido em 1 (o último elemento já está ordenado).</li>
+      </ol>
+
+      <h4>// implementação em C</h4>
+      <pre>void bubbleSort(int v[], int n) {
+    int i, j, temp;
+    for (i = 0; i &lt; n - 1; i++) {
+        for (j = 0; j &lt; n - 1 - i; j++) {
+            if (v[j] &gt; v[j + 1]) {
+                temp    = v[j];
+                v[j]    = v[j + 1];
+                v[j+1]  = temp;
+            }
+        }
+    }
+}</pre>
+    </section>
+
+    <section id="secao2">
+      <h2>Selection Sort</h2>
+      <p>O Selection Sort divide o vetor em duas partes: a parte ordenada (à esquerda) e a parte desordenada (à direita). A cada iteração, ele encontra o menor elemento da parte desordenada e o coloca no final da parte ordenada.</p>
+
+      <h4>// implementação em C</h4>
+      <pre>void selectionSort(int v[], int n) {
+    int i, j, minIdx, temp;
+    for (i = 0; i &lt; n - 1; i++) {
+        minIdx = i;
+        for (j = i + 1; j &lt; n; j++)
+            if (v[j] &lt; v[minIdx]) minIdx = j;
+        temp      = v[minIdx];
+        v[minIdx] = v[i];
+        v[i]      = temp;
+    }
+}</pre>
+    </section>
+
+    <section id="secao3">
+      <h2>Insertion Sort</h2>
+      <p>O Insertion Sort constrói o vetor ordenado elemento por elemento. A cada passo, o elemento atual é inserido na posição correta dentro da parte já ordenada. É análogo a como as pessoas ordenam cartas de baralho na mão.</p>
+
+      <h4>// implementação em C</h4>
+      <pre>void insertionSort(int v[], int n) {
+    int i, key, j;
+    for (i = 1; i &lt; n; i++) {
+        key = v[i];
+        j   = i - 1;
+        while (j &gt;= 0 &amp;&amp; v[j] &gt; key) {
+            v[j + 1] = v[j];
+            j--;
+        }
+        v[j + 1] = key;
+    }
+}</pre>
+    </section>
+
+    <section id="secao4">
+      <h2>Quick Sort</h2>
+      <p>Proposto por Tony Hoare em 1959, o Quick Sort é o algoritmo de ordenação de propósito geral mais amplamente utilizado. Ele adota a estratégia dividir para conquistar: escolhe um elemento como pivô e particiona o vetor em dois sub-vetores — elementos menores à esquerda e maiores à direita — depois ordena recursivamente cada parte.</p>
+
+      <h4>// implementação em C</h4>
+      <pre>int partition(int v[], int low, int high) {
+    int pivot = v[high], i = low - 1, j, temp;
+    for (j = low; j &lt; high; j++) {
+        if (v[j] &lt;= pivot) {
+            i++;
+            temp = v[i]; v[i] = v[j]; v[j] = temp;
+        }
+    }
+    temp = v[i+1]; v[i+1] = v[high]; v[high] = temp;
+    return i + 1;
+}
+
+void quickSort(int v[], int low, int high) {
+    if (low &lt; high) {
+        int pi = partition(v, low, high);
+        quickSort(v, low, pi - 1);
+        quickSort(v, pi + 1, high);
+    }
+}</pre>
+    </section>
+
+    <section id="secao5">
+      <h2>Merge Sort</h2>
+      <p>Criado por John von Neumann em 1945, o Merge Sort também usa dividir para conquistar. Ele divide o vetor ao meio recursivamente até ter sub-vetores de 1 elemento, depois os intercala (merge) em ordem. É garantidamente O(n log n) em todos os casos, mas exige memória auxiliar O(n).</p>
+
+      <h4>// implementação em C</h4>
+      <pre>void merge(int v[], int l, int m, int r) {
+    int n1 = m-l+1, n2 = r-m, i, j, k;
+    int L[n1], R[n2];
+    for (i=0; i&lt;n1; i++) L[i] = v[l+i];
+    for (j=0; j&lt;n2; j++) R[j] = v[m+1+j];
+    i = j = 0; k = l;
+    while (i &lt; n1 &amp;&amp; j &lt; n2)
+        v[k++] = (L[i] &lt;= R[j]) ? L[i++] : R[j++];
+    while (i &lt; n1) v[k++] = L[i++];
+    while (j &lt; n2) v[k++] = R[j++];
+}
+
+void mergeSort(int v[], int l, int r) {
+    if (l &lt; r) {
+        int m = l + (r - l) / 2;
+        mergeSort(v, l, m);
+        mergeSort(v, m+1, r);
+        merge(v, l, m, r);
+    }
+}</pre>
+    </section>
+
+    <section id="questionario">
+      <h2>Questionário</h2>
+      <p>Responda as questões abaixo sobre os algoritmos de ordenação estudados.</p>
+
+      <form id="form-questionario">
+
+        <div class="questao">
+          <p>Q1. Qual algoritmo de ordenação recebe o nome de "bolha" por causa do comportamento dos seus elementos durante a ordenação?</p>
+          <label><input type="radio" name="q1" value="a"> a) Selection Sort</label>
+          <label><input type="radio" name="q1" value="b"> b) Bubble Sort</label>
+          <label><input type="radio" name="q1" value="c"> c) Insertion Sort</label>
+          <label><input type="radio" name="q1" value="d"> d) Merge Sort</label>
+        </div>
+
+        <div class="questao">
+          <p>Q2. O Selection Sort funciona encontrando, a cada iteração, qual elemento da parte desordenada do vetor?</p>
+          <label><input type="radio" name="q2" value="a"> a) O maior elemento</label>
+          <label><input type="radio" name="q2" value="b"> b) O elemento do meio</label>
+          <label><input type="radio" name="q2" value="c"> c) O menor elemento</label>
+          <label><input type="radio" name="q2" value="d"> d) O último elemento</label>
+        </div>
+
+        <div class="questao">
+          <p>Q3. Qual algoritmo é comparado à forma como pessoas ordenam cartas de baralho na mão?</p>
+          <label><input type="radio" name="q3" value="a"> a) Bubble Sort</label>
+          <label><input type="radio" name="q3" value="b"> b) Quick Sort</label>
+          <label><input type="radio" name="q3" value="c"> c) Merge Sort</label>
+          <label><input type="radio" name="q3" value="d"> d) Insertion Sort</label>
+        </div>
+
+        <div class="questao">
+          <p>Q4. O Quick Sort foi proposto por qual cientista da computação?</p>
+          <label><input type="radio" name="q4" value="a"> a) John von Neumann</label>
+          <label><input type="radio" name="q4" value="b"> b) Donald Knuth</label>
+          <label><input type="radio" name="q4" value="c"> c) Tony Hoare</label>
+          <label><input type="radio" name="q4" value="d"> d) Alan Turing</label>
+        </div>
+
+        <div class="questao">
+          <p>Q5. O Merge Sort é garantidamente O(n log n) em todos os casos, porém possui qual desvantagem em relação aos outros algoritmos?</p>
+          <label><input type="radio" name="q5" value="a"> a) É o algoritmo mais lento na prática</label>
+          <label><input type="radio" name="q5" value="b"> b) Exige memória auxiliar O(n)</label>
+          <label><input type="radio" name="q5" value="c"> c) Não funciona com vetores de inteiros</label>
+          <label><input type="radio" name="q5" value="d"> d) Só funciona com vetores já parcialmente ordenados</label>
+        </div>
+
+        <div class="questao">
+          <p>Q6. Qual é a estratégia adotada tanto pelo Quick Sort quanto pelo Merge Sort?</p>
+          <label><input type="radio" name="q6" value="a"> a) Ordenação por troca direta</label>
+          <label><input type="radio" name="q6" value="b"> b) Busca binária</label>
+          <label><input type="radio" name="q6" value="c"> c) Dividir para conquistar</label>
+          <label><input type="radio" name="q6" value="d"> d) Ordenação por seleção mínima</label>
+        </div>
+
+        <button type="submit">Ver Resultado</button>
+
+        <div id="resultado">
+          <p id="texto-resultado"></p>
+        </div>
+
+      </form>
+    </section>
+
+    <section id="avaliacao">
+      <h2>Avaliação do Conteúdo</h2>
+      <p>Marque o que você achou do conteúdo.</p>
+
+      <form action="#" method="get">
+        <fieldset>
+          <legend>Avalie este Material</legend>
+
+          <p>Como você avalia a <b>clareza</b> do conteúdo?</p>
+          <label><input type="radio" name="clareza" value="1"> 1 — Muito ruim</label><br>
+          <label><input type="radio" name="clareza" value="2"> 2 — Ruim</label><br>
+          <label><input type="radio" name="clareza" value="3"> 3 — Regular</label><br>
+          <label><input type="radio" name="clareza" value="4"> 4 — Bom</label><br>
+          <label><input type="radio" name="clareza" value="5"> 5 — Excelente</label><br>
+        </fieldset>
+
+        <br>
+        <button type="submit">Enviar Avaliação</button>
+      </form>
+    </section>
+
+  </main>
+
+  <script>
+    const gabarito = { q1: 'b', q2: 'c', q3: 'd', q4: 'c', q5: 'b', q6: 'c' };
+
+    document.getElementById('form-questionario').addEventListener('submit', function(e) {
+      e.preventDefault();
+      let acertos = 0;
+      const total = Object.keys(gabarito).length;
+
+      for (const questao in gabarito) {
+        const selecionada = document.querySelector('input[name="' + questao + '"]:checked');
+        if (selecionada && selecionada.value === gabarito[questao]) {
+          acertos++;
+        }
+      }
+
+      const resultado = document.getElementById('resultado');
+      const texto = document.getElementById('texto-resultado');
+      texto.textContent = 'Você acertou ' + acertos + ' de ' + total + ' questões.';
+      resultado.style.display = 'block';
+      resultado.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    });
+  </script>
+
+</body>
+</html>
