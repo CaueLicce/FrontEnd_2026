@@ -1,0 +1,840 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Portfólio de Tarefas</title>
+  <style>
+    #btn-hub {
+    position: fixed;
+    top: 14px; left: 16px;
+    font-family: 'Courier New', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    color: #005514;
+    text-decoration: none;
+    border: 1px solid #1a2e1a;
+    padding: 4px 10px;
+    z-index: 10001;
+    transition: color 0.2s, border-color 0.2s, background 0.2s;
+  }
+ 
+  #btn-hub:hover {
+    color: #00ff41;
+    border-color: #005514;
+    background: rgba(0,255,65,0.04);
+  }
+    
+    :root {
+      --verde:       #00ff41;
+      --verde-dim:   #00aa2a;
+      --verde-muted: #005514;
+      --fundo:       #050a05;
+      --fundo2:      #0a100a;
+      --borda:       #1a2e1a;
+      --texto:       #c8e6c8;
+      --muted:       #5a7a5a;
+      --ciano:       #00ffff;
+      --vermelho:    #ff3333;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+
+    /* ── SCANLINE ── */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(0,0,0,0.35) 2px,
+        rgba(0,0,0,0.35) 4px
+      );
+      pointer-events: none;
+      z-index: 100000;
+    }
+
+    body {
+      background-color: var(--fundo);
+      color: var(--texto);
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 15px;
+      line-height: 1.8;
+    }
+
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--fundo); }
+    ::-webkit-scrollbar-thumb { background: var(--verde-muted); }
+
+    /* ── BOOT SCREEN ── */
+    #boot {
+      position: fixed;
+      inset: 0;
+      background: var(--fundo);
+      z-index: 10000;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 3rem;
+      font-family: 'Courier New', monospace;
+      font-size: 0.85rem;
+      color: var(--verde);
+      gap: 0.15rem;
+    }
+
+    #boot .boot-line { opacity: 0; white-space: nowrap; }
+    #boot .ok    { color: var(--verde); }
+    #boot .warn  { color: #ffcc00; }
+    #boot .barra { color: var(--muted); }
+
+    /* ── HEADER ── */
+    header {
+      background-color: var(--fundo2);
+      border-bottom: 1px solid var(--verde-muted);
+      padding: 3rem 2rem;
+      text-align: center;
+      position: relative;
+      z-index: 1;
+    }
+
+    header::before {
+      content: '// PORTFOLIO.exe';
+      display: block;
+      font-size: 0.65rem;
+      color: var(--verde-muted);
+      letter-spacing: 0.2em;
+      margin-bottom: 1rem;
+    }
+
+    header h1 {
+      font-size: 2rem;
+      color: var(--verde);
+      margin-bottom: 0.5rem;
+      letter-spacing: 0.05em;
+      min-height: 2.5rem;
+    }
+
+    .cursor::after {
+      content: '█';
+      animation: blink 0.8s step-start infinite;
+      color: var(--verde);
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50%       { opacity: 0; }
+    }
+
+    header p { color: var(--muted); font-size: 0.85rem; }
+    header p::before { content: '> '; color: var(--verde); }
+
+    /* ── MAIN ── */
+    main {
+      max-width: 860px;
+      margin: 2.5rem auto;
+      padding: 0 1.5rem 3rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    h2 {
+      font-size: 0.85rem;
+      color: var(--verde);
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      margin-bottom: 1.5rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px dashed var(--borda);
+    }
+
+    h2::before { content: '## '; color: var(--verde-muted); }
+
+    /* ── GRID ── */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 1.2rem;
+    }
+
+    /* ── CARD ── */
+    .card {
+      background-color: var(--fundo2);
+      border: 1px solid var(--borda);
+      border-left: 3px solid var(--verde);
+      padding: 1.5rem;
+      text-decoration: none;
+      color: inherit;
+      display: block;
+      position: relative;
+      overflow: hidden;
+      transition: border-color 0.2s, background 0.2s;
+      isolation: isolate;
+    }
+
+    .card:hover {
+      border-color: var(--verde);
+      background-color: rgba(0,255,65,0.04);
+      box-shadow: 0 0 12px rgba(0,255,65,0.08);
+    }
+
+    /* linha verde deslizando no topo */
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: var(--verde);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.3s ease;
+      z-index: 2;
+      pointer-events: none;
+    }
+
+    .card:hover::before { transform: scaleX(1); }
+
+    .card-inner { position: relative; }
+
+    /* ── OVERLAY (telão quebrado) ── */
+    .card-overlay {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      opacity: 0;
+      z-index: 1;
+      background-image: repeating-linear-gradient(
+        90deg,
+        transparent,
+        transparent calc(33% - 1px),
+        rgba(0,255,65,0.3) calc(33% - 1px),
+        rgba(0,255,65,0.3) 33%,
+        transparent 33%,
+        transparent calc(66% - 1px),
+        rgba(0,255,255,0.25) calc(66% - 1px),
+        rgba(0,255,255,0.25) 66%,
+        transparent 66%
+      );
+    }
+
+    .card .numero {
+      font-size: 0.72rem;
+      color: var(--verde-muted);
+      margin-bottom: 0.5rem;
+      letter-spacing: 0.05em;
+    }
+
+    .card h3 {
+      font-size: 0.95rem;
+      color: var(--ciano);
+      margin-bottom: 0.4rem;
+    }
+
+    .card h3::before { content: '→ '; color: var(--verde-muted); }
+
+    .card p {
+      font-size: 0.82rem;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    /* ── KEYFRAMES DE GLITCH ── */
+
+    @keyframes fase-drift {
+      0%   { clip-path: none; transform: translate(0); filter: none; }
+      20%  { clip-path: inset(15% 0 65% 0); transform: translateX(3px);  filter: hue-rotate(60deg); }
+      40%  { clip-path: inset(0 0 80% 0);   transform: translateX(-2px); filter: none; }
+      60%  { clip-path: inset(42% 0 30% 0); transform: translateX(3px);  filter: hue-rotate(100deg); }
+      80%  { clip-path: none; transform: translate(0); filter: none; }
+      100% { clip-path: none; transform: translate(0); filter: none; }
+    }
+
+    @keyframes fase-overexpose {
+      0%   { filter: none; background-color: var(--fundo2); }
+      25%  { filter: brightness(2.5) saturate(0); background-color: #152515; }
+      50%  { filter: brightness(1.5) hue-rotate(40deg); }
+      70%  { filter: none; background-color: var(--fundo2); }
+      85%  { filter: brightness(1.15); }
+      100% { filter: none; }
+    }
+
+    @keyframes fase-corrupcao {
+      0%   { opacity: 1; letter-spacing: normal; filter: none; }
+      30%  { opacity: 0.4; letter-spacing: 0.2em; filter: blur(0.6px); }
+      55%  { opacity: 0.75; letter-spacing: -0.06em; filter: none; }
+      75%  { opacity: 1; letter-spacing: normal; }
+      100% { opacity: 1; }
+    }
+
+    @keyframes fase-frag {
+      0%   { clip-path: none; transform: translate(0); filter: none; }
+      18%  { clip-path: inset(10% 5% 60% 8%);  transform: translate(-2px, 1px); }
+      35%  { clip-path: inset(50% 8% 10% 5%);  transform: translate(3px, -1px); filter: hue-rotate(50deg); }
+      52%  { clip-path: inset(25% 55% 24% 0);  transform: translate(0, 2px); }
+      68%  { clip-path: inset(0 0 70% 40%);    transform: translate(-2px, 0); filter: brightness(1.3); }
+      80%  { clip-path: none; transform: translate(0); filter: none; }
+      100% { clip-path: none; transform: translate(0); filter: none; }
+    }
+
+    @keyframes fase-telao {
+      0%,10%  { opacity: 0; }
+      20%     { opacity: 0.7; }
+      50%     { opacity: 0.35; }
+      75%     { opacity: 0.55; }
+      90%     { opacity: 0; }
+      100%    { opacity: 0; }
+    }
+
+    @keyframes fase-telao-card {
+      0%   { filter: none; }
+      20%  { filter: brightness(1.2) contrast(1.05); }
+      50%  { filter: hue-rotate(30deg) brightness(1.05); }
+      80%  { filter: none; }
+      100% { filter: none; }
+    }
+
+    /* classes aplicadas via JS */
+    .glitch-drift     { animation: fase-drift       0.5s steps(1) 1 forwards; }
+    .glitch-expose    { animation: fase-overexpose   0.6s steps(1) 1 forwards; }
+    .glitch-frag      { animation: fase-frag         0.5s steps(1) 1 forwards; }
+    .glitch-telao     { animation: fase-telao-card   0.6s steps(1) 1 forwards; }
+    .overlay-telao    { animation: fase-telao        0.6s steps(1) 1 forwards; }
+
+    .glitch-corrupcao { animation: fase-corrupcao   0.55s steps(1) 1 forwards; }
+
+    /* ── MATRIX CANVAS ── */
+    #matrix {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      z-index: 0;
+      opacity: 0.13;
+      pointer-events: none;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      text-align: center;
+      padding: 2rem;
+      font-size: 0.72rem;
+      color: var(--verde-muted);
+      border-top: 1px solid var(--borda);
+      position: relative;
+      z-index: 1;
+    }
+
+    footer p::before { content: '// '; }
+    /* ── TV SHUTDOWN OVERLAY ── */
+    #tv-shutdown {
+      position: fixed;
+      inset: 0;
+      z-index: 99998;
+      pointer-events: none;
+      display: none;
+    }
+
+    /* camada de distorção/conteúdo */
+    #tv-page-wrap {
+      position: fixed;
+      inset: 0;
+      z-index: 1;
+      transform-origin: center center;
+      pointer-events: none;
+    }
+
+    /* linha horizontal branca (o "tubo") */
+    #tv-line {
+      position: fixed;
+      left: 0; right: 0;
+      top: 50%;
+      height: 3px;
+      background: white;
+      transform: translateY(-50%) scaleX(1);
+      transform-origin: center;
+      opacity: 0;
+      z-index: 99999;
+      box-shadow: 0 0 12px 4px rgba(255,255,255,0.8),
+                  0 0 30px 10px rgba(200,255,200,0.4);
+      pointer-events: none;
+    }
+
+    /* fade para preto final */
+    #tv-blackout {
+      position: fixed;
+      inset: 0;
+      background: black;
+      opacity: 0;
+      z-index: 99997;
+      pointer-events: none;
+    }
+
+    /* congela TODAS as animações da página de uma vez */
+    .tv-congelado * {
+      animation-play-state: paused !important;
+    }
+
+    /* pseudo-elementos não são cobertos pelo * — trata separado */
+    .tv-congelado *::before,
+    .tv-congelado *::after {
+      animation-play-state: paused !important;
+    }
+    .tv-frozen {
+      transform: skewX(-1.5deg) translateX(4px) !important;
+      filter: brightness(1.25) hue-rotate(15deg) !important;
+    }
+
+    /* ── OVERLAYS RGB + ESTÁTICA ── */
+    #tv-rgb-r, #tv-rgb-c {
+      position: fixed;
+      inset: 0;
+      z-index: 99996;
+      pointer-events: none;
+      opacity: 0;
+      mix-blend-mode: screen;
+    }
+
+    #tv-rgb-r { background: rgba(255,0,0,0.2); }
+    #tv-rgb-c { background: rgba(0,255,255,0.2); }
+
+    #tv-static {
+      position: fixed;
+      inset: 0;
+      z-index: 99995;
+      pointer-events: none;
+      opacity: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='0.5' fill='%2300ff41'/%3E%3C/svg%3E");
+      background-size: 120px 120px;
+      mix-blend-mode: overlay;
+    }
+
+    /* ── CONTAINER DAS FATIAS ── */
+    #tv-slices {
+      position: fixed;
+      inset: 0;
+      z-index: 99994;
+      pointer-events: none;
+      overflow: hidden;
+    }
+
+    /* cada fatia é uma cópia do fundo deslocada */
+    .tv-slice {
+      position: absolute;
+      left: 0; right: 0;
+      background: var(--fundo2);
+      opacity: 0;
+      transition: none;
+    }
+
+    /* colapso vertical — página encolhe para linha */
+    .tv-collapse {
+      animation: tv-colapso 0.35s cubic-bezier(0.4, 0, 1, 1) forwards !important;
+    }
+
+    @keyframes tv-colapso {
+      0%   { transform: scaleY(1);    filter: brightness(1); }
+      40%  { transform: scaleY(0.08); filter: brightness(2.5); }
+      100% { transform: scaleY(0);    filter: brightness(4); }
+    }
+  </style>
+</head>
+<body>
+  <a id="btn-hub" href="../">← hub</a>
+
+  <div id="tv-blackout"></div>
+  <div id="tv-rgb-r"></div>
+  <div id="tv-rgb-c"></div>
+  <div id="tv-static"></div>
+  <div id="tv-slices"></div>
+  <div id="tv-line"></div>
+
+  <canvas id="matrix"></canvas>
+
+  <div id="boot">
+    <span class="boot-line barra">========================================</span>
+    <span class="boot-line ok">[  OK  ] Inicializando sistema...</span>
+    <span class="boot-line ok">[  OK  ] Carregando kernel v2.6.0</span>
+    <span class="boot-line warn">[ WARN ] Memória disponível: 640KB</span>
+    <span class="boot-line ok">[  OK  ] Montando sistema de arquivos...</span>
+    <span class="boot-line ok">[  OK  ] Conectando à rede...</span>
+    <span class="boot-line warn">[ WARN ] Conexão estabelecida em 2400 baud</span>
+    <span class="boot-line ok">[  OK  ] Carregando PORTFOLIO.exe</span>
+    <span class="boot-line barra">========================================</span>
+    <span class="boot-line ok" style="margin-top:0.5rem">Bem-vindo, usuário.</span>
+  </div>
+
+  <header>
+    <h1 id="titulo" class="cursor"></h1>
+    <p>Programação Front-End 2026 &mdash; UniCesumar</p>
+  </header>
+
+  <main>
+    <h2>Tarefas publicadas</h2>
+    <div class="grid">
+
+      <a class="card" href="tarefa1/">
+        <div class="card-overlay"></div>
+        <div class="card-inner">
+          <div class="numero">// tarefa 01</div>
+          <h3>Meus Colecionáveis</h3>
+          <p>Colecionáveis.</p>
+        </div>
+      </a>
+
+      <a class="card" href="tarefa2/">
+        <div class="card-overlay"></div>
+        <div class="card-inner">
+          <div class="numero">// tarefa 02</div>
+          <h3>Métodos de Ordenação em C</h3>
+          <p>Bubble, Selection, Insertion, Quick e Merge Sort.</p>
+        </div>
+      </a>
+
+      <a class="card" href="tarefa3/">
+        <div class="card-overlay"></div>
+        <div class="card-inner">
+          <div class="numero">// tarefa 03</div>
+          <h3>Nada Sobre Nada em Computação</h3>
+          <p>Aplicar um CSS Maneiro no Site.</p>
+        </div>
+      </a>
+
+      <a class="card" href="tarefa4/">
+        <div class="card-overlay"></div>
+        <div class="card-inner">
+          <div class="numero">// tarefa 04</div>
+          <h3>Nada Sobre Nada em Computação de Novo</h3>
+          <p>Aplicar um CSS Maneiro no Site Usando o DaisyUi.</p>
+        </div>
+      </a>
+
+      <a class="card" href="tarefa5/">
+        <div class="card-overlay"></div>
+        <div class="card-inner">
+          <div class="numero">// tarefa 05</div>
+          <h3>Nada Sobre Nada em Computação de Novo de Novo</h3>
+          <p>Aplicar um CSS Maneiro no Site Usando o Bootstrap.</p>
+        </div>
+      </a>
+
+      <a class="card" href="tarefa6/">
+        <div class="card-overlay"></div>
+        <div class="card-inner">
+          <div class="numero">// tarefa 06</div>
+          <h3>Tamagotchi</h3>
+          <p>Fazer um Tamagotchi usando JavaScript</p>
+        </div>
+      </a>
+
+    </div>
+  </main>
+
+  <footer>
+    <p>cauê licce &mdash; cauelicce.github.io</p>
+    <p>design e código dessa página feito com ia para facilitar minha vida</p>
+  </footer>
+
+  <script>
+    /* ── MATRIX RAIN ── */
+    const canvas   = document.getElementById('matrix');
+    const ctx      = canvas.getContext('2d');
+    const chars    = '01'.split('');
+    const fontSize = 13;
+    let colunas, gotas;
+
+    function redimensionar() {
+      canvas.width  = window.innerWidth;
+      canvas.height = window.innerHeight;
+      colunas = Math.floor(canvas.width / fontSize);
+      gotas   = Array(colunas).fill(1);
+    }
+
+    redimensionar();
+    window.addEventListener('resize', redimensionar);
+
+    function desenharMatrix() {
+      ctx.fillStyle = 'rgba(5, 10, 5, 0.05)';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = '#00ff41';
+      ctx.font = fontSize + 'px Courier New';
+      gotas.forEach((y, i) => {
+        const char = chars[Math.floor(Math.random() * chars.length)];
+        ctx.fillText(char, i * fontSize, y * fontSize);
+        if (y * fontSize > canvas.height && Math.random() > 0.975) gotas[i] = 0;
+        gotas[i]++;
+      });
+    }
+
+    const matrixInterval = setInterval(desenharMatrix, 45);
+
+    /* ── BOOT ANIMATION ── */
+    const linhas = document.querySelectorAll('.boot-line');
+    const boot   = document.getElementById('boot');
+
+    linhas.forEach((linha, i) => {
+      setTimeout(() => { linha.style.opacity = '1'; }, i * 180);
+    });
+
+    setTimeout(() => {
+      boot.style.transition = 'opacity 0.5s';
+      boot.style.opacity = '0';
+      setTimeout(() => boot.style.display = 'none', 500);
+      digitarTitulo('Portfólio de Tarefas');
+    }, linhas.length * 180 + 600);
+
+    function digitarTitulo(texto) {
+      const el = document.getElementById('titulo');
+      let i = 0;
+      const intervalo = setInterval(() => {
+        el.textContent += texto[i];
+        i++;
+        if (i >= texto.length) clearInterval(intervalo);
+      }, 80);
+    }
+
+    /* ── GLITCH MIX POR CARD ── */
+    function pausa(ms) {
+      return new Promise(r => setTimeout(r, ms));
+    }
+
+    function criarFases(card, overlay) {
+      const inner  = card.querySelector('.card-inner');
+      const h3     = card.querySelector('h3');
+      const p      = card.querySelector('p');
+      const numero = card.querySelector('.numero');
+
+      return [
+        {
+          nome: 'drift',
+          dur: 500,
+          aplicar() { card.classList.add('glitch-drift'); },
+          limpar()  { card.classList.remove('glitch-drift'); }
+        },
+        {
+          nome: 'overexposure',
+          dur: 600,
+          aplicar() { card.classList.add('glitch-expose'); },
+          limpar()  { card.classList.remove('glitch-expose'); }
+        },
+        {
+          nome: 'corrupcao',
+          dur: 550,
+          aplicar() {
+            h3.classList.add('glitch-corrupcao');
+            p.classList.add('glitch-corrupcao');
+            numero.classList.add('glitch-corrupcao');
+          },
+          limpar() {
+            h3.classList.remove('glitch-corrupcao');
+            p.classList.remove('glitch-corrupcao');
+            numero.classList.remove('glitch-corrupcao');
+          }
+        },
+        {
+          nome: 'fragmentacao',
+          dur: 500,
+          aplicar() { card.classList.add('glitch-frag'); },
+          limpar()  { card.classList.remove('glitch-frag'); }
+        },
+        {
+          nome: 'telao',
+          dur: 600,
+          aplicar() {
+            card.classList.add('glitch-telao');
+            overlay.classList.add('overlay-telao');
+          },
+          limpar() {
+            card.classList.remove('glitch-telao');
+            overlay.classList.remove('overlay-telao');
+          }
+        }
+      ];
+    }
+
+    async function loopCard(card, overlay) {
+      const fases = criarFases(card, overlay);
+
+      while (true) {
+        // intervalo aleatório entre 2s e 20s
+        const espera = Math.floor(Math.random() * (20000 - 2000)) + 2000;
+        await pausa(espera);
+
+        // 15% chance de sequência: 8% = 3 fases, 7% = 2 fases, 85% = 1 fase
+        const raro = Math.random();
+        const qtd  = raro < 0.08 ? 3 : raro < 0.15 ? 2 : 1;
+
+        const embaralhadas = [...fases].sort(() => Math.random() - 0.5);
+        const selecionadas = embaralhadas.slice(0, qtd);
+
+        for (let i = 0; i < selecionadas.length; i++) {
+          const fase = selecionadas[i];
+          fase.aplicar();
+          await pausa(fase.dur);
+          fase.limpar();
+
+          // pausa curta entre efeitos em sequência
+          if (i < selecionadas.length - 1) {
+            await pausa(Math.floor(Math.random() * 120) + 80);
+          }
+        }
+      }
+    }
+
+    // inicia um loop independente para cada card
+    document.querySelectorAll('.card').forEach(card => {
+      const overlay = card.querySelector('.card-overlay');
+      loopCard(card, overlay);
+    });
+
+    /* ── TV SHUTDOWN AO CLICAR NO CARD ── */
+    let navegando = false;
+
+    function tvShutdown(destino) {
+      if (navegando) return;
+      navegando = true;
+
+      const corpo    = document.body;
+      const linha    = document.getElementById('tv-line');
+      const blackout = document.getElementById('tv-blackout');
+      const rgbR     = document.getElementById('tv-rgb-r');
+      const rgbC     = document.getElementById('tv-rgb-c');
+      const estatica = document.getElementById('tv-static');
+      const slicesCt = document.getElementById('tv-slices');
+
+      // ── CRIA AS FATIAS ──
+      // Cada fatia é uma faixa horizontal que copia a cor de fundo
+      // e desloca para o lado, simulando o efeito de separação
+      const NUM_SLICES = 8;
+      const sliceEls = [];
+      const alturaSlice = Math.ceil(window.innerHeight / NUM_SLICES);
+
+      for (let i = 0; i < NUM_SLICES; i++) {
+        const s = document.createElement('div');
+        s.className = 'tv-slice';
+        s.style.top    = (i * alturaSlice) + 'px';
+        s.style.height = alturaSlice + 'px';
+        // cor alternada ligeiramente diferente para dar profundidade
+        s.style.background = i % 2 === 0
+          ? 'rgba(10,16,10,0.92)'
+          : 'rgba(5,10,5,0.88)';
+        slicesCt.appendChild(s);
+        sliceEls.push(s);
+      }
+
+      // deslocamentos aleatórios fixos por fatia (não mudam a cada frame)
+      const sliceOffsets = sliceEls.map(() => {
+        const dir  = Math.random() > 0.5 ? 1 : -1;
+        const dist = Math.floor(Math.random() * 55 + 15); // 15–70px
+        return dir * dist;
+      });
+
+      // congela todas as animações da página imediatamente
+      corpo.classList.add('tv-congelado');
+      document.getElementById('titulo').classList.add('cursor-frozen');
+      clearInterval(matrixInterval);
+      let t = 0;
+      const SLICE_DUR  = 900;
+      const TICK       = 55; // ms por frame
+
+      const tickSlice = setInterval(() => {
+        t += TICK;
+
+        sliceEls.forEach((s, i) => {
+          // cada fatia aparece/desaparece aleatoriamente
+          const visible = Math.random() > 0.35;
+          if (visible) {
+            // varia o offset para cada frame — jitter pequeno
+            const jitter = Math.random() * 10 - 5;
+            const tx = sliceOffsets[i] + jitter;
+            s.style.opacity   = (Math.random() * 0.5 + 0.5).toFixed(2);
+            s.style.transform = `translateX(${tx}px)`;
+            s.style.filter    = Math.random() > 0.7
+              ? `hue-rotate(${Math.random()*80}deg) brightness(${0.9 + Math.random()})`
+              : 'none';
+          } else {
+            s.style.opacity = '0';
+          }
+        });
+
+        // RGB split pulsa junto
+        if (Math.random() > 0.4) {
+          rgbR.style.opacity   = (Math.random() * 0.5).toFixed(2);
+          rgbC.style.opacity   = (Math.random() * 0.5).toFixed(2);
+          rgbR.style.transform = `translateX(${(Math.random()*14 - 7).toFixed(1)}px)`;
+          rgbC.style.transform = `translateX(${(Math.random()*-14 + 7).toFixed(1)}px)`;
+        } else {
+          rgbR.style.opacity = '0';
+          rgbC.style.opacity = '0';
+        }
+
+        // estática aleatória
+        if (Math.random() > 0.5) {
+          estatica.style.opacity = (Math.random() * 0.35).toFixed(2);
+          estatica.style.backgroundPosition = `${Math.random()*100}px ${Math.random()*100}px`;
+        } else {
+          estatica.style.opacity = '0';
+        }
+
+        if (t >= SLICE_DUR) {
+          clearInterval(tickSlice);
+
+          // ── FASE 2: FREEZE (500ms) ──
+          // fatias ficam paradas em posição deslocada
+          sliceEls.forEach((s, i) => {
+            s.style.opacity   = (Math.random() * 0.3 + 0.6).toFixed(2);
+            s.style.transform = `translateX(${sliceOffsets[i]}px)`;
+            s.style.filter    = 'none';
+          });
+          rgbR.style.opacity = '0.25';
+          rgbC.style.opacity = '0.2';
+          estatica.style.opacity = '0.15';
+
+          setTimeout(() => {
+            // limpa fatias e overlays
+            sliceEls.forEach(s => s.style.opacity = '0');
+            rgbR.style.opacity = '0';
+            rgbC.style.opacity = '0';
+            estatica.style.opacity = '0';
+
+            // ── FASE 3: COLAPSO VERTICAL (350ms) ──
+            corpo.classList.add('tv-collapse');
+
+            setTimeout(() => { linha.style.opacity = '1'; }, 150);
+
+            // ── FASE 4: LINHA ENCOLHE PARA PONTO (200ms) ──
+            setTimeout(() => {
+              linha.style.transition = 'transform 0.2s ease-in, opacity 0.2s ease-in, height 0.15s ease-in';
+              linha.style.transform  = 'translateY(-50%) scaleX(0.02)';
+              linha.style.height     = '2px';
+
+              // ── FASE 5: FADE PARA PRETO + NAVEGA ──
+              setTimeout(() => {
+                linha.style.opacity = '0';
+                blackout.style.transition = 'opacity 0.25s ease-in';
+                blackout.style.opacity    = '1';
+
+                setTimeout(() => { window.location.href = destino; }, 280);
+              }, 200);
+
+            }, 350);
+
+          }, 900); // duração do freeze
+        }
+      }, TICK);
+    }
+
+    document.querySelectorAll('.card').forEach(card => {
+      card.addEventListener('click', function(e) {
+        e.preventDefault();
+        tvShutdown(this.getAttribute('href'));
+      });
+    });
+  </script>
+
+</body>
+</html>
+
