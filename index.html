@@ -1,820 +1,447 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br">
 <head>
   <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Portfólio de Tarefas</title>
+  <title>Central de Estudos — UniCesumar</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
   <style>
     :root {
-      --verde:       #00ff41;
-      --verde-dim:   #00aa2a;
-      --verde-muted: #005514;
-      --fundo:       #050a05;
-      --fundo2:      #0a100a;
-      --borda:       #1a2e1a;
-      --texto:       #c8e6c8;
-      --muted:       #5a7a5a;
-      --ciano:       #00ffff;
-      --vermelho:    #ff3333;
+      --bg:      #06070d;
+      --surface: #0c0e18;
+      --border:  #1c1f30;
+      --text:    #c8d0e8;
+      --muted:   #4a5070;
+      --white:   #ffffff;
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    html { scroll-behavior: smooth; }
-
-    /* ── SCANLINE ── */
-    body::before {
-      content: '';
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      background: repeating-linear-gradient(
-        0deg,
-        transparent,
-        transparent 2px,
-        rgba(0,0,0,0.35) 2px,
-        rgba(0,0,0,0.35) 4px
-      );
-      pointer-events: none;
-      z-index: 100000;
-    }
 
     body {
-      background-color: var(--fundo);
-      color: var(--texto);
-      font-family: 'Courier New', Courier, monospace;
-      font-size: 15px;
-      line-height: 1.8;
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Syne', sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
     }
 
-    ::-webkit-scrollbar { width: 6px; }
-    ::-webkit-scrollbar-track { background: var(--fundo); }
-    ::-webkit-scrollbar-thumb { background: var(--verde-muted); }
-
-    /* ── BOOT SCREEN ── */
-    #boot {
-      position: fixed;
-      inset: 0;
-      background: var(--fundo);
-      z-index: 10000;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: flex-start;
-      padding: 3rem;
-      font-family: 'Courier New', monospace;
-      font-size: 0.85rem;
-      color: var(--verde);
-      gap: 0.15rem;
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+      background-size: 48px 48px;
+      pointer-events: none;
+      z-index: 0;
     }
 
-    #boot .boot-line { opacity: 0; white-space: nowrap; }
-    #boot .ok    { color: var(--verde); }
-    #boot .warn  { color: #ffcc00; }
-    #boot .barra { color: var(--muted); }
-
-    /* ── HEADER ── */
     header {
-      background-color: var(--fundo2);
-      border-bottom: 1px solid var(--verde-muted);
-      padding: 3rem 2rem;
-      text-align: center;
       position: relative;
       z-index: 1;
+      padding: 5rem 2rem 3.5rem;
+      text-align: center;
+      border-bottom: 1px solid var(--border);
     }
 
-    header::before {
-      content: '// PORTFOLIO.exe';
-      display: block;
-      font-size: 0.65rem;
-      color: var(--verde-muted);
-      letter-spacing: 0.2em;
-      margin-bottom: 1rem;
+    .hero-label {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.7rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 1.2rem;
     }
 
     header h1 {
-      font-size: 2rem;
-      color: var(--verde);
-      margin-bottom: 0.5rem;
+      font-size: clamp(2rem, 5vw, 3.4rem);
+      font-weight: 800;
+      color: var(--white);
+      line-height: 1.05;
+      margin-bottom: 1rem;
+    }
+
+    header h1 em {
+      font-style: normal;
+      background: linear-gradient(90deg, #5e9bff, #c77dff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    header p {
+      font-size: 0.9rem;
+      color: var(--muted);
+      font-family: 'IBM Plex Mono', monospace;
       letter-spacing: 0.05em;
-      min-height: 2.5rem;
     }
 
-    .cursor::after {
-      content: '█';
-      animation: blink 0.8s step-start infinite;
-      color: var(--verde);
-    }
-
-    @keyframes blink {
-      0%, 100% { opacity: 1; }
-      50%       { opacity: 0; }
-    }
-
-    header p { color: var(--muted); font-size: 0.85rem; }
-    header p::before { content: '> '; color: var(--verde); }
-
-    /* ── MAIN ── */
     main {
-      max-width: 860px;
-      margin: 2.5rem auto;
-      padding: 0 1.5rem 3rem;
       position: relative;
       z-index: 1;
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 3.5rem 2rem 5rem;
     }
 
-    h2 {
-      font-size: 0.85rem;
-      color: var(--verde);
+    .section-label {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.68rem;
+      letter-spacing: 0.2em;
       text-transform: uppercase;
-      letter-spacing: 0.15em;
+      color: var(--muted);
       margin-bottom: 1.5rem;
-      padding-bottom: 0.5rem;
-      border-bottom: 1px dashed var(--borda);
     }
 
-    h2::before { content: '## '; color: var(--verde-muted); }
-
-    /* ── GRID ── */
-    .grid {
+    .cards-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-      gap: 1.2rem;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 1.4rem;
     }
 
-    /* ── CARD ── */
     .card {
-      background-color: var(--fundo2);
-      border: 1px solid var(--borda);
-      border-left: 3px solid var(--verde);
-      padding: 1.5rem;
-      text-decoration: none;
-      color: inherit;
       display: block;
+      text-decoration: none;
+      border-radius: 14px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      position: relative;
+      transition: transform 0.2s, box-shadow 0.2s;
+      cursor: pointer;
+    }
+
+    .card:hover { transform: translateY(-3px); }
+
+    .card-preview {
+      height: 160px;
       position: relative;
       overflow: hidden;
-      transition: border-color 0.2s, background 0.2s;
-      isolation: isolate;
     }
 
-    .card:hover {
-      border-color: var(--verde);
-      background-color: rgba(0,255,65,0.04);
-      box-shadow: 0 0 12px rgba(0,255,65,0.08);
+    .card-body {
+      padding: 1.4rem 1.5rem 1.6rem;
     }
 
-    /* linha verde deslizando no topo */
-    .card::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 0; right: 0;
-      height: 2px;
-      background: var(--verde);
-      transform: scaleX(0);
-      transform-origin: left;
-      transition: transform 0.3s ease;
-      z-index: 2;
-      pointer-events: none;
+    .card-tag {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      margin-bottom: 0.55rem;
+      display: inline-block;
     }
 
-    .card:hover::before { transform: scaleX(1); }
-
-    .card-inner { position: relative; }
-
-    /* ── OVERLAY (telão quebrado) ── */
-    .card-overlay {
-      position: absolute;
-      inset: 0;
-      pointer-events: none;
-      opacity: 0;
-      z-index: 1;
-      background-image: repeating-linear-gradient(
-        90deg,
-        transparent,
-        transparent calc(33% - 1px),
-        rgba(0,255,65,0.3) calc(33% - 1px),
-        rgba(0,255,65,0.3) 33%,
-        transparent 33%,
-        transparent calc(66% - 1px),
-        rgba(0,255,255,0.25) calc(66% - 1px),
-        rgba(0,255,255,0.25) 66%,
-        transparent 66%
-      );
+    .card-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      margin-bottom: 0.4rem;
+      line-height: 1.3;
     }
 
-    .card .numero {
-      font-size: 0.72rem;
-      color: var(--verde-muted);
-      margin-bottom: 0.5rem;
-      letter-spacing: 0.05em;
+    .card-desc {
+      font-size: 0.8rem;
+      line-height: 1.65;
+      font-family: 'IBM Plex Mono', monospace;
     }
 
-    .card h3 {
-      font-size: 0.95rem;
-      color: var(--ciano);
+    .card-arrow {
+      font-size: 0.75rem;
+      margin-top: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-family: 'IBM Plex Mono', monospace;
+      transition: gap 0.2s;
+    }
+
+    .card:hover .card-arrow { gap: 0.7rem; }
+
+    .card-terminal {
+      background: #050a05;
+      border-color: #1a2e1a;
+    }
+
+    .card-terminal:hover {
+      box-shadow: 0 0 30px rgba(0,255,65,0.12), 0 8px 30px rgba(0,0,0,0.5);
+      border-color: #2a4a2a;
+    }
+
+    .card-terminal .card-preview { background: #050a05; }
+
+    .card-terminal canvas {
+      position: absolute; inset: 0;
+      width: 100%; height: 100%;
+      opacity: 0.18;
+    }
+
+    .card-terminal .preview-overlay {
+      position: absolute; inset: 0;
+      display: flex; flex-direction: column;
+      justify-content: flex-end;
+      padding: 1rem 1.2rem;
+      background: linear-gradient(to top, rgba(5,10,5,0.95) 0%, transparent 60%);
+    }
+
+    .card-terminal .preview-label {
+      font-family: 'Courier New', monospace;
+      font-size: 0.6rem;
+      letter-spacing: 0.15em;
+      color: #005514;
       margin-bottom: 0.4rem;
     }
 
-    .card h3::before { content: '→ '; color: var(--verde-muted); }
-
-    .card p {
-      font-size: 0.82rem;
-      color: var(--muted);
-      line-height: 1.6;
+    .card-terminal .preview-cards {
+      display: flex;
+      gap: 0.4rem;
     }
 
-    /* ── KEYFRAMES DE GLITCH ── */
-
-    @keyframes fase-drift {
-      0%   { clip-path: none; transform: translate(0); filter: none; }
-      20%  { clip-path: inset(15% 0 65% 0); transform: translateX(3px);  filter: hue-rotate(60deg); }
-      40%  { clip-path: inset(0 0 80% 0);   transform: translateX(-2px); filter: none; }
-      60%  { clip-path: inset(42% 0 30% 0); transform: translateX(3px);  filter: hue-rotate(100deg); }
-      80%  { clip-path: none; transform: translate(0); filter: none; }
-      100% { clip-path: none; transform: translate(0); filter: none; }
+    .card-terminal .mini-card {
+      flex: 1;
+      height: 26px;
+      background: #0a100a;
+      border: 1px solid #1a2e1a;
+      border-left: 2px solid #00ff41;
+      border-radius: 2px;
+      opacity: 0.6;
     }
 
-    @keyframes fase-overexpose {
-      0%   { filter: none; background-color: var(--fundo2); }
-      25%  { filter: brightness(2.5) saturate(0); background-color: #152515; }
-      50%  { filter: brightness(1.5) hue-rotate(40deg); }
-      70%  { filter: none; background-color: var(--fundo2); }
-      85%  { filter: brightness(1.15); }
-      100% { filter: none; }
+    .card-terminal .card-body {
+      background: #050a05;
+      border-top: 1px solid #1a2e1a;
     }
 
-    @keyframes fase-corrupcao {
-      0%   { opacity: 1; letter-spacing: normal; filter: none; }
-      30%  { opacity: 0.4; letter-spacing: 0.2em; filter: blur(0.6px); }
-      55%  { opacity: 0.75; letter-spacing: -0.06em; filter: none; }
-      75%  { opacity: 1; letter-spacing: normal; }
-      100% { opacity: 1; }
+    .card-terminal .card-tag   { color: #005514; }
+    .card-terminal .card-title { color: #00ff41; font-family: 'Courier New', monospace; font-size: 0.95rem; }
+    .card-terminal .card-desc  { color: #5a7a5a; }
+    .card-terminal .card-arrow { color: #00aa2a; }
+
+    .cursor-blink::after {
+      content: '█';
+      animation: blink-t 0.8s step-start infinite;
+      color: #00ff41;
+      font-size: 0.8rem;
     }
 
-    @keyframes fase-frag {
-      0%   { clip-path: none; transform: translate(0); filter: none; }
-      18%  { clip-path: inset(10% 5% 60% 8%);  transform: translate(-2px, 1px); }
-      35%  { clip-path: inset(50% 8% 10% 5%);  transform: translate(3px, -1px); filter: hue-rotate(50deg); }
-      52%  { clip-path: inset(25% 55% 24% 0);  transform: translate(0, 2px); }
-      68%  { clip-path: inset(0 0 70% 40%);    transform: translate(-2px, 0); filter: brightness(1.3); }
-      80%  { clip-path: none; transform: translate(0); filter: none; }
-      100% { clip-path: none; transform: translate(0); filter: none; }
+    @keyframes blink-t {
+      0%,100% { opacity: 1; }
+      50%      { opacity: 0; }
     }
 
-    @keyframes fase-telao {
-      0%,10%  { opacity: 0; }
-      20%     { opacity: 0.7; }
-      50%     { opacity: 0.35; }
-      75%     { opacity: 0.55; }
-      90%     { opacity: 0; }
+    .card-terminal::after {
+      content: '';
+      position: absolute; inset: 0;
+      background: repeating-linear-gradient(
+        0deg, transparent, transparent 3px,
+        rgba(0,0,0,0.10) 3px, rgba(0,0,0,0.10) 4px
+      );
+      pointer-events: none;
+      z-index: 10;
+      border-radius: 14px;
+    }
+
+    .glitch-layer {
+      position: absolute; inset: 0;
+      pointer-events: none;
+      opacity: 0;
+      z-index: 5;
+      background: rgba(0,255,65,0.04);
+    }
+
+    .card-terminal:hover .glitch-layer {
+      animation: card-glitch 2.5s steps(1) infinite;
+    }
+
+    @keyframes card-glitch {
+      0%,78%  { opacity: 0; transform: translateX(0); clip-path: none; }
+      80%     { opacity: 1; transform: translateX(-3px); clip-path: inset(15% 0 60% 0); filter: hue-rotate(80deg); }
+      83%     { transform: translateX(2px); clip-path: inset(55% 0 8% 0); }
+      86%     { opacity: 0; transform: translateX(0); clip-path: none; filter: none; }
       100%    { opacity: 0; }
     }
 
-    @keyframes fase-telao-card {
-      0%   { filter: none; }
-      20%  { filter: brightness(1.2) contrast(1.05); }
-      50%  { filter: hue-rotate(30deg) brightness(1.05); }
-      80%  { filter: none; }
-      100% { filter: none; }
+    .card-apoo {
+      background: #0d0f17;
+      border-color: #2a2f45;
     }
 
-    /* classes aplicadas via JS */
-    .glitch-drift     { animation: fase-drift       0.5s steps(1) 1 forwards; }
-    .glitch-expose    { animation: fase-overexpose   0.6s steps(1) 1 forwards; }
-    .glitch-frag      { animation: fase-frag         0.5s steps(1) 1 forwards; }
-    .glitch-telao     { animation: fase-telao-card   0.6s steps(1) 1 forwards; }
-    .overlay-telao    { animation: fase-telao        0.6s steps(1) 1 forwards; }
+    .card-apoo:hover {
+      box-shadow: 0 0 30px rgba(94,155,255,0.10), 0 8px 30px rgba(0,0,0,0.5);
+      border-color: #3a4060;
+    }
 
-    .glitch-corrupcao { animation: fase-corrupcao   0.55s steps(1) 1 forwards; }
+    .card-apoo .card-preview { background: #0d0f17; }
 
-    /* ── MATRIX CANVAS ── */
-    #matrix {
-      position: fixed;
-      top: 0; left: 0;
+    .card-apoo .preview-svg {
+      position: absolute; inset: 0;
       width: 100%; height: 100%;
-      z-index: 0;
-      opacity: 0.13;
+      opacity: 0.55;
+    }
+
+    .card-apoo .preview-glow {
+      position: absolute;
+      top: -20px; right: -20px;
+      width: 140px; height: 140px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(94,155,255,0.12) 0%, transparent 70%);
+    }
+
+    .card-apoo .card-body {
+      background: #0d0f17;
+      border-top: 1px solid #2a2f45;
+    }
+
+    .card-apoo .card-tag   { color: #5e9bff; }
+    .card-apoo .card-title { color: #ffffff; }
+    .card-apoo .card-desc  { color: #8892b0; }
+    .card-apoo .card-arrow { color: #5e9bff; }
+
+    .card-soon {
+      background: var(--surface);
+      border-color: var(--border);
+      border-style: dashed;
+      opacity: 0.4;
+      cursor: default;
       pointer-events: none;
     }
 
-    /* ── FOOTER ── */
+    .card-soon .card-preview {
+      background: var(--surface);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 2.5rem;
+      opacity: 0.25;
+    }
+
+    .card-soon .card-body   { background: var(--surface); }
+    .card-soon .card-tag,
+    .card-soon .card-title,
+    .card-soon .card-desc   { color: var(--muted); }
+
     footer {
+      position: relative; z-index: 1;
       text-align: center;
       padding: 2rem;
-      font-size: 0.72rem;
-      color: var(--verde-muted);
-      border-top: 1px solid var(--borda);
-      position: relative;
-      z-index: 1;
+      border-top: 1px solid var(--border);
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.68rem;
+      color: var(--muted);
+      letter-spacing: 0.05em;
     }
 
-    footer p::before { content: '// '; }
-    /* ── TV SHUTDOWN OVERLAY ── */
-    #tv-shutdown {
-      position: fixed;
-      inset: 0;
-      z-index: 99998;
-      pointer-events: none;
-      display: none;
-    }
-
-    /* camada de distorção/conteúdo */
-    #tv-page-wrap {
-      position: fixed;
-      inset: 0;
-      z-index: 1;
-      transform-origin: center center;
-      pointer-events: none;
-    }
-
-    /* linha horizontal branca (o "tubo") */
-    #tv-line {
-      position: fixed;
-      left: 0; right: 0;
-      top: 50%;
-      height: 3px;
-      background: white;
-      transform: translateY(-50%) scaleX(1);
-      transform-origin: center;
-      opacity: 0;
-      z-index: 99999;
-      box-shadow: 0 0 12px 4px rgba(255,255,255,0.8),
-                  0 0 30px 10px rgba(200,255,200,0.4);
-      pointer-events: none;
-    }
-
-    /* fade para preto final */
-    #tv-blackout {
-      position: fixed;
-      inset: 0;
-      background: black;
-      opacity: 0;
-      z-index: 99997;
-      pointer-events: none;
-    }
-
-    /* congela TODAS as animações da página de uma vez */
-    .tv-congelado * {
-      animation-play-state: paused !important;
-    }
-
-    /* pseudo-elementos não são cobertos pelo * — trata separado */
-    .tv-congelado *::before,
-    .tv-congelado *::after {
-      animation-play-state: paused !important;
-    }
-    .tv-frozen {
-      transform: skewX(-1.5deg) translateX(4px) !important;
-      filter: brightness(1.25) hue-rotate(15deg) !important;
-    }
-
-    /* ── OVERLAYS RGB + ESTÁTICA ── */
-    #tv-rgb-r, #tv-rgb-c {
-      position: fixed;
-      inset: 0;
-      z-index: 99996;
-      pointer-events: none;
-      opacity: 0;
-      mix-blend-mode: screen;
-    }
-
-    #tv-rgb-r { background: rgba(255,0,0,0.2); }
-    #tv-rgb-c { background: rgba(0,255,255,0.2); }
-
-    #tv-static {
-      position: fixed;
-      inset: 0;
-      z-index: 99995;
-      pointer-events: none;
-      opacity: 0;
-      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='0.5' fill='%2300ff41'/%3E%3C/svg%3E");
-      background-size: 120px 120px;
-      mix-blend-mode: overlay;
-    }
-
-    /* ── CONTAINER DAS FATIAS ── */
-    #tv-slices {
-      position: fixed;
-      inset: 0;
-      z-index: 99994;
-      pointer-events: none;
-      overflow: hidden;
-    }
-
-    /* cada fatia é uma cópia do fundo deslocada */
-    .tv-slice {
-      position: absolute;
-      left: 0; right: 0;
-      background: var(--fundo2);
-      opacity: 0;
-      transition: none;
-    }
-
-    /* colapso vertical — página encolhe para linha */
-    .tv-collapse {
-      animation: tv-colapso 0.35s cubic-bezier(0.4, 0, 1, 1) forwards !important;
-    }
-
-    @keyframes tv-colapso {
-      0%   { transform: scaleY(1);    filter: brightness(1); }
-      40%  { transform: scaleY(0.08); filter: brightness(2.5); }
-      100% { transform: scaleY(0);    filter: brightness(4); }
+    @media (max-width: 480px) {
+      header { padding: 3.5rem 1.5rem 2.5rem; }
+      main   { padding: 2.5rem 1.5rem 4rem; }
     }
   </style>
 </head>
 <body>
 
-  <div id="tv-blackout"></div>
-  <div id="tv-rgb-r"></div>
-  <div id="tv-rgb-c"></div>
-  <div id="tv-static"></div>
-  <div id="tv-slices"></div>
-  <div id="tv-line"></div>
+<header>
+  <div class="hero-label">UniCesumar · 2026 · Front End &amp; APOO</div>
+  <h1>Central de<br><em>Estudos</em></h1>
+  <p>sites didáticos feitos por alunos, para alunos</p>
+</header>
 
-  <canvas id="matrix"></canvas>
+<main>
+  <div class="section-label">// portais disponíveis</div>
 
-  <div id="boot">
-    <span class="boot-line barra">========================================</span>
-    <span class="boot-line ok">[  OK  ] Inicializando sistema...</span>
-    <span class="boot-line ok">[  OK  ] Carregando kernel v2.6.0</span>
-    <span class="boot-line warn">[ WARN ] Memória disponível: 640KB</span>
-    <span class="boot-line ok">[  OK  ] Montando sistema de arquivos...</span>
-    <span class="boot-line ok">[  OK  ] Conectando à rede...</span>
-    <span class="boot-line warn">[ WARN ] Conexão estabelecida em 2400 baud</span>
-    <span class="boot-line ok">[  OK  ] Carregando PORTFOLIO.exe</span>
-    <span class="boot-line barra">========================================</span>
-    <span class="boot-line ok" style="margin-top:0.5rem">Bem-vindo, usuário.</span>
-  </div>
+  <div class="cards-grid">
 
-  <header>
-    <h1 id="titulo" class="cursor"></h1>
-    <p>Programação Front-End 2026 &mdash; UniCesumar</p>
-  </header>
-
-  <main>
-    <h2>Tarefas publicadas</h2>
-    <div class="grid">
-
-      <a class="card" href="tarefa1/">
-        <div class="card-overlay"></div>
-        <div class="card-inner">
-          <div class="numero">// tarefa 01</div>
-          <h3>Meus Colecionáveis</h3>
-          <p>Colecionáveis.</p>
+    <a class="card card-terminal" href="portfolio/">
+      <div class="glitch-layer"></div>
+      <div class="card-preview">
+        <canvas id="matrix-card"></canvas>
+        <div class="preview-overlay">
+          <div class="preview-label">// PORTFOLIO.exe — carregado</div>
+          <div class="preview-cards">
+            <div class="mini-card"></div>
+            <div class="mini-card"></div>
+            <div class="mini-card"></div>
+          </div>
         </div>
-      </a>
+      </div>
+      <div class="card-body">
+        <div class="card-tag">// Programação Front End</div>
+        <div class="card-title cursor-blink">Portfólio de Tarefas</div>
+        <div class="card-desc">Tarefas práticas de HTML, CSS e JavaScript — Programação Front End 2026.</div>
+        <div class="card-arrow">→ acessar portfólio</div>
+      </div>
+    </a>
 
-      <a class="card" href="tarefa2/">
-        <div class="card-overlay"></div>
-        <div class="card-inner">
-          <div class="numero">// tarefa 02</div>
-          <h3>Métodos de Ordenação em C</h3>
-          <p>Bubble, Selection, Insertion, Quick e Merge Sort.</p>
-        </div>
-      </a>
+    <a class="card card-apoo" href="apoo/">
+      <div class="card-preview">
+        <div class="preview-glow"></div>
+        <svg class="preview-svg" viewBox="0 0 400 160" xmlns="http://www.w3.org/2000/svg" font-family="IBM Plex Mono,monospace">
+          <rect x="28" y="18" width="110" height="118" rx="5" fill="none" stroke="#5e9bff" stroke-width="1.2" opacity="0.6"/>
+          <rect x="28" y="18" width="110" height="30" rx="5" fill="rgba(94,155,255,0.1)" stroke="#5e9bff" stroke-width="1.2" opacity="0.6"/>
+          <line x1="28" y1="48" x2="138" y2="48" stroke="#5e9bff" stroke-width="0.8" opacity="0.4"/>
+          <line x1="28" y1="88" x2="138" y2="88" stroke="#5e9bff" stroke-width="0.8" opacity="0.4"/>
+          <text x="83" y="38" text-anchor="middle" fill="#5e9bff" font-size="9" opacity="0.8">«class»</text>
+          <text x="36" y="67" fill="#ff6b6b" font-size="8" opacity="0.65">  - nome: String</text>
+          <text x="36" y="81" fill="#ff6b6b" font-size="8" opacity="0.65">  - id: int</text>
+          <text x="36" y="102" fill="#45e0a0" font-size="8" opacity="0.65">  + getInfo()</text>
+          <text x="36" y="116" fill="#45e0a0" font-size="8" opacity="0.65">  + setNome()</text>
+          <line x1="138" y1="52" x2="205" y2="52" stroke="#2a2f45" stroke-width="1.2"/>
+          <polygon points="205,52 197,48 197,56" fill="none" stroke="#c77dff" stroke-width="1.2" opacity="0.7"/>
+          <rect x="205" y="28" width="100" height="50" rx="5" fill="none" stroke="#c77dff" stroke-width="1.2" opacity="0.55"/>
+          <rect x="205" y="28" width="100" height="24" rx="5" fill="rgba(199,125,255,0.08)" stroke="#c77dff" stroke-width="1.2" opacity="0.55"/>
+          <text x="255" y="44" text-anchor="middle" fill="#c77dff" font-size="9" opacity="0.75">«subclass»</text>
+          <polygon points="330,68 350,90 330,112 310,90" fill="none" stroke="#f7b731" stroke-width="1.2" opacity="0.4"/>
+          <text x="330" y="95" text-anchor="middle" fill="#f7b731" font-size="12" opacity="0.5">X</text>
+          <line x1="255" y1="78" x2="255" y2="160" stroke="#2a2f45" stroke-width="1" stroke-dasharray="4,3" opacity="0.5"/>
+          <line x1="83" y1="136" x2="83" y2="160" stroke="#2a2f45" stroke-width="1" stroke-dasharray="4,3" opacity="0.5"/>
+        </svg>
+      </div>
+      <div class="card-body">
+        <div class="card-tag">APOO · Aulas 01–10</div>
+        <div class="card-title">Análise e Projeto<br>Orientado a Objetos</div>
+        <div class="card-desc">Pilares da POO, UML, BPMN, Casos de Uso, Sequência e Regras de Negócio.</div>
+        <div class="card-arrow">→ acessar guia visual</div>
+      </div>
+    </a>
 
-      <a class="card" href="tarefa3/">
-        <div class="card-overlay"></div>
-        <div class="card-inner">
-          <div class="numero">// tarefa 03</div>
-          <h3>Nada Sobre Nada em Computação</h3>
-          <p>Aplicar um CSS Maneiro no Site.</p>
-        </div>
-      </a>
-
-      <a class="card" href="tarefa4/">
-        <div class="card-overlay"></div>
-        <div class="card-inner">
-          <div class="numero">// tarefa 04</div>
-          <h3>Nada Sobre Nada em Computação de Novo</h3>
-          <p>Aplicar um CSS Maneiro no Site Usando o DaisyUi.</p>
-        </div>
-      </a>
-
-      <a class="card" href="tarefa5/">
-        <div class="card-overlay"></div>
-        <div class="card-inner">
-          <div class="numero">// tarefa 05</div>
-          <h3>Nada Sobre Nada em Computação de Novo de Novo</h3>
-          <p>Aplicar um CSS Maneiro no Site Usando o Bootstrap.</p>
-        </div>
-      </a>
-
-      <a class="card" href="tarefa6/">
-        <div class="card-overlay"></div>
-        <div class="card-inner">
-          <div class="numero">// tarefa 06</div>
-          <h3>Tamagotchi</h3>
-          <p>Fazer um Tamagotchi usando JavaScript</p>
-        </div>
-      </a>
-
+    <div class="card card-soon">
+      <div class="card-preview">＋</div>
+      <div class="card-body">
+        <div class="card-tag">// em breve</div>
+        <div class="card-title">Novo site</div>
+        <div class="card-desc">Próximos materiais em produção.</div>
+      </div>
     </div>
-  </main>
 
-  <footer>
-    <p>cauê licce &mdash; cauelicce.github.io</p>
-    <p>design e código dessa página feito com ia para facilitar minha vida</p>
-  </footer>
+  </div>
+</main>
 
-  <script>
-    /* ── MATRIX RAIN ── */
-    const canvas   = document.getElementById('matrix');
-    const ctx      = canvas.getContext('2d');
-    const chars    = '01'.split('');
-    const fontSize = 13;
-    let colunas, gotas;
+<footer>
+  cauê licce &amp; colaboradores · cauelicce.github.io · 2026
+</footer>
 
-    function redimensionar() {
-      canvas.width  = window.innerWidth;
-      canvas.height = window.innerHeight;
-      colunas = Math.floor(canvas.width / fontSize);
-      gotas   = Array(colunas).fill(1);
-    }
+<script>
+  const cvs = document.getElementById('matrix-card');
+  const ctx = cvs.getContext('2d');
+  const fs  = 9;
+  let drops;
 
-    redimensionar();
-    window.addEventListener('resize', redimensionar);
+  function resize() {
+    cvs.width  = cvs.offsetWidth  || 300;
+    cvs.height = cvs.offsetHeight || 160;
+    drops = Array(Math.floor(cvs.width / fs)).fill(1);
+  }
 
-    function desenharMatrix() {
-      ctx.fillStyle = 'rgba(5, 10, 5, 0.05)';
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-      ctx.fillStyle = '#00ff41';
-      ctx.font = fontSize + 'px Courier New';
-      gotas.forEach((y, i) => {
-        const char = chars[Math.floor(Math.random() * chars.length)];
-        ctx.fillText(char, i * fontSize, y * fontSize);
-        if (y * fontSize > canvas.height && Math.random() > 0.975) gotas[i] = 0;
-        gotas[i]++;
-      });
-    }
+  resize();
+  window.addEventListener('resize', resize);
 
-    const matrixInterval = setInterval(desenharMatrix, 45);
-
-    /* ── BOOT ANIMATION ── */
-    const linhas = document.querySelectorAll('.boot-line');
-    const boot   = document.getElementById('boot');
-
-    linhas.forEach((linha, i) => {
-      setTimeout(() => { linha.style.opacity = '1'; }, i * 180);
+  setInterval(() => {
+    ctx.fillStyle = 'rgba(5,10,5,0.07)';
+    ctx.fillRect(0, 0, cvs.width, cvs.height);
+    ctx.fillStyle = '#00ff41';
+    ctx.font = fs + 'px Courier New';
+    drops.forEach((y, i) => {
+      ctx.fillText(Math.random() > 0.5 ? '1' : '0', i * fs, y * fs);
+      if (y * fs > cvs.height && Math.random() > 0.975) drops[i] = 0;
+      drops[i]++;
     });
-
-    setTimeout(() => {
-      boot.style.transition = 'opacity 0.5s';
-      boot.style.opacity = '0';
-      setTimeout(() => boot.style.display = 'none', 500);
-      digitarTitulo('Portfólio de Tarefas');
-    }, linhas.length * 180 + 600);
-
-    function digitarTitulo(texto) {
-      const el = document.getElementById('titulo');
-      let i = 0;
-      const intervalo = setInterval(() => {
-        el.textContent += texto[i];
-        i++;
-        if (i >= texto.length) clearInterval(intervalo);
-      }, 80);
-    }
-
-    /* ── GLITCH MIX POR CARD ── */
-    function pausa(ms) {
-      return new Promise(r => setTimeout(r, ms));
-    }
-
-    function criarFases(card, overlay) {
-      const inner  = card.querySelector('.card-inner');
-      const h3     = card.querySelector('h3');
-      const p      = card.querySelector('p');
-      const numero = card.querySelector('.numero');
-
-      return [
-        {
-          nome: 'drift',
-          dur: 500,
-          aplicar() { card.classList.add('glitch-drift'); },
-          limpar()  { card.classList.remove('glitch-drift'); }
-        },
-        {
-          nome: 'overexposure',
-          dur: 600,
-          aplicar() { card.classList.add('glitch-expose'); },
-          limpar()  { card.classList.remove('glitch-expose'); }
-        },
-        {
-          nome: 'corrupcao',
-          dur: 550,
-          aplicar() {
-            h3.classList.add('glitch-corrupcao');
-            p.classList.add('glitch-corrupcao');
-            numero.classList.add('glitch-corrupcao');
-          },
-          limpar() {
-            h3.classList.remove('glitch-corrupcao');
-            p.classList.remove('glitch-corrupcao');
-            numero.classList.remove('glitch-corrupcao');
-          }
-        },
-        {
-          nome: 'fragmentacao',
-          dur: 500,
-          aplicar() { card.classList.add('glitch-frag'); },
-          limpar()  { card.classList.remove('glitch-frag'); }
-        },
-        {
-          nome: 'telao',
-          dur: 600,
-          aplicar() {
-            card.classList.add('glitch-telao');
-            overlay.classList.add('overlay-telao');
-          },
-          limpar() {
-            card.classList.remove('glitch-telao');
-            overlay.classList.remove('overlay-telao');
-          }
-        }
-      ];
-    }
-
-    async function loopCard(card, overlay) {
-      const fases = criarFases(card, overlay);
-
-      while (true) {
-        // intervalo aleatório entre 2s e 20s
-        const espera = Math.floor(Math.random() * (20000 - 2000)) + 2000;
-        await pausa(espera);
-
-        // 15% chance de sequência: 8% = 3 fases, 7% = 2 fases, 85% = 1 fase
-        const raro = Math.random();
-        const qtd  = raro < 0.08 ? 3 : raro < 0.15 ? 2 : 1;
-
-        const embaralhadas = [...fases].sort(() => Math.random() - 0.5);
-        const selecionadas = embaralhadas.slice(0, qtd);
-
-        for (let i = 0; i < selecionadas.length; i++) {
-          const fase = selecionadas[i];
-          fase.aplicar();
-          await pausa(fase.dur);
-          fase.limpar();
-
-          // pausa curta entre efeitos em sequência
-          if (i < selecionadas.length - 1) {
-            await pausa(Math.floor(Math.random() * 120) + 80);
-          }
-        }
-      }
-    }
-
-    // inicia um loop independente para cada card
-    document.querySelectorAll('.card').forEach(card => {
-      const overlay = card.querySelector('.card-overlay');
-      loopCard(card, overlay);
-    });
-
-    /* ── TV SHUTDOWN AO CLICAR NO CARD ── */
-    let navegando = false;
-
-    function tvShutdown(destino) {
-      if (navegando) return;
-      navegando = true;
-
-      const corpo    = document.body;
-      const linha    = document.getElementById('tv-line');
-      const blackout = document.getElementById('tv-blackout');
-      const rgbR     = document.getElementById('tv-rgb-r');
-      const rgbC     = document.getElementById('tv-rgb-c');
-      const estatica = document.getElementById('tv-static');
-      const slicesCt = document.getElementById('tv-slices');
-
-      // ── CRIA AS FATIAS ──
-      // Cada fatia é uma faixa horizontal que copia a cor de fundo
-      // e desloca para o lado, simulando o efeito de separação
-      const NUM_SLICES = 8;
-      const sliceEls = [];
-      const alturaSlice = Math.ceil(window.innerHeight / NUM_SLICES);
-
-      for (let i = 0; i < NUM_SLICES; i++) {
-        const s = document.createElement('div');
-        s.className = 'tv-slice';
-        s.style.top    = (i * alturaSlice) + 'px';
-        s.style.height = alturaSlice + 'px';
-        // cor alternada ligeiramente diferente para dar profundidade
-        s.style.background = i % 2 === 0
-          ? 'rgba(10,16,10,0.92)'
-          : 'rgba(5,10,5,0.88)';
-        slicesCt.appendChild(s);
-        sliceEls.push(s);
-      }
-
-      // deslocamentos aleatórios fixos por fatia (não mudam a cada frame)
-      const sliceOffsets = sliceEls.map(() => {
-        const dir  = Math.random() > 0.5 ? 1 : -1;
-        const dist = Math.floor(Math.random() * 55 + 15); // 15–70px
-        return dir * dist;
-      });
-
-      // congela todas as animações da página imediatamente
-      corpo.classList.add('tv-congelado');
-      document.getElementById('titulo').classList.add('cursor-frozen');
-      clearInterval(matrixInterval);
-      let t = 0;
-      const SLICE_DUR  = 900;
-      const TICK       = 55; // ms por frame
-
-      const tickSlice = setInterval(() => {
-        t += TICK;
-
-        sliceEls.forEach((s, i) => {
-          // cada fatia aparece/desaparece aleatoriamente
-          const visible = Math.random() > 0.35;
-          if (visible) {
-            // varia o offset para cada frame — jitter pequeno
-            const jitter = Math.random() * 10 - 5;
-            const tx = sliceOffsets[i] + jitter;
-            s.style.opacity   = (Math.random() * 0.5 + 0.5).toFixed(2);
-            s.style.transform = `translateX(${tx}px)`;
-            s.style.filter    = Math.random() > 0.7
-              ? `hue-rotate(${Math.random()*80}deg) brightness(${0.9 + Math.random()})`
-              : 'none';
-          } else {
-            s.style.opacity = '0';
-          }
-        });
-
-        // RGB split pulsa junto
-        if (Math.random() > 0.4) {
-          rgbR.style.opacity   = (Math.random() * 0.5).toFixed(2);
-          rgbC.style.opacity   = (Math.random() * 0.5).toFixed(2);
-          rgbR.style.transform = `translateX(${(Math.random()*14 - 7).toFixed(1)}px)`;
-          rgbC.style.transform = `translateX(${(Math.random()*-14 + 7).toFixed(1)}px)`;
-        } else {
-          rgbR.style.opacity = '0';
-          rgbC.style.opacity = '0';
-        }
-
-        // estática aleatória
-        if (Math.random() > 0.5) {
-          estatica.style.opacity = (Math.random() * 0.35).toFixed(2);
-          estatica.style.backgroundPosition = `${Math.random()*100}px ${Math.random()*100}px`;
-        } else {
-          estatica.style.opacity = '0';
-        }
-
-        if (t >= SLICE_DUR) {
-          clearInterval(tickSlice);
-
-          // ── FASE 2: FREEZE (500ms) ──
-          // fatias ficam paradas em posição deslocada
-          sliceEls.forEach((s, i) => {
-            s.style.opacity   = (Math.random() * 0.3 + 0.6).toFixed(2);
-            s.style.transform = `translateX(${sliceOffsets[i]}px)`;
-            s.style.filter    = 'none';
-          });
-          rgbR.style.opacity = '0.25';
-          rgbC.style.opacity = '0.2';
-          estatica.style.opacity = '0.15';
-
-          setTimeout(() => {
-            // limpa fatias e overlays
-            sliceEls.forEach(s => s.style.opacity = '0');
-            rgbR.style.opacity = '0';
-            rgbC.style.opacity = '0';
-            estatica.style.opacity = '0';
-
-            // ── FASE 3: COLAPSO VERTICAL (350ms) ──
-            corpo.classList.add('tv-collapse');
-
-            setTimeout(() => { linha.style.opacity = '1'; }, 150);
-
-            // ── FASE 4: LINHA ENCOLHE PARA PONTO (200ms) ──
-            setTimeout(() => {
-              linha.style.transition = 'transform 0.2s ease-in, opacity 0.2s ease-in, height 0.15s ease-in';
-              linha.style.transform  = 'translateY(-50%) scaleX(0.02)';
-              linha.style.height     = '2px';
-
-              // ── FASE 5: FADE PARA PRETO + NAVEGA ──
-              setTimeout(() => {
-                linha.style.opacity = '0';
-                blackout.style.transition = 'opacity 0.25s ease-in';
-                blackout.style.opacity    = '1';
-
-                setTimeout(() => { window.location.href = destino; }, 280);
-              }, 200);
-
-            }, 350);
-
-          }, 900); // duração do freeze
-        }
-      }, TICK);
-    }
-
-    document.querySelectorAll('.card').forEach(card => {
-      card.addEventListener('click', function(e) {
-        e.preventDefault();
-        tvShutdown(this.getAttribute('href'));
-      });
-    });
-  </script>
+  }, 50);
+</script>
 
 </body>
 </html>
-
-
