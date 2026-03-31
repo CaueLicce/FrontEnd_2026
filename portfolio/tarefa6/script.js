@@ -10,14 +10,14 @@ const imagens = {
     bravo: 'Criatura/criatura_brava.png',
     morto: 'Criatura/criatura_morta.png',
     comendo: 'Criatura/criatura_comendo.png',
-    feliz: 'Criatura/criatura.png'
+    feliz: 'Criatura/criatura_alimentada.png'
 };
 
 const fundoDia = "background.png";
 const fundoNoite = "background_noite.png";
 
-const TEMPO_MORTE = 60;
-const TEMPO_BRAVO = 30;
+const TEMPO_MORTE = 60; 
+const TEMPO_BRAVO = 30; 
 
 let contador = 0;
 let estado = 'normal';
@@ -55,13 +55,18 @@ function aplicarEstado(novoEstado) {
     estado = novoEstado;
     mainImage.src = imagens[estado];
     avatarImg.src = imagens[estado];
-    
+
     mainImage.classList.remove('pulsar', 'tremer', 'comer');
     
     switch (estado) {
         case 'normal':
             mainImage.classList.add('pulsar');
-            statusBadge.textContent = 'Feliz';
+            statusBadge.textContent = 'Tranquilo';
+            statusBadge.className = 'badge badge-ghost mt-2';
+            break;
+        case 'feliz':
+            mainImage.classList.add('pulsar');
+            statusBadge.textContent = 'Muito Feliz! ❤️';
             statusBadge.className = 'badge badge-success mt-2';
             break;
         case 'bravo':
@@ -89,16 +94,22 @@ function alimentar() {
     }
     
     aplicarEstado('comendo');
-    contador = 0;
+    contador = 0; 
     atualizarUI();
     
     if (timeoutAcao) clearTimeout(timeoutAcao);
     
     timeoutAcao = setTimeout(() => {
         if (estado !== 'morto') {
-            aplicarEstado('normal');
+            aplicarEstado('feliz');
+        
+            timeoutAcao = setTimeout(() => {
+                if (estado !== 'morto') {
+                    aplicarEstado('normal');
+                }
+            }, 3000);
         }
-    }, 2000);
+    }, 1500);
 }
 
 function morrer() {
@@ -124,6 +135,7 @@ function atualizarFundo() {
 
     intervaloTempo = setInterval(() => {
         horas++;
+
         if (horas >= 12 && horas < 24) {
             document.body.style.backgroundImage = `url('${fundoNoite}')`;
             diaNoiteToggle.checked = true;
@@ -133,7 +145,7 @@ function atualizarFundo() {
         }
         
         if (horas >= 24) horas = 0;
-    }, 500);
+    }, 500); 
 }
 
 function alternarManual() {
