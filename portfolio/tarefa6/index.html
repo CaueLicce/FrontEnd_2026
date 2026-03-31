@@ -8,6 +8,27 @@
     <link href="https://cdn.jsdelivr.net/npm/daisyui@5" rel="stylesheet" type="text/css" />
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <style>
+        .btn-hub-apoo {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    color: #8892b0;
+    text-decoration: none;
+    border: 1px solid #2a2f45;
+    border-radius: 6px;
+    padding: 5px 12px;
+    margin-bottom: 1.2rem;
+    transition: color 0.2s, border-color 0.2s;
+  }
+ 
+  .btn-hub-apoo:hover {
+    color: #5e9bff;
+    border-color: #5e9bff;
+  }
+        
         body {
             transition: background-image 1s ease-in-out;
             background-size: cover;
@@ -49,6 +70,8 @@
     </style>
 </head>
 <body class="min-h-screen flex flex-col items-center justify-between p-4 overflow-hidden" style="background-image: url('background.png');">
+
+    <a id="btn-hub" href="../">← hub</a>
 
     <div class="w-full max-w-2xl flex flex-col gap-4 bg-base-100/80 backdrop-blur-sm p-4 rounded-2xl shadow-xl">
         <div class="flex items-center gap-4">
