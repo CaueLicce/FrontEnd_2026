@@ -1,0 +1,112 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800">
+  <defs>
+    <radialGradient id="ceuNoite" cx="50%" cy="20%" r="80%">
+      <stop offset="0%" stop-color="#0d0520"/>
+      <stop offset="50%" stop-color="#06030f"/>
+      <stop offset="100%" stop-color="#020108"/>
+    </radialGradient>
+    <radialGradient id="lua" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#dde8ff"/>
+      <stop offset="70%" stop-color="#aabbdd"/>
+      <stop offset="100%" stop-color="#aabbdd" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="magmaNoite" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ff3300" stop-opacity="0.9"/>
+      <stop offset="100%" stop-color="#220000" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="brilhoN">
+      <feGaussianBlur stdDeviation="8" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="brilhoStar">
+      <feGaussianBlur stdDeviation="2" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <!-- céu noturno -->
+  <rect width="1200" height="800" fill="url(#ceuNoite)"/>
+
+  <!-- estrelas -->
+  <circle cx="80"  cy="60"  r="1.5" fill="#fff" opacity="0.9" filter="url(#brilhoStar)"/>
+  <circle cx="180" cy="35"  r="1"   fill="#fff" opacity="0.8"/>
+  <circle cx="300" cy="80"  r="2"   fill="#fff" opacity="0.9" filter="url(#brilhoStar)"/>
+  <circle cx="420" cy="45"  r="1.2" fill="#fff" opacity="0.7"/>
+  <circle cx="540" cy="25"  r="1.8" fill="#fff" opacity="0.85" filter="url(#brilhoStar)"/>
+  <circle cx="660" cy="55"  r="1"   fill="#ddeeff" opacity="0.8"/>
+  <circle cx="750" cy="30"  r="1.5" fill="#fff" opacity="0.9"/>
+  <circle cx="850" cy="70"  r="2"   fill="#fff" opacity="0.85" filter="url(#brilhoStar)"/>
+  <circle cx="960" cy="40"  r="1.2" fill="#fff" opacity="0.75"/>
+  <circle cx="1060" cy="65" r="1.8" fill="#fff" opacity="0.9" filter="url(#brilhoStar)"/>
+  <circle cx="1150" cy="35" r="1"   fill="#fff" opacity="0.8"/>
+  <circle cx="130" cy="130" r="1"   fill="#ddeeff" opacity="0.65"/>
+  <circle cx="260" cy="150" r="1.5" fill="#fff" opacity="0.7"/>
+  <circle cx="490" cy="120" r="1"   fill="#fff" opacity="0.6"/>
+  <circle cx="700" cy="140" r="1.2" fill="#fff" opacity="0.75"/>
+  <circle cx="920" cy="115" r="1"   fill="#fff" opacity="0.65"/>
+  <circle cx="1100" cy="145" r="1.5" fill="#fff" opacity="0.7"/>
+
+  <!-- lua -->
+  <ellipse cx="900" cy="110" rx="55" ry="55" fill="url(#lua)" filter="url(#brilhoN)" opacity="0.8"/>
+  <ellipse cx="900" cy="110" rx="32" ry="32" fill="#ccd8ee" opacity="0.6"/>
+
+  <!-- nuvens escuras de fumaça -->
+  <ellipse cx="200" cy="200" rx="100" ry="45" fill="#0a0418" opacity="0.7"/>
+  <ellipse cx="260" cy="185" rx="80" ry="38" fill="#0d0520" opacity="0.6"/>
+  <ellipse cx="850" cy="220" rx="110" ry="48" fill="#0a0418" opacity="0.65"/>
+
+  <!-- montanhas ao fundo (mais escuras) -->
+  <polygon points="0,500 150,280 300,500" fill="#080310" opacity="0.98"/>
+  <polygon points="100,500 280,230 460,500" fill="#0d0418" opacity="0.95"/>
+  <polygon points="700,500 880,250 1060,500" fill="#080310" opacity="0.98"/>
+  <polygon points="900,500 1080,200 1200,420 1200,500" fill="#0d0418" opacity="0.95"/>
+  <polygon points="350,500 520,310 690,500" fill="#100618" opacity="0.9"/>
+
+  <!-- lava nas montanhas (mais brilhante à noite) -->
+  <path d="M150,280 Q160,320 145,370 Q155,340 170,380 Q165,330 180,300 Q165,290 150,280Z" fill="#ff3300" opacity="0.8" filter="url(#brilhoN)"/>
+  <path d="M880,250 Q895,295 880,345 Q892,315 905,360 Q900,310 915,280 Q898,262 880,250Z" fill="#ff4400" opacity="0.75" filter="url(#brilhoN)"/>
+
+  <!-- chão vulcânico -->
+  <path d="M0,650 Q100,620 200,640 Q350,660 500,635 Q650,610 800,640 Q950,665 1100,645 Q1150,638 1200,650 L1200,800 L0,800 Z" fill="#0d0408"/>
+  <path d="M0,690 Q150,670 300,685 Q500,700 700,678 Q900,658 1100,680 Q1150,685 1200,678 L1200,800 L0,800 Z" fill="#080204"/>
+
+  <!-- fendas de magma no chão (mais intensas à noite) -->
+  <ellipse cx="150" cy="665" rx="65" ry="14" fill="#ff3300" opacity="0.85" filter="url(#brilhoN)"/>
+  <ellipse cx="155" cy="665" rx="42" ry="8" fill="#ffaa00" opacity="0.65"/>
+  <ellipse cx="1050" cy="660" rx="60" ry="13" fill="#ff4400" opacity="0.8" filter="url(#brilhoN)"/>
+  <ellipse cx="1055" cy="660" rx="38" ry="8" fill="#ffbb00" opacity="0.6"/>
+  <ellipse cx="600" cy="700" rx="50" ry="10" fill="#ff3300" opacity="0.5" filter="url(#brilhoN)"/>
+
+  <!-- reflexo de magma no chão -->
+  <ellipse cx="150" cy="680" rx="80" ry="25" fill="#ff3300" opacity="0.1" filter="url(#brilhoN)"/>
+  <ellipse cx="1050" cy="675" rx="75" ry="22" fill="#ff4400" opacity="0.1" filter="url(#brilhoN)"/>
+
+  <!-- pedras -->
+  <ellipse cx="80" cy="640" rx="55" ry="30" fill="#0f0508" opacity="0.95"/>
+  <ellipse cx="1120" cy="635" rx="50" ry="28" fill="#0f0508" opacity="0.95"/>
+  <ellipse cx="320" cy="658" rx="40" ry="22" fill="#0a0306" opacity="0.9"/>
+  <ellipse cx="880" cy="655" rx="45" ry="24" fill="#0a0306" opacity="0.9"/>
+
+  <!-- engrenagem decorativa esquerda -->
+  <g transform="translate(60,560)" opacity="0.35">
+    <circle cx="0" cy="0" r="30" fill="none" stroke="#ff6600" stroke-width="4"/>
+    <circle cx="0" cy="0" r="10" fill="#ff6600" opacity="0.5"/>
+    <line x1="0" y1="-30" x2="0" y2="-42" stroke="#ff6600" stroke-width="4"/>
+    <line x1="0" y1="30" x2="0" y2="42" stroke="#ff6600" stroke-width="4"/>
+    <line x1="-30" y1="0" x2="-42" y2="0" stroke="#ff6600" stroke-width="4"/>
+    <line x1="30" y1="0" x2="42" y2="0" stroke="#ff6600" stroke-width="4"/>
+  </g>
+
+  <!-- engrenagem decorativa direita -->
+  <g transform="translate(1140,545) rotate(20)" opacity="0.3">
+    <circle cx="0" cy="0" r="25" fill="none" stroke="#ff5500" stroke-width="3.5"/>
+    <circle cx="0" cy="0" r="8" fill="#ff5500" opacity="0.5"/>
+    <line x1="0" y1="-25" x2="0" y2="-35" stroke="#ff5500" stroke-width="3.5"/>
+    <line x1="0" y1="25" x2="0" y2="35" stroke="#ff5500" stroke-width="3.5"/>
+    <line x1="-25" y1="0" x2="-35" y2="0" stroke="#ff5500" stroke-width="3.5"/>
+    <line x1="25" y1="0" x2="35" y2="0" stroke="#ff5500" stroke-width="3.5"/>
+  </g>
+
+  <!-- brilho ambiente magma embaixo (mais forte à noite) -->
+  <ellipse cx="600" cy="800" rx="500" ry="100" fill="#ff3300" opacity="0.20" filter="url(#brilhoN)"/>
+</svg>
