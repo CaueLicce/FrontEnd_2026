@@ -405,31 +405,213 @@
     .card-plano .card-desc  { color: #6b6b88; }
     .card-plano .card-arrow { color: #f7c948; }
 
-    /* ── BOOT SCREEN ── */
+    /* ══════════════════════════════════════
+       BOOT — VERSÃO A (RÁPIDA ~1.5s)
+       Scan line holográfico varrendo a tela
+    ══════════════════════════════════════ */
     #boot {
       position: fixed; inset: 0;
       background: var(--bg);
       z-index: 99999;
       display: flex;
-      flex-direction: column;
+      align-items: center;
       justify-content: center;
-      align-items: flex-start;
-      padding: 3rem;
-      gap: 0.2rem;
+      overflow: hidden;
     }
 
-    .boot-line {
-      font-family: 'IBM Plex Mono', monospace;
-      font-size: 0.82rem;
+    /* grade pulsando no fundo do boot */
+    #boot-grid {
+      position: absolute; inset: 0;
+      background-image:
+        linear-gradient(rgba(94,155,255,0.06) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(94,155,255,0.06) 1px, transparent 1px);
+      background-size: 48px 48px;
+      animation: grid-pulse 0.8s ease-in-out infinite alternate;
+    }
+
+    @keyframes grid-pulse {
+      from { opacity: 0.4; }
+      to   { opacity: 1; }
+    }
+
+    /* ── VERSÃO A: scan line ── */
+    #boot-scan {
+      position: absolute;
+      left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg,
+        transparent 0%,
+        #5e9bff 20%,
+        #c77dff 50%,
+        #5e9bff 80%,
+        transparent 100%);
+      box-shadow: 0 0 18px 6px rgba(94,155,255,0.5),
+                  0 0 40px 12px rgba(199,125,255,0.25);
+      top: -2px;
+      animation: scan-sweep 1.1s cubic-bezier(0.4,0,0.6,1) forwards;
+    }
+
+    /* rastro do scan */
+    #boot-scan::after {
+      content: '';
+      position: absolute;
+      left: 0; right: 0;
+      top: 0;
+      height: 80px;
+      background: linear-gradient(to bottom,
+        rgba(94,155,255,0.08) 0%,
+        transparent 100%);
+      transform: translateY(-100%);
+    }
+
+    @keyframes scan-sweep {
+      0%   { top: -2px; opacity: 0; }
+      5%   { opacity: 1; }
+      90%  { opacity: 1; }
+      100% { top: 100%; opacity: 0; }
+    }
+
+    /* flash no final do scan */
+    #boot-flash {
+      position: absolute; inset: 0;
+      background: linear-gradient(135deg,
+        rgba(94,155,255,0.08),
+        rgba(199,125,255,0.08));
       opacity: 0;
-      white-space: nowrap;
-      transition: opacity 0.1s;
+      animation: flash-in 0.3s ease-out 1.0s forwards;
     }
 
-    .boot-line.ok   { color: #5e9bff; }
-    .boot-line.warn { color: #f7c948; }
-    .boot-line.dim  { color: var(--muted); }
-    .boot-line.err  { color: #ff5f6d; }
+    @keyframes flash-in {
+      0%   { opacity: 0; }
+      40%  { opacity: 1; }
+      100% { opacity: 0; }
+    }
+
+    /* ══════════════════════════════════════
+       BOOT — VERSÃO B (MÉDIA ~2.8s)
+       HUD com mira, scramble e anel
+    ══════════════════════════════════════ */
+
+    /* centro do HUD */
+    #boot-hud {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 1.2rem;
+      z-index: 2;
+    }
+
+    /* cantos da mira */
+    .hud-corner {
+      position: absolute;
+      width: 36px; height: 36px;
+      opacity: 0;
+      animation: corner-appear 0.3s ease forwards;
+    }
+
+    .hud-corner::before,
+    .hud-corner::after {
+      content: '';
+      position: absolute;
+      background: #5e9bff;
+    }
+
+    .hud-corner::before { width: 100%; height: 2px; top: 0; }
+    .hud-corner::after  { width: 2px; height: 100%; top: 0; }
+
+    .hud-corner.tl { top: -60px; left: -90px; }
+    .hud-corner.tr { top: -60px; right: -90px; transform: scaleX(-1); }
+    .hud-corner.bl { bottom: -60px; left: -90px; transform: scaleY(-1); }
+    .hud-corner.br { bottom: -60px; right: -90px; transform: scale(-1); }
+
+    .hud-corner.tl { animation-delay: 0.2s; }
+    .hud-corner.tr { animation-delay: 0.3s; }
+    .hud-corner.bl { animation-delay: 0.3s; }
+    .hud-corner.br { animation-delay: 0.4s; }
+
+    @keyframes corner-appear {
+      from { opacity: 0; transform: scale(0.6); }
+      to   { opacity: 1; transform: scale(1); }
+    }
+
+    .hud-corner.tr { transform-origin: right top; }
+    .hud-corner.bl { transform-origin: left bottom; }
+    .hud-corner.br { transform-origin: right bottom; }
+
+    /* anel SVG */
+    #boot-ring {
+      position: absolute;
+      width: 160px; height: 160px;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 1;
+    }
+
+    #boot-ring circle {
+      fill: none;
+      stroke: url(#ringGrad);
+      stroke-width: 1.5;
+      stroke-dasharray: 440;
+      stroke-dashoffset: 440;
+      stroke-linecap: round;
+      animation: ring-fill 1.6s cubic-bezier(0.4,0,0.2,1) 0.3s forwards;
+    }
+
+    @keyframes ring-fill {
+      to { stroke-dashoffset: 110; }
+    }
+
+    /* título scramble */
+    #boot-title {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(1.1rem, 3vw, 1.6rem);
+      font-weight: 800;
+      letter-spacing: 0.15em;
+      text-align: center;
+      color: #fff;
+      min-height: 2em;
+      z-index: 2;
+    }
+
+    #boot-title em {
+      font-style: normal;
+      background: linear-gradient(90deg, #5e9bff, #c77dff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    /* status abaixo do título */
+    #boot-status {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--muted);
+      opacity: 0;
+      animation: status-appear 0.4s ease 1.8s forwards;
+      z-index: 2;
+    }
+
+    #boot-status span {
+      display: inline-block;
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: #52e5a0;
+      margin-right: 6px;
+      animation: dot-blink 0.5s step-start 1.8s 3;
+    }
+
+    @keyframes status-appear {
+      from { opacity: 0; transform: translateY(6px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes dot-blink {
+      50% { opacity: 0; }
+    }
 
     /* ── REVEAL DO CONTEÚDO ── */
     header, main, footer {
@@ -445,7 +627,7 @@
       transform: translateY(0);
     }
 
-    body.loaded main  { transition-delay: 0.1s; }
+    body.loaded main   { transition-delay: 0.1s; }
     body.loaded footer { transition-delay: 0.2s; }
 
     /* ── OVERLAYS DE TRANSIÇÃO AO CLICAR ── */
@@ -470,18 +652,7 @@
       opacity: 0;
     }
 
-    /* cursor piscante */
-    .cursor-blink::after {
-      content: '█';
-      animation: blink-t 0.8s step-start infinite;
-      color: #00ff41;
-      font-size: 0.8rem;
-    }
-
-    @keyframes blink-t {
-      0%,100% { opacity: 1; }
-      50%      { opacity: 0; }
-    }
+    .card-soon {
       background: var(--surface);
       border-color: var(--border);
       border-style: dashed;
@@ -489,8 +660,6 @@
       cursor: default;
       pointer-events: none;
     }
-
-    .card-soon .card-preview {
       background: var(--surface);
       display: flex; align-items: center; justify-content: center;
       font-size: 2.5rem;
@@ -524,18 +693,38 @@
 <div id="tx-blackout"></div>
 <div id="tx-line"></div>
 
-<div id="boot">
-  <div class="boot-line dim">▸▸ CENTRAL_DE_ESTUDOS v1.0</div>
-  <div class="boot-line dim">─────────────────────────────────────</div>
-  <div class="boot-line ok">[  OK  ] Carregando módulos...</div>
-  <div class="boot-line ok">[  OK  ] HTML · CSS · JavaScript</div>
-  <div class="boot-line ok">[  OK  ] Análise Orientada a Objetos</div>
-  <div class="boot-line warn">[ WAIT ] Sincronizando com GitHub...</div>
-  <div class="boot-line ok">[  OK  ] Repositório atualizado</div>
-  <div class="boot-line ok">[  OK  ] Sites didáticos carregados</div>
-  <div class="boot-line dim">─────────────────────────────────────</div>
-  <div class="boot-line ok">▸ Sistema pronto. Bem-vindo(a).</div>
+<!-- BOOT VERSÃO A: scan holográfico -->
+<!--
+<div id="boot" class="boot-versao-a">
+  <div id="boot-grid"></div>
+  <div id="boot-scan"></div>
+  <div id="boot-flash"></div>
 </div>
+-->
+
+<!-- BOOT VERSÃO B: HUD com mira e scramble (descomente para usar) -->
+
+<div id="boot" class="boot-versao-b">
+  <div id="boot-grid"></div>
+  <svg id="boot-ring" viewBox="0 0 160 160">
+    <defs>
+      <linearGradient id="ringGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%"   stop-color="#5e9bff"/>
+        <stop offset="100%" stop-color="#c77dff"/>
+      </linearGradient>
+    </defs>
+    <circle cx="80" cy="80" r="70" transform="rotate(-90 80 80)"/>
+  </svg>
+  <div id="boot-hud">
+    <div class="hud-corner tl"></div>
+    <div class="hud-corner tr"></div>
+    <div class="hud-corner bl"></div>
+    <div class="hud-corner br"></div>
+    <div id="boot-title">CENTRAL DE <em>ESTUDOS</em></div>
+    <div id="boot-status"><span></span>sistema online</div>
+  </div>
+</div>
+
 
 <header>
   <div class="hero-label">UniCesumar · 2026 · Front End &amp; APOO</div>
@@ -682,22 +871,63 @@
     });
   }, 50);
 
-  // ── BOOT ANIMATION ──
-  const linhas  = document.querySelectorAll('.boot-line');
-  const bootEl  = document.getElementById('boot');
+  // ── BOOT ──
+  const bootEl = document.getElementById('boot');
+  const VERSAO = bootEl.classList.contains('boot-versao-b') ? 'B' : 'A';
 
-  linhas.forEach((l, i) => {
-    setTimeout(() => { l.style.opacity = '1'; }, i * 160);
-  });
-
-  setTimeout(() => {
-    bootEl.style.transition = 'opacity 0.5s';
+  function revelarPagina() {
+    bootEl.style.transition = 'opacity 0.4s ease';
     bootEl.style.opacity    = '0';
     setTimeout(() => {
       bootEl.style.display = 'none';
       document.body.classList.add('loaded');
-    }, 500);
-  }, linhas.length * 160 + 400);
+    }, 400);
+  }
+
+  if (VERSAO === 'A') {
+    // VERSÃO A — scan dura 1.1s + flash 0.3s + saída 0.4s ≈ 1.8s total
+    setTimeout(revelarPagina, 1500);
+
+  } else {
+    // VERSÃO B — scramble + HUD ≈ 2.8s total
+
+    // efeito scramble no título
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@#$%&';
+    const alvo  = 'CENTRAL DE ESTUDOS';
+    const el    = document.getElementById('boot-title');
+    let frame   = 0;
+    const TOTAL = 30;
+
+    function scramble() {
+      let resultado = '';
+      for (let i = 0; i < alvo.length; i++) {
+        if (alvo[i] === ' ') { resultado += ' '; continue; }
+        const progresso = frame / TOTAL;
+        const revelar   = i / alvo.length < progresso * 1.4;
+        if (revelar) {
+          resultado += alvo[i];
+        } else {
+          resultado += chars[Math.floor(Math.random() * chars.length)];
+        }
+      }
+      // destaca "ESTUDOS"
+      const idx = resultado.indexOf('ESTUDOS');
+      if (idx >= 0 && frame > TOTAL * 0.7) {
+        el.innerHTML =
+          resultado.slice(0, idx) +
+          '<em>' + resultado.slice(idx, idx + 7) + '</em>' +
+          resultado.slice(idx + 7);
+      } else {
+        el.textContent = resultado;
+      }
+
+      frame++;
+      if (frame <= TOTAL) requestAnimationFrame(scramble);
+    }
+
+    setTimeout(scramble, 400);
+    setTimeout(revelarPagina, 2800);
+  }
 
   // ── TRANSIÇÃO AO CLICAR NOS CARDS ──
   let navegando = false;
@@ -711,19 +941,14 @@
     const blackout = document.getElementById('tx-blackout');
     const linha    = document.getElementById('tx-line');
 
-    // linha varrendo da esquerda para a direita
-    linha.style.opacity   = '1';
+    linha.style.opacity    = '1';
     linha.style.transition = 'transform 0.4s cubic-bezier(0.4,0,0.6,1)';
     linha.style.transform  = 'translateY(-50%) scaleX(1)';
 
     setTimeout(() => {
-      // fade para preto
       blackout.style.transition = 'opacity 0.3s ease-in';
       blackout.style.opacity    = '1';
-
-      setTimeout(() => {
-        window.location.href = destino;
-      }, 320);
+      setTimeout(() => { window.location.href = destino; }, 320);
     }, 420);
   }
 
