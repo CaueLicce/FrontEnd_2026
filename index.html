@@ -295,7 +295,193 @@
     .card-apoo .card-desc  { color: #8892b0; }
     .card-apoo .card-arrow { color: #5e9bff; }
 
-    .card-soon {
+    /* ── CARD PLANO DE ESTUDO ── */
+    .card-plano {
+      background: #0a0a0f;
+      border-color: #1e1e2e;
+    }
+
+    .card-plano:hover {
+      box-shadow: 0 0 30px rgba(247,201,72,0.10), 0 8px 30px rgba(0,0,0,0.5);
+      border-color: #3a3410;
+    }
+
+    .card-plano .card-preview {
+      background: #0a0a0f;
+      overflow: hidden;
+    }
+
+    .card-plano .preview-grid {
+      position: absolute; inset: 0;
+      background-image:
+        linear-gradient(rgba(91,140,255,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(91,140,255,0.04) 1px, transparent 1px);
+      background-size: 28px 28px;
+    }
+
+    .card-plano .preview-accent {
+      position: absolute;
+      top: 0; left: 0;
+      width: 4px; height: 100%;
+      background: #f7c948;
+    }
+
+    .card-plano .preview-content {
+      position: absolute; inset: 0;
+      padding: 1rem 1.2rem 1rem 1.5rem;
+      display: flex; flex-direction: column; justify-content: space-between;
+    }
+
+    .card-plano .preview-title {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.6rem;
+      letter-spacing: 0.18em;
+      color: #f7c948;
+      text-transform: uppercase;
+    }
+
+    .card-plano .preview-bars {
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+
+    .card-plano .pbar-row {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .card-plano .pbar-label {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.55rem;
+      color: #6b6b88;
+      width: 44px;
+      flex-shrink: 0;
+    }
+
+    .card-plano .pbar-track {
+      flex: 1;
+      height: 5px;
+      background: #1e1e2e;
+      border-radius: 99px;
+      overflow: hidden;
+    }
+
+    .card-plano .pbar-fill {
+      height: 100%;
+      border-radius: 99px;
+      transition: width 1.2s ease;
+    }
+
+    .card-plano .pbar-fill.amarelo { background: #f7c948; }
+    .card-plano .pbar-fill.azul    { background: #5b8cff; }
+    .card-plano .pbar-fill.verde   { background: #52e5a0; }
+    .card-plano .pbar-fill.roxo    { background: #c97bff; }
+
+    .card-plano .preview-pct {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #f7c948;
+      opacity: 0.85;
+      line-height: 1;
+    }
+
+    .card-plano .preview-pct span {
+      font-size: 0.65rem;
+      color: #6b6b88;
+      display: block;
+      margin-top: 2px;
+    }
+
+    .card-plano .card-body {
+      background: #0a0a0f;
+      border-top: 1px solid #1e1e2e;
+    }
+
+    .card-plano .card-tag   { color: #f7c948; }
+    .card-plano .card-title { color: #ffffff; font-family: 'Syne', sans-serif; }
+    .card-plano .card-desc  { color: #6b6b88; }
+    .card-plano .card-arrow { color: #f7c948; }
+
+    /* ── BOOT SCREEN ── */
+    #boot {
+      position: fixed; inset: 0;
+      background: var(--bg);
+      z-index: 99999;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 3rem;
+      gap: 0.2rem;
+    }
+
+    .boot-line {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.82rem;
+      opacity: 0;
+      white-space: nowrap;
+      transition: opacity 0.1s;
+    }
+
+    .boot-line.ok   { color: #5e9bff; }
+    .boot-line.warn { color: #f7c948; }
+    .boot-line.dim  { color: var(--muted); }
+    .boot-line.err  { color: #ff5f6d; }
+
+    /* ── REVEAL DO CONTEÚDO ── */
+    header, main, footer {
+      opacity: 0;
+      transform: translateY(18px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+
+    body.loaded header,
+    body.loaded main,
+    body.loaded footer {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    body.loaded main  { transition-delay: 0.1s; }
+    body.loaded footer { transition-delay: 0.2s; }
+
+    /* ── OVERLAYS DE TRANSIÇÃO AO CLICAR ── */
+    #tx-blackout {
+      position: fixed; inset: 0;
+      background: var(--bg);
+      opacity: 0;
+      z-index: 99990;
+      pointer-events: none;
+    }
+
+    #tx-line {
+      position: fixed;
+      left: 0; right: 0; top: 50%;
+      height: 2px;
+      background: linear-gradient(90deg, #5e9bff, #c77dff);
+      transform: translateY(-50%) scaleX(0);
+      transform-origin: left;
+      z-index: 99991;
+      pointer-events: none;
+      box-shadow: 0 0 12px 3px rgba(94,155,255,0.6);
+      opacity: 0;
+    }
+
+    /* cursor piscante */
+    .cursor-blink::after {
+      content: '█';
+      animation: blink-t 0.8s step-start infinite;
+      color: #00ff41;
+      font-size: 0.8rem;
+    }
+
+    @keyframes blink-t {
+      0%,100% { opacity: 1; }
+      50%      { opacity: 0; }
+    }
       background: var(--surface);
       border-color: var(--border);
       border-style: dashed;
@@ -334,6 +520,22 @@
   </style>
 </head>
 <body>
+
+<div id="tx-blackout"></div>
+<div id="tx-line"></div>
+
+<div id="boot">
+  <div class="boot-line dim">▸▸ CENTRAL_DE_ESTUDOS v1.0</div>
+  <div class="boot-line dim">─────────────────────────────────────</div>
+  <div class="boot-line ok">[  OK  ] Carregando módulos...</div>
+  <div class="boot-line ok">[  OK  ] HTML · CSS · JavaScript</div>
+  <div class="boot-line ok">[  OK  ] Análise Orientada a Objetos</div>
+  <div class="boot-line warn">[ WAIT ] Sincronizando com GitHub...</div>
+  <div class="boot-line ok">[  OK  ] Repositório atualizado</div>
+  <div class="boot-line ok">[  OK  ] Sites didáticos carregados</div>
+  <div class="boot-line dim">─────────────────────────────────────</div>
+  <div class="boot-line ok">▸ Sistema pronto. Bem-vindo(a).</div>
+</div>
 
 <header>
   <div class="hero-label">UniCesumar · 2026 · Front End &amp; APOO</div>
@@ -399,6 +601,43 @@
       </div>
     </a>
 
+    <a class="card card-plano" href="plano-frontend/">
+      <div class="card-preview">
+        <div class="preview-grid"></div>
+        <div class="preview-accent"></div>
+        <div class="preview-content">
+          <div class="preview-title">plano_estudo.html — Front End</div>
+          <div style="display:flex; gap:1rem; align-items:flex-end; justify-content:space-between;">
+            <div class="preview-bars" style="flex:1">
+              <div class="pbar-row">
+                <div class="pbar-label">HTML</div>
+                <div class="pbar-track"><div class="pbar-fill amarelo" style="width:85%"></div></div>
+              </div>
+              <div class="pbar-row">
+                <div class="pbar-label">CSS</div>
+                <div class="pbar-track"><div class="pbar-fill azul" style="width:70%"></div></div>
+              </div>
+              <div class="pbar-row">
+                <div class="pbar-label">JS</div>
+                <div class="pbar-track"><div class="pbar-fill verde" style="width:50%"></div></div>
+              </div>
+              <div class="pbar-row">
+                <div class="pbar-label">GIT</div>
+                <div class="pbar-track"><div class="pbar-fill roxo" style="width:60%"></div></div>
+              </div>
+            </div>
+            <div class="preview-pct">68%<span>concluído</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="card-tag">Front End · UniCesumar 2026</div>
+        <div class="card-title">Plano de Estudo</div>
+        <div class="card-desc">Progresso semanal em HTML, CSS, JavaScript e GIT — acompanhe os módulos da disciplina.</div>
+        <div class="card-arrow">→ acessar plano</div>
+      </div>
+    </a>
+
     <div class="card card-soon">
       <div class="card-preview">＋</div>
       <div class="card-body">
@@ -416,6 +655,7 @@
 </footer>
 
 <script>
+  // ── MATRIX RAIN NO CARD TERMINAL ──
   const cvs = document.getElementById('matrix-card');
   const ctx = cvs.getContext('2d');
   const fs  = 9;
@@ -430,7 +670,7 @@
   resize();
   window.addEventListener('resize', resize);
 
-  setInterval(() => {
+  const matrixInterval = setInterval(() => {
     ctx.fillStyle = 'rgba(5,10,5,0.07)';
     ctx.fillRect(0, 0, cvs.width, cvs.height);
     ctx.fillStyle = '#00ff41';
@@ -441,6 +681,58 @@
       drops[i]++;
     });
   }, 50);
+
+  // ── BOOT ANIMATION ──
+  const linhas  = document.querySelectorAll('.boot-line');
+  const bootEl  = document.getElementById('boot');
+
+  linhas.forEach((l, i) => {
+    setTimeout(() => { l.style.opacity = '1'; }, i * 160);
+  });
+
+  setTimeout(() => {
+    bootEl.style.transition = 'opacity 0.5s';
+    bootEl.style.opacity    = '0';
+    setTimeout(() => {
+      bootEl.style.display = 'none';
+      document.body.classList.add('loaded');
+    }, 500);
+  }, linhas.length * 160 + 400);
+
+  // ── TRANSIÇÃO AO CLICAR NOS CARDS ──
+  let navegando = false;
+
+  function navegar(destino) {
+    if (navegando) return;
+    navegando = true;
+
+    clearInterval(matrixInterval);
+
+    const blackout = document.getElementById('tx-blackout');
+    const linha    = document.getElementById('tx-line');
+
+    // linha varrendo da esquerda para a direita
+    linha.style.opacity   = '1';
+    linha.style.transition = 'transform 0.4s cubic-bezier(0.4,0,0.6,1)';
+    linha.style.transform  = 'translateY(-50%) scaleX(1)';
+
+    setTimeout(() => {
+      // fade para preto
+      blackout.style.transition = 'opacity 0.3s ease-in';
+      blackout.style.opacity    = '1';
+
+      setTimeout(() => {
+        window.location.href = destino;
+      }, 320);
+    }, 420);
+  }
+
+  document.querySelectorAll('.card:not(.card-soon)').forEach(card => {
+    card.addEventListener('click', e => {
+      e.preventDefault();
+      navegar(card.getAttribute('href'));
+    });
+  });
 </script>
 
 </body>
