@@ -655,6 +655,42 @@
       opacity: 0;
     }
 
+    /* ── CARD UML EDITORIAL ── */
+    .card-uml {
+      background: #1a1008;
+      border-color: #3a2e1e;
+    }
+
+    .card-uml:hover {
+      box-shadow: 0 0 30px rgba(201,148,26,0.12), 0 8px 30px rgba(0,0,0,0.6);
+      border-color: #6a4a18;
+    }
+
+    .card-uml .card-preview { background: #1a1008; overflow: hidden; }
+
+    .card-uml .preview-hatching {
+      position: absolute; inset: 0;
+      background: repeating-linear-gradient(
+        45deg,
+        transparent, transparent 32px,
+        rgba(255,255,255,0.012) 32px,
+        rgba(255,255,255,0.012) 64px
+      );
+    }
+
+    .card-uml .preview-svg {
+      position: absolute; inset: 0;
+      width: 100%; height: 100%;
+      opacity: 0.75;
+    }
+
+    .card-uml .card-body    { background: #1a1008; border-top: 1px solid #3a2e1e; }
+    .card-uml .card-tag     { color: #c9941a; }
+    .card-uml .card-title   { color: #f5f0e8; }
+    .card-uml .card-desc    { color: #6a5a48; }
+    .card-uml .card-arrow   { color: #c9941a; }
+
+    /* ── CARD EM BREVE ── */
     .card-soon {
       background: var(--surface);
       border-color: var(--border);
@@ -663,6 +699,8 @@
       cursor: default;
       pointer-events: none;
     }
+
+    .card-soon .card-preview {
       background: var(--surface);
       display: flex; align-items: center; justify-content: center;
       font-size: 2.5rem;
@@ -825,6 +863,73 @@
         <div class="card-title">Plano de Estudo</div>
         <div class="card-desc">Progresso semanal em HTML, CSS, JavaScript e GIT — acompanhe os módulos da disciplina.</div>
         <div class="card-arrow">→ acessar plano</div>
+      </div>
+    </a>
+
+    <a class="card card-uml" href="aula06-uml/">
+      <div class="card-preview">
+        <div class="preview-hatching"></div>
+        <svg class="preview-svg" viewBox="0 0 400 160" xmlns="http://www.w3.org/2000/svg">
+          <!-- Diagrama de casos de uso estilizado no tema do site -->
+          <!-- Fronteira do sistema -->
+          <rect x="80" y="18" width="240" height="124" rx="4"
+                fill="none" stroke="#3a2e1e" stroke-width="1.2"/>
+          <text x="200" y="13" text-anchor="middle"
+                font-family="JetBrains Mono, monospace" font-size="8"
+                fill="#6a5a48" letter-spacing="0.1em">SISTEMA</text>
+
+          <!-- Casos de uso -->
+          <ellipse cx="200" cy="50" rx="52" ry="18"
+                   fill="#2c1f10" stroke="#c9941a" stroke-width="1.2"/>
+          <text x="200" y="54" text-anchor="middle"
+                font-family="JetBrains Mono, monospace" font-size="8.5"
+                fill="#f5f0e8">Realizar Login</text>
+
+          <ellipse cx="160" cy="100" rx="52" ry="18"
+                   fill="#2c1f10" stroke="#8b1a00" stroke-width="1"/>
+          <text x="160" y="104" text-anchor="middle"
+                font-family="JetBrains Mono, monospace" font-size="8"
+                fill="#c8bfaf">Obter Extrato</text>
+
+          <ellipse cx="260" cy="100" rx="52" ry="18"
+                   fill="#2c1f10" stroke="#8b1a00" stroke-width="1"/>
+          <text x="260" y="104" text-anchor="middle"
+                font-family="JetBrains Mono, monospace" font-size="8"
+                fill="#c8bfaf">Realizar Saque</text>
+
+          <!-- «include» tracejada -->
+          <line x1="174" y1="68" x2="172" y2="82"
+                stroke="#c9941a" stroke-width="0.9" stroke-dasharray="3,2"/>
+          <polygon points="172,82 168,76 176,75"
+                   fill="#c9941a" opacity="0.8"/>
+          <text x="148" y="78" font-family="JetBrains Mono, monospace"
+                font-size="7" fill="#c9941a" opacity="0.7">«include»</text>
+
+          <!-- Ator esquerdo -->
+          <circle cx="38" cy="72" r="8" fill="none" stroke="#a08060" stroke-width="1.2"/>
+          <line x1="38" y1="80" x2="38" y2="104" stroke="#a08060" stroke-width="1.2"/>
+          <line x1="24" y1="90" x2="52" y2="90" stroke="#a08060" stroke-width="1.2"/>
+          <line x1="38" y1="104" x2="26" y2="118" stroke="#a08060" stroke-width="1.2"/>
+          <line x1="38" y1="104" x2="50" y2="118" stroke="#a08060" stroke-width="1.2"/>
+          <text x="38" y="132" text-anchor="middle"
+                font-family="JetBrains Mono, monospace" font-size="7.5"
+                fill="#6a5a48">Usuário</text>
+          <line x1="52" y1="82" x2="80" y2="68" stroke="#3a2e1e" stroke-width="1"/>
+          <line x1="52" y1="90" x2="80" y2="90" stroke="#3a2e1e" stroke-width="1"/>
+
+          <!-- Label dourado -->
+          <text x="200" y="152" text-anchor="middle"
+                font-family="JetBrains Mono, monospace" font-size="7"
+                fill="#c9941a" letter-spacing="0.15em" opacity="0.6">
+            DIAGRAMAS UML · AULA 06
+          </text>
+        </svg>
+      </div>
+      <div class="card-body">
+        <div class="card-tag">APOO · Aula 06 · UML 2.x</div>
+        <div class="card-title">Principais Diagramas UML</div>
+        <div class="card-desc">Diagramas de comportamento: Casos de Uso, Estados, Atividades, Sequência, Tempo e mais.</div>
+        <div class="card-arrow">→ acessar guia</div>
       </div>
     </a>
 
