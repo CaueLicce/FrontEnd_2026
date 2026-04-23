@@ -1,0 +1,40 @@
+body {
+    background-color: #f0f8ff;
+    font-family: Arial, sans-serif;
+    text-align: center;
+}
+
+h1 {
+    color: #333;
+}
+
+nav {
+    margin: 20px;
+}
+
+nav a {
+    text-decoration: none;
+    font-weight: bold;
+    color: #0066cc;
+    margin: 10px;
+}
+
+.secao {
+    background-color: #ffffff;
+    margin: 20px auto;
+    padding: 20px;
+    width: 70%;
+    border-radius: 15px;
+    text-align: left;
+}
+
+h2 {
+    font-size: 24px;
+    font-weight: bold;
+    color: #444;
+}
+
+p {
+    font-size: 16px;
+    color: #666;
+}
