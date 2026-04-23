@@ -1,0 +1,42 @@
+body {
+    background-color: #eef2f3;
+    font-family: Arial;
+    text-align: center;
+}
+
+nav {
+    margin: 20px;
+}
+
+nav a {
+    margin: 10px;
+    text-decoration: none;
+    color: #3498db;
+    font-weight: bold;
+}
+
+.secao {
+    background-color: #ffffff;
+    margin: 20px auto;
+    padding: 20px;
+    width: 70%;
+    border-radius: 10px;
+}
+
+h2 {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+p {
+    font-size: 16px;
+    color: #555;
+}
+
+button {
+    padding: 10px;
+    border-radius: 8px;
+    background-color: #3498db;
+    color: white;
+    border: none;
+}
