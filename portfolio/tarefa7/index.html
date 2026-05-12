@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Atividade Prática: Lógica com JavaScript</title>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --accent-color: #e67e22;
+            --bg-color: #f0f2f5;
+            --card-bg: #ffffff;
+            --text-color: #333;
+        }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: var(--bg-color); color: var(--text-color); line-height: 1.6; margin: 0; padding: 20px; }
+        .container { max-width: 900px; margin: 0 auto; }
+        header { text-align: center; padding: 30px 0; background: var(--primary-color); color: white; border-radius: 8px; margin-bottom: 30px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        header h1 { margin: 0; font-size: 2em; }
+        header p { margin: 10px 0 0; opacity: 0.9; }
+        .question-card { background: var(--card-bg); padding: 30px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-bottom: 30px; border-top: 5px solid var(--accent-color); }
+        .question-header { font-weight: bold; font-size: 1.3em; color: var(--accent-color); margin-bottom: 15px; display: flex; align-items: center; }
+        h2 { font-size: 1.1em; color: var(--primary-color); margin-top: 25px; border-bottom: 1px solid #eee; padding-bottom: 5px; }
+        .intro-box { background-color: #f8f9fa; padding: 15px; border-radius: 6px; border-left: 4px solid #ccd1d1; font-size: 0.95em; }
+        .descritivo-apoio { background-color: #fffaf0; padding: 15px; margin: 15px 0; border-radius: 6px; border: 1px dashed #f39c12; font-size: 0.9em; }
+        .comando { font-weight: 500; }
+        .item-destaque { background-color: #e8f8f5; padding: 10px 15px; margin: 15px 0; border-radius: 4px; font-size: 0.9em; color: #117a65; border-left: 4px solid #1abc9c; }
+        code { background: #eee; padding: 2px 5px; border-radius: 3px; font-family: 'Consolas', monospace; color: #c7254e; }
+        ul { padding-left: 20px; }
+        li { margin-bottom: 8px; }
+        footer { text-align: center; margin-top: 50px; padding: 20px; font-size: 0.85em; color: #7f8c8d; }
+
+        .atividade { margin-top: 24px; padding-top: 20px; border-top: 2px dashed #e0e0e0; }
+        .atividade h2 { margin-top: 0; }
+        .form-row { display: flex; gap: 10px; flex-wrap: wrap; align-items: flex-end; margin-bottom: 12px; }
+        .form-group { display: flex; flex-direction: column; gap: 4px; }
+        .form-group label { font-size: 0.82em; color: #555; font-weight: 600; }
+        input[type="text"], input[type="number"], select {
+            padding: 9px 12px; border: 1px solid #ccc; border-radius: 5px;
+            font-size: 0.95em; font-family: inherit; outline: none;
+            transition: border-color 0.2s;
+        }
+        input:focus, select:focus { border-color: var(--accent-color); }
+        button {
+            padding: 9px 20px; background: var(--accent-color); color: white;
+            border: none; border-radius: 5px; cursor: pointer; font-size: 0.95em;
+            font-family: inherit; font-weight: 600; transition: background 0.2s;
+            align-self: flex-end;
+        }
+        button:hover { background: #cf6d17; }
+        .resultado {
+            margin-top: 14px; padding: 12px 16px; border-radius: 6px;
+            font-size: 0.97em; font-weight: 600; display: none;
+        }
+        .resultado.valido   { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .resultado.invalido { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        .resultado.info     { background: #d1ecf1; color: #0c5460; border: 1px solid #bee5eb; }
+        .resultado.alerta   { background: #fff3cd; color: #856404; border: 1px solid #ffc107; }
+        .conv-row { display: flex; gap: 16px; align-items: center; flex-wrap: wrap; }
+        .conv-row span { font-size: 1.3em; color: #aaa; padding-top: 20px; }
+        .resumo-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; margin-top: 14px; }
+        .resumo-item { background: #f8f9fa; border: 1px solid #dee2e6; border-radius: 6px; padding: 12px 14px; }
+        .resumo-item .label { font-size: 0.75em; color: #6c757d; text-transform: uppercase; letter-spacing: 0.05em; }
+        .resumo-item .valor { font-size: 1.2em; font-weight: 700; color: var(--primary-color); margin-top: 2px; }
+    </style>
+</head>
+<body>
+<div class="container">
+
+    <header>
+        <h1>Laboratório de Programação FrontEnd</h1>
+        <p>Exercícios de Fixação: Lógica e Manipulação de DOM</p>
+    </header>
+
+    <section class="question-card">
+        <div class="question-header">⚡ Exercício 01: Validador de CPF</div>
+        <h2>Introdução:</h2>
+        <div class="intro-box">Validar documentos é uma tarefa comum em sistemas de cadastro. Um CPF não é apenas uma sequência de 11 números; ele possui uma lógica matemática baseada em dígitos verificadores para evitar erros de digitação e fraudes básicas.</div>
+        <h2>Comando:</h2>
+        <div class="comando">Desenvolva uma página que receba um número de CPF e informe se ele é <strong>Válido</strong> ou <strong>Inválido</strong>.
+            <ul>
+                <li>Crie um campo de entrada e um botão "Validar";</li>
+                <li>Implemente a lógica de cálculo dos dois dígitos verificadores em JavaScript;</li>
+                <li>Exiba o resultado visualmente: use a cor <span style="color:green">verde</span> para sucesso e <span style="color:red">vermelho</span> para erro.</li>
+            </ul>
+        </div>
+        <h2>Descritivo de Apoio:</h2>
+        <div class="descritivo-apoio">
+            <strong>Algoritmo de Validação:</strong><br>
+            1. Para o 1º dígito: Multiplique os 9 primeiros números por uma contagem regressiva de 10 a 2. Some tudo, multiplique por 10 e pegue o resto da divisão por 11.<br>
+            2. Para o 2º dígito: Repita o processo com os 10 primeiros números, usando peso de 11 a 2.<br>
+            <em>Dica: Se o resto da conta for 10, considere o dígito como 0.</em>
+        </div>
+
+        <div class="atividade">
+            <h2>💻 Implementação</h2>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="cpf-input">CPF (somente números)</label>
+                    <input type="text" id="cpf-input" placeholder="000.000.000-00" maxlength="14" style="width:200px">
+                </div>
+                <button onclick="validarCPF()">Validar</button>
+            </div>
+            <div id="cpf-resultado" class="resultado"></div>
+        </div>
+    </section>
+
+    <section class="question-card">
+        <div class="question-header">🌡️ Exercício 02: Conversor Dinâmico</div>
+        <h2>Introdução:</h2>
+        <div class="intro-box">A interatividade em tempo real melhora a experiência do usuário (UX). Ao invés de clicar em um botão, o sistema pode reagir instantaneamente conforme o usuário digita os dados.</div>
+        <h2>Comando:</h2>
+        <div class="comando">Crie um conversor de temperatura entre Celsius (C) e Fahrenheit (F) que funcione nos dois sentidos e em tempo real.
+            <ul>
+                <li>Utilize o evento <code>oninput</code> ou <code>addEventListener('input')</code>;</li>
+                <li>Ao digitar em Celsius, o campo Fahrenheit deve atualizar sozinho e vice-versa;</li>
+                <li>Formate os resultados para exibirem sempre 2 casas decimais.</li>
+            </ul>
+        </div>
+        <h2>Descritivo de Apoio:</h2>
+        <div class="descritivo-apoio">
+            <strong>Fórmulas Matemáticas:</strong><br>
+            • De Celsius para Fahrenheit: <code>F = (C * 9/5) + 32</code><br>
+            • De Fahrenheit para Celsius: <code>C = (F - 32) * 5/9</code><br>
+            <em>Configuração: Use <code>step="0.1"</code> no input numérico para permitir decimais.</em>
+        </div>
+
+        <div class="atividade">
+            <h2>💻 Implementação</h2>
+            <div class="conv-row">
+                <div class="form-group">
+                    <label for="celsius">Celsius (°C)</label>
+                    <input type="number" id="celsius" placeholder="0.00" step="0.1" style="width:150px" oninput="converterCelsius()">
+                </div>
+                <span>⇄</span>
+                <div class="form-group">
+                    <label for="fahrenheit">Fahrenheit (°F)</label>
+                    <input type="number" id="fahrenheit" placeholder="0.00" step="0.1" style="width:150px" oninput="converterFahrenheit()">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="question-card">
+        <div class="question-header">🎓 Exercício 03: Média Escolar</div>
+        <h2>Introdução:</h2>
+        <div class="intro-box">Sistemas acadêmicos utilizam estruturas condicionais para decidir o fluxo do aluno. Além do cálculo aritmético, o sistema deve interpretar o resultado e fornecer um feedback visual e textual adequado.</div>
+        <h2>Comando:</h2>
+        <div class="comando">Construa uma interface que receba o nome de um aluno e três notas, calculando a média e a situação final.
+            <ul>
+                <li><strong>Aprovado:</strong> Média entre 7.0 e 10.0 (Mensagem azul);</li>
+                <li><strong>Exame:</strong> Média entre 4.0 e 6.9 (Mensagem verde + cálculo de quanto falta para 10);</li>
+                <li><strong>Reprovado:</strong> Média abaixo de 4.0 (Mensagem vermelha).</li>
+            </ul>
+        </div>
+        <h2>Descritivo de Apoio:</h2>
+        <div class="descritivo-apoio">
+            <strong>Requisitos Técnicos:</strong><br>
+            • Converta os valores dos inputs para <code>Number</code> antes de somar.<br>
+            • Utilize <code>toFixed(2)</code> para exibir a média.<br>
+            • Acione o cálculo através de um botão com escutador de eventos.
+        </div>
+
+        <div class="atividade">
+            <h2>💻 Implementação</h2>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="aluno-nome">Nome do Aluno</label>
+                    <input type="text" id="aluno-nome" placeholder="Nome completo" style="width:200px">
+                </div>
+                <div class="form-group">
+                    <label for="nota1">Nota 1</label>
+                    <input type="number" id="nota1" min="0" max="10" step="0.1" placeholder="0.0" style="width:80px">
+                </div>
+                <div class="form-group">
+                    <label for="nota2">Nota 2</label>
+                    <input type="number" id="nota2" min="0" max="10" step="0.1" placeholder="0.0" style="width:80px">
+                </div>
+                <div class="form-group">
+                    <label for="nota3">Nota 3</label>
+                    <input type="number" id="nota3" min="0" max="10" step="0.1" placeholder="0.0" style="width:80px">
+                </div>
+                <button id="btn-media">Calcular</button>
+            </div>
+            <div id="media-resultado" class="resultado"></div>
+        </div>
+    </section>
+
+    <section class="question-card">
+        <div class="question-header">💳 Exercício 04: Taxas Infinity Bank</div>
+        <h2>Introdução:</h2>
+        <div class="intro-box">Cálculos financeiros exigem precisão e o uso de seletores dinâmicos. Lojistas precisam saber exatamente quanto vão pagar de taxa e quanto o cliente pagará de juros em uma transação parcelada.</div>
+        <h2>Comando:</h2>
+        <div class="comando">Desenvolva o simulador de vendas do Infinity Bank. O usuário deve escolher a bandeira, o valor e o número de parcelas.
+            <ul>
+                <li>Use um elemento <code>&lt;select&gt;</code> para as bandeiras;</li>
+                <li>Calcule a taxa da bandeira (Visa: 2% | Master: 1.85% | Elo: 3%);</li>
+                <li>Aplique juros simples de 0.35% ao mês conforme o número de parcelas;</li>
+                <li>Aplique uma taxa mensal de R$ 12,50 ao mês;</li>
+                <li>Exiba o resumo: Valor da Taxa, Valor dos Juros e Valor de cada Parcela.</li>
+            </ul>
+        </div>
+        <div class="item-destaque"><strong>Dica Extra:</strong> Use a estrutura <code>switch</code> em JavaScript para verificar a bandeira selecionada e aplicar a taxa correta de forma organizada.</div>
+        <h2>Descritivo de Apoio:</h2>
+        <div class="descritivo-apoio">
+            <strong>Lógica de Juros:</strong><br>
+            <code>Juros Totais = Valor da Venda * (0.0035 * quantidade_parcelas)</code><br>
+            <code>Valor Total = Venda + Taxa Bandeira + Juros + (12.50 * parcelas)</code>
+        </div>
+
+        <div class="atividade">
+            <h2>💻 Implementação</h2>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="bandeira">Bandeira</label>
+                    <select id="bandeira">
+                        <option value="visa">Visa (2%)</option>
+                        <option value="master">Mastercard (1.85%)</option>
+                        <option value="elo">Elo (3%)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="valor-venda">Valor da Venda (R$)</label>
+                    <input type="number" id="valor-venda" min="0" step="0.01" placeholder="0.00" style="width:140px">
+                </div>
+                <div class="form-group">
+                    <label for="parcelas">Parcelas</label>
+                    <input type="number" id="parcelas" min="1" max="12" value="1" style="width:80px">
+                </div>
+                <button onclick="calcularTaxas()">Calcular</button>
+            </div>
+            <div id="bank-resultado" style="display:none">
+                <div class="resumo-grid">
+                    <div class="resumo-item"><div class="label">Taxa da Bandeira</div><div class="valor" id="r-taxa"></div></div>
+                    <div class="resumo-item"><div class="label">Juros Totais</div><div class="valor" id="r-juros"></div></div>
+                    <div class="resumo-item"><div class="label">Taxa Mensal (R$12,50)</div><div class="valor" id="r-mensal"></div></div>
+                    <div class="resumo-item"><div class="label">Valor Total</div><div class="valor" id="r-total"></div></div>
+                    <div class="resumo-item" style="border-color: var(--accent-color)"><div class="label">Valor por Parcela</div><div class="valor" style="color:var(--accent-color)" id="r-parcela"></div></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>Atividade Prática de JavaScript - Desenvolvido com ❤️ by Dacio Machado</footer>
+
+</div>
+
+<script>
+
+    function validarCPF() {
+        const input = document.getElementById('cpf-input').value.replace(/\D/g, '');
+        const el    = document.getElementById('cpf-resultado');
+        el.style.display = 'block';
+
+        if (input.length !== 11 || /^(\d)\1{10}$/.test(input)) {
+            el.className = 'resultado invalido';
+            el.textContent = '✗ CPF inválido.';
+            return;
+        }
+
+        let soma = 0;
+        for (let i = 0; i < 9; i++) soma += Number(input[i]) * (10 - i);
+        let d1 = (soma * 10) % 11;
+        if (d1 === 10) d1 = 0;
+
+        soma = 0;
+        for (let i = 0; i < 10; i++) soma += Number(input[i]) * (11 - i);
+        let d2 = (soma * 10) % 11;
+        if (d2 === 10) d2 = 0;
+
+        if (d1 === Number(input[9]) && d2 === Number(input[10])) {
+            el.className = 'resultado valido';
+            el.textContent = '✓ CPF válido!';
+        } else {
+            el.className = 'resultado invalido';
+            el.textContent = '✗ CPF inválido.';
+        }
+    }
+
+    document.getElementById('cpf-input').addEventListener('input', function () {
+        let v = this.value.replace(/\D/g, '').slice(0, 11);
+        if (v.length > 9) v = v.replace(/(\d{3})(\d{3})(\d{3})(\d{1,2})/, '$1.$2.$3-$4');
+        else if (v.length > 6) v = v.replace(/(\d{3})(\d{3})(\d{1,3})/, '$1.$2.$3');
+        else if (v.length > 3) v = v.replace(/(\d{3})(\d{1,3})/, '$1.$2');
+        this.value = v;
+    });
+
+    // ── EX 02 ──
+    function converterCelsius() {
+        const c = parseFloat(document.getElementById('celsius').value);
+        document.getElementById('fahrenheit').value = isNaN(c) ? '' : ((c * 9 / 5) + 32).toFixed(2);
+    }
+
+    function converterFahrenheit() {
+        const f = parseFloat(document.getElementById('fahrenheit').value);
+        document.getElementById('celsius').value = isNaN(f) ? '' : ((f - 32) * 5 / 9).toFixed(2);
+    }
+
+    // ── EX 03 ──
+    document.getElementById('btn-media').addEventListener('click', function () {
+        const nome = document.getElementById('aluno-nome').value.trim() || 'Aluno';
+        const n1   = Number(document.getElementById('nota1').value);
+        const n2   = Number(document.getElementById('nota2').value);
+        const n3   = Number(document.getElementById('nota3').value);
+        const media = ((n1 + n2 + n3) / 3);
+        const el    = document.getElementById('media-resultado');
+
+        el.style.display = 'block';
+
+        if (media >= 7) {
+            el.className = 'resultado info';
+            el.textContent = `✓ ${nome} — Média: ${media.toFixed(2)} → APROVADO`;
+        } else if (media >= 4) {
+            const falta = (10 - media).toFixed(2);
+            el.className = 'resultado valido';
+            el.textContent = `⚠ ${nome} — Média: ${media.toFixed(2)} → EXAME. Faltam ${falta} pontos para 10.`;
+        } else {
+            el.className = 'resultado invalido';
+            el.textContent = `✗ ${nome} — Média: ${media.toFixed(2)} → REPROVADO`;
+        }
+    });
+
+    // ── EX 04 ──
+    function calcularTaxas() {
+        const venda    = parseFloat(document.getElementById('valor-venda').value) || 0;
+        const parcelas = parseInt(document.getElementById('parcelas').value)       || 1;
+        const bandeira = document.getElementById('bandeira').value;
+
+        let percentualBandeira;
+        switch (bandeira) {
+            case 'visa':   percentualBandeira = 0.02;   break;
+            case 'master': percentualBandeira = 0.0185; break;
+            case 'elo':    percentualBandeira = 0.03;   break;
+        }
+
+        const valorTaxa   = venda * percentualBandeira;
+        const valorJuros  = venda * (0.0035 * parcelas);
+        const taxaMensal  = 12.50 * parcelas;
+        const valorTotal  = venda + valorTaxa + valorJuros + taxaMensal;
+        const valorParc   = valorTotal / parcelas;
+
+        const fmt = v => 'R$ ' + v.toFixed(2).replace('.', ',');
+
+        document.getElementById('r-taxa').textContent    = fmt(valorTaxa);
+        document.getElementById('r-juros').textContent   = fmt(valorJuros);
+        document.getElementById('r-mensal').textContent  = fmt(taxaMensal);
+        document.getElementById('r-total').textContent   = fmt(valorTotal);
+        document.getElementById('r-parcela').textContent = `${parcelas}x ${fmt(valorParc)}`;
+        document.getElementById('bank-resultado').style.display = 'block';
+    }
+</script>
+</body>
+</html>
