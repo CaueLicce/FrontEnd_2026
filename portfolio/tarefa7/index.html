@@ -27,8 +27,8 @@
         code { background: #eee; padding: 2px 5px; border-radius: 3px; font-family: 'Consolas', monospace; color: #c7254e; }
         ul { padding-left: 20px; }
         li { margin-bottom: 8px; }
-        footer { text-align: center; margin-top: 50px; padding: 20px; font-size: 0.85em; color: #7f8c8d; }
-
+        footer { text-align: center; margin-to
+                
         .atividade { margin-top: 24px; padding-top: 20px; border-top: 2px dashed #e0e0e0; }
         .atividade h2 { margin-top: 0; }
         .form-row { display: flex; gap: 10px; flex-wrap: wrap; align-items: flex-end; margin-bottom: 12px; }
@@ -61,7 +61,28 @@
         .resumo-item { background: #f8f9fa; border: 1px solid #dee2e6; border-radius: 6px; padding: 12px 14px; }
         .resumo-item .label { font-size: 0.75em; color: #6c757d; text-transform: uppercase; letter-spacing: 0.05em; }
         .resumo-item .valor { font-size: 1.2em; font-weight: 700; color: var(--primary-color); margin-top: 2px; }
-    </style>
+
+    #lista-convidados { list-style: none; padding: 0; margin: 0; }
+    .convidado-item {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 10px 0; border-bottom: 1px solid #eee; gap: 10px;
+    }
+    .convidado-item:last-child { border-bottom: none; }
+    .convidado-nome { flex: 1; font-size: 0.97em; }
+    .convidado-nome.chegou { text-decoration: line-through; color: #aaa; }
+    .btns-convidado { display: flex; gap: 6px; }
+    .btns-convidado button {
+      padding: 5px 10px; font-size: 0.78em; border-radius: 4px;
+      font-weight: 600; cursor: pointer; border: none;
+    }
+    .btn-concluir { background: #d4edda; color: #155724; }
+    .btn-editar   { background: #fff3cd; color: #856404; }
+    .btn-excluir  { background: #f8d7da; color: #721c24; }
+    .btn-concluir:hover { background: #c3e6cb; }
+    .btn-editar:hover   { background: #ffeeba; }
+    .btn-excluir:hover  { background: #f5c6cb; }
+    .lista-vazia { color: #aaa; font-size: 0.9em; text-align: center; padding: 16px 0; }
+  </style>
 </head>
 <body>
 <div class="container">
@@ -239,6 +260,43 @@
             </div>
         </div>
     </section>
+    
+    <section class="question-card">
+        <div class="question-header">👥 Exercício 05: Gestão de Convidados VIP</div>
+        <h2>Introdução:</h2>
+        <div class="intro-box">Interfaces administrativas exigem manipulação direta de listas e estados. Para o evento de inauguração do banco, precisamos de um sistema que gerencie a entrada de convidados, permitindo edições rápidas e controle de presença sem a necessidade de recarregar a página.</div>
+        <h2>Comando:</h2>
+        <div class="comando">Construa a ferramenta <strong>"Infinity Bank - Lista de Convidados VIP"</strong> utilizando manipulação de arrays e DOM.
+            <ul>
+                <li>Implemente um campo de texto e um botão para adicionar nomes a uma lista (<code>&lt;ul&gt;</code> ou <code>&lt;ol&gt;</code>);</li>
+                <li>Cada item da lista deve conter o nome do convidado e três botões: <strong>Concluir</strong>, <strong>Editar</strong> e <strong>Excluir</strong>;</li>
+                <li>A função de "Concluir" deve riscar o nome do convidado para indicar que ele já chegou ao evento.</li>
+            </ul>
+        </div>
+        <div class="item-destaque"><strong>Requisitos Visuais:</strong> O aplicativo deve ser apresentado dentro de um "Card" centralizado, com separadores discretos entre os nomes dos convidados e sombras suaves para profundidade.</div>
+        <h2>Descritivo de Apoio:</h2>
+        <div class="descritivo-apoio">
+            <strong>Dicas de Programador:</strong><br>
+            • Utilize <code>.trim()</code> ao capturar o nome para evitar entradas vazias.<br>
+            • Para a função de editar, utilize o comando <code>prompt()</code> para receber o novo nome.<br>
+            • Use <code>classList.toggle('classe-riscado')</code> para alternar o estado de presença do convidado.
+        </div>
+
+        <div class="atividade">
+            <h2>💻 Implementação</h2>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="convidado-input">Nome do convidado</label>
+                    <input type="text" id="convidado-input" placeholder="Digite o nome..." style="width:260px"
+                           onkeydown="if(event.key==='Enter') adicionarConvidado()">
+                </div>
+                <button onclick="adicionarConvidado()">Adicionar</button>
+            </div>
+            <ul id="lista-convidados">
+                <li class="lista-vazia" id="lista-vazia">Nenhum convidado adicionado ainda.</li>
+            </ul>
+        </div>
+    </section>
 
     <footer>Atividade Prática de JavaScript - Desenvolvido com ❤️ by Dacio Machado</footer>
 
@@ -284,7 +342,6 @@
         this.value = v;
     });
 
-    // ── EX 02 ──
     function converterCelsius() {
         const c = parseFloat(document.getElementById('celsius').value);
         document.getElementById('fahrenheit').value = isNaN(c) ? '' : ((c * 9 / 5) + 32).toFixed(2);
@@ -295,7 +352,6 @@
         document.getElementById('celsius').value = isNaN(f) ? '' : ((f - 32) * 5 / 9).toFixed(2);
     }
 
-    // ── EX 03 ──
     document.getElementById('btn-media').addEventListener('click', function () {
         const nome = document.getElementById('aluno-nome').value.trim() || 'Aluno';
         const n1   = Number(document.getElementById('nota1').value);
@@ -319,7 +375,6 @@
         }
     });
 
-    // ── EX 04 ──
     function calcularTaxas() {
         const venda    = parseFloat(document.getElementById('valor-venda').value) || 0;
         const parcelas = parseInt(document.getElementById('parcelas').value)       || 1;
@@ -346,6 +401,53 @@
         document.getElementById('r-total').textContent   = fmt(valorTotal);
         document.getElementById('r-parcela').textContent = `${parcelas}x ${fmt(valorParc)}`;
         document.getElementById('bank-resultado').style.display = 'block';
+    }
+    function adicionarConvidado() {
+        const input = document.getElementById('convidado-input');
+        const nome  = input.value.trim();
+        if (!nome) return;
+
+        document.getElementById('lista-vazia')?.remove();
+
+        const lista = document.getElementById('lista-convidados');
+        const li    = document.createElement('li');
+        li.className = 'convidado-item';
+        li.innerHTML = `
+            <span class="convidado-nome">${nome}</span>
+            <div class="btns-convidado">
+                <button class="btn-concluir" onclick="concluirConvidado(this)">✓ Chegou</button>
+                <button class="btn-editar"   onclick="editarConvidado(this)">✎ Editar</button>
+                <button class="btn-excluir"  onclick="excluirConvidado(this)">✕ Excluir</button>
+            </div>`;
+        lista.appendChild(li);
+
+        input.value = '';
+        input.focus();
+    }
+
+    function concluirConvidado(btn) {
+        btn.closest('.convidado-item')
+           .querySelector('.convidado-nome')
+           .classList.toggle('chegou');
+    }
+
+    function editarConvidado(btn) {
+        const nomeEl  = btn.closest('.convidado-item').querySelector('.convidado-nome');
+        const novoNome = prompt('Editar nome do convidado:', nomeEl.textContent);
+        if (novoNome && novoNome.trim()) nomeEl.textContent = novoNome.trim();
+    }
+
+    function excluirConvidado(btn) {
+        const li    = btn.closest('.convidado-item');
+        const lista = document.getElementById('lista-convidados');
+        li.remove();
+        if (!lista.querySelector('.convidado-item')) {
+            const vazio = document.createElement('li');
+            vazio.id        = 'lista-vazia';
+            vazio.className = 'lista-vazia';
+            vazio.textContent = 'Nenhum convidado adicionado ainda.';
+            lista.appendChild(vazio);
+        }
     }
 </script>
 </body>
