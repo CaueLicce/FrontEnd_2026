@@ -1,208 +1,179 @@
-function validarCPF() {
+function validarCPF(){
 
     const input = document
         .getElementById('cpf-input')
         .value
-        .replace(/\D/g, '');
+        .replace(/\D/g,'');
 
     const el = document.getElementById('cpf-resultado');
 
-    el.style.display = 'block';
+    if(input.length !== 11){
 
-    if (input.length !== 11 || /^(\d)\1{10}$/.test(input)) {
+        el.innerHTML = `
+            <div class="erro">
+                CPF inválido
+            </div>
+        `;
 
-        el.className = 'resultado invalido';
-        el.textContent = '✗ CPF inválido.';
         return;
     }
 
-    let soma = 0;
-
-    for (let i = 0; i < 9; i++) {
-        soma += Number(input[i]) * (10 - i);
-    }
-
-    let d1 = (soma * 10) % 11;
-
-    if (d1 === 10) {
-        d1 = 0;
-    }
-
-    soma = 0;
-
-    for (let i = 0; i < 10; i++) {
-        soma += Number(input[i]) * (11 - i);
-    }
-
-    let d2 = (soma * 10) % 11;
-
-    if (d2 === 10) {
-        d2 = 0;
-    }
-
-    if (d1 === Number(input[9]) && d2 === Number(input[10])) {
-
-        el.className = 'resultado valido';
-        el.textContent = '✓ CPF válido!';
-
-    } else {
-
-        el.className = 'resultado invalido';
-        el.textContent = '✗ CPF inválido.';
-    }
+    el.innerHTML = `
+        <div class="sucesso">
+            CPF válido
+        </div>
+    `;
 }
 
-function converterCelsius() {
+function converterCelsius(){
 
-    const c = parseFloat(document.getElementById('celsius').value);
+    const c = parseFloat(
+        document.getElementById('celsius').value
+    );
 
     document.getElementById('fahrenheit').value =
         isNaN(c)
-            ? ''
-            : ((c * 9 / 5) + 32).toFixed(2);
+        ? ''
+        : ((c * 9/5) + 32).toFixed(2);
 }
 
-function converterFahrenheit() {
+function converterFahrenheit(){
 
-    const f = parseFloat(document.getElementById('fahrenheit').value);
+    const f = parseFloat(
+        document.getElementById('fahrenheit').value
+    );
 
     document.getElementById('celsius').value =
         isNaN(f)
-            ? ''
-            : ((f - 32) * 5 / 9).toFixed(2);
+        ? ''
+        : ((f - 32) * 5/9).toFixed(2);
 }
 
-document
-    .getElementById('btn-media')
-    .addEventListener('click', function () {
+function calcularMedia(){
 
-        const nome =
-            document.getElementById('aluno-nome').value.trim()
-            || 'Aluno';
+    const nome =
+        document.getElementById('aluno-nome').value;
 
-        const n1 = Number(document.getElementById('nota1').value);
-        const n2 = Number(document.getElementById('nota2').value);
-        const n3 = Number(document.getElementById('nota3').value);
+    const n1 =
+        Number(document.getElementById('nota1').value);
 
-        const media = (n1 + n2 + n3) / 3;
+    const n2 =
+        Number(document.getElementById('nota2').value);
 
-        const el = document.getElementById('media-resultado');
+    const n3 =
+        Number(document.getElementById('nota3').value);
 
-        el.style.display = 'block';
+    const media = (n1+n2+n3)/3;
 
-        if (media >= 7) {
+    const el = document.getElementById('media-resultado');
 
-            el.className = 'resultado info';
+    if(media >= 7){
 
-            el.textContent =
-                `✓ ${nome} — Média: ${media.toFixed(2)} → APROVADO`;
+        el.innerHTML = `
+            <div class="sucesso">
+                ${nome} aprovado com média ${media.toFixed(2)}
+            </div>
+        `;
 
-        } else if (media >= 4) {
+    }else if(media >= 4){
 
-            const falta = (10 - media).toFixed(2);
+        el.innerHTML = `
+            <div>
+                ${nome} em exame com média ${media.toFixed(2)}
+            </div>
+        `;
 
-            el.className = 'resultado valido';
+    }else{
 
-            el.textContent =
-                `⚠ ${nome} — Média: ${media.toFixed(2)} → EXAME`;
+        el.innerHTML = `
+            <div class="erro">
+                ${nome} reprovado com média ${media.toFixed(2)}
+            </div>
+        `;
+    }
+}
 
-        } else {
-
-            el.className = 'resultado invalido';
-
-            el.textContent =
-                `✗ ${nome} — Média: ${media.toFixed(2)} → REPROVADO`;
-        }
-    });
-
-function calcularTaxas() {
+function calcularTaxas(){
 
     const venda =
-        parseFloat(document.getElementById('valor-venda').value) || 0;
+        Number(document.getElementById('valor-venda').value);
 
     const parcelas =
-        parseInt(document.getElementById('parcelas').value) || 1;
+        Number(document.getElementById('parcelas').value);
 
     const bandeira =
         document.getElementById('bandeira').value;
 
-    let percentualBandeira;
+    let taxa = 0;
 
-    switch (bandeira) {
+    switch(bandeira){
 
         case 'visa':
-            percentualBandeira = 0.02;
+            taxa = 0.02;
             break;
 
         case 'master':
-            percentualBandeira = 0.0185;
+            taxa = 0.0185;
             break;
 
         case 'elo':
-            percentualBandeira = 0.03;
+            taxa = 0.03;
             break;
     }
 
-    const valorTaxa = venda * percentualBandeira;
-    const valorJuros = venda * (0.0035 * parcelas);
-    const taxaMensal = 12.50 * parcelas;
+    const valorTaxa = venda * taxa;
+    const juros = venda * (0.0035 * parcelas);
+    const mensal = 12.50 * parcelas;
+    const total = venda + valorTaxa + juros + mensal;
 
-    const valorTotal =
-        venda + valorTaxa + valorJuros + taxaMensal;
+    document.getElementById('bank-resultado').innerHTML = `
+        <div class="resultado-item">
+            Taxa: R$ ${valorTaxa.toFixed(2)}
+        </div>
 
-    const valorParc = valorTotal / parcelas;
+        <div class="resultado-item">
+            Juros: R$ ${juros.toFixed(2)}
+        </div>
 
-    const fmt = v => 'R$ ' + v.toFixed(2).replace('.', ',');
-
-    document.getElementById('r-taxa').textContent =
-        fmt(valorTaxa);
-
-    document.getElementById('r-juros').textContent =
-        fmt(valorJuros);
-
-    document.getElementById('r-mensal').textContent =
-        fmt(taxaMensal);
-
-    document.getElementById('r-total').textContent =
-        fmt(valorTotal);
-
-    document.getElementById('r-parcela').textContent =
-        `${parcelas}x ${fmt(valorParc)}`;
-
-    document.getElementById('bank-resultado').style.display =
-        'block';
+        <div class="resultado-item">
+            Total: R$ ${total.toFixed(2)}
+        </div>
+    `;
 }
 
-function adicionarConvidado() {
+function adicionarConvidado(){
 
-    const input = document.getElementById('convidado-input');
+    const input =
+        document.getElementById('convidado-input');
+
     const nome = input.value.trim();
 
-    if (!nome) return;
+    if(!nome) return;
 
-    document.getElementById('lista-vazia')?.remove();
-
-    const lista = document.getElementById('lista-convidados');
+    const lista =
+        document.getElementById('lista-convidados');
 
     const li = document.createElement('li');
 
     li.className = 'convidado-item';
 
     li.innerHTML = `
-        <span class="convidado-nome">${nome}</span>
+        <span>${nome}</span>
 
-        <div class="btns-convidado">
+        <div>
+
             <button onclick="concluirConvidado(this)">
-                ✓
+                ✔
             </button>
 
             <button onclick="editarConvidado(this)">
-                ✎
+                ✏
             </button>
 
             <button onclick="excluirConvidado(this)">
-                ✕
+                ❌
             </button>
+
         </div>
     `;
 
@@ -211,46 +182,139 @@ function adicionarConvidado() {
     input.value = '';
 }
 
-function concluirConvidado(btn) {
+function concluirConvidado(btn){
 
-    btn.closest('.convidado-item')
-        .querySelector('.convidado-nome')
-        .classList.toggle('chegou');
+    btn.parentElement
+       .previousElementSibling
+       .classList.toggle('chegou');
 }
 
-function editarConvidado(btn) {
+function editarConvidado(btn){
 
-    const nomeEl =
-        btn.closest('.convidado-item')
-        .querySelector('.convidado-nome');
+    const span =
+        btn.parentElement.previousElementSibling;
 
     const novoNome =
-        prompt('Novo nome:', nomeEl.textContent);
+        prompt('Novo nome:', span.textContent);
 
-    if (novoNome && novoNome.trim()) {
-        nomeEl.textContent = novoNome.trim();
+    if(novoNome){
+        span.textContent = novoNome;
     }
 }
 
-function excluirConvidado(btn) {
+function excluirConvidado(btn){
 
-    const li = btn.closest('.convidado-item');
+    btn.parentElement.parentElement.remove();
+}
 
-    const lista =
-        document.getElementById('lista-convidados');
+function calcularEvento(){
 
-    li.remove();
+    const pacote =
+        Number(document.getElementById('pacote').value);
 
-    if (!lista.querySelector('.convidado-item')) {
+    const pessoas =
+        Number(document.getElementById('pessoas').value);
 
-        const vazio = document.createElement('li');
+    const base = pacote * pessoas;
+    const taxa = base * 0.10;
 
-        vazio.id = 'lista-vazia';
-        vazio.className = 'lista-vazia';
+    let total = base + taxa;
+    let desconto = 0;
 
-        vazio.textContent =
-            'Nenhum convidado adicionado ainda.';
+    if(pessoas > 100){
 
-        lista.appendChild(vazio);
+        desconto = total * 0.05;
+        total -= desconto;
     }
+
+    document.getElementById('resultado-evento').innerHTML = `
+        <div class="resultado-item">
+            Valor Base: R$ ${base.toFixed(2)}
+        </div>
+
+        <div class="resultado-item">
+            Taxa: R$ ${taxa.toFixed(2)}
+        </div>
+
+        <div class="resultado-item">
+            Desconto: R$ ${desconto.toFixed(2)}
+        </div>
+
+        <div class="resultado-item sucesso">
+            Total Final: R$ ${total.toFixed(2)}
+        </div>
+    `;
+}
+
+function algoritmoLuhn(numero){
+
+    let soma = 0;
+    let alternar = false;
+
+    for(let i = numero.length - 1; i >= 0; i--){
+
+        let n = parseInt(numero[i]);
+
+        if(alternar){
+
+            n *= 2;
+
+            if(n > 9){
+                n -= 9;
+            }
+        }
+
+        soma += n;
+
+        alternar = !alternar;
+    }
+
+    return soma % 10 === 0;
+}
+
+function validarCartao(){
+
+    const numero =
+        document.getElementById('cartao')
+        .value
+        .replace(/\D/g,'');
+
+    const resultado =
+        document.getElementById('resultado-cartao');
+
+    if(numero.length < 13 || numero.length > 16){
+
+        resultado.innerHTML = `
+            <div class="erro">
+                Cartão inválido
+            </div>
+        `;
+
+        return;
+    }
+
+    const valido = algoritmoLuhn(numero);
+
+    let bandeira = 'Desconhecida';
+
+    if(numero.startsWith('4')){
+        bandeira = 'Visa';
+    }
+
+    if(/^5[1-5]/.test(numero)){
+        bandeira = 'Mastercard';
+    }
+
+    resultado.innerHTML = `
+        <div class="resultado-item">
+            Status:
+            <strong class="${valido ? 'sucesso' : 'erro'}">
+                ${valido ? 'Válido' : 'Inválido'}
+            </strong>
+        </div>
+
+        <div class="resultado-item">
+            Bandeira: ${bandeira}
+        </div>
+    `;
 }
