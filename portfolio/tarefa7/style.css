@@ -1,0 +1,148 @@
+:root {
+    --primary-color: #2c3e50;
+    --accent-color: #e67e22;
+    --bg-color: #f0f2f5;
+    --card-bg: #ffffff;
+    --text-color: #333;
+}
+
+body {
+    font-family: 'Segoe UI';
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    margin: 0;
+    padding: 20px;
+}
+
+.container {
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+header {
+    text-align: center;
+    padding: 30px 0;
+    background: var(--primary-color);
+    color: white;
+    border-radius: 8px;
+    margin-bottom: 30px;
+}
+
+.question-card {
+    background: white;
+    padding: 30px;
+    border-radius: 8px;
+    margin-bottom: 30px;
+    border-top: 5px solid var(--accent-color);
+}
+
+.question-header {
+    font-weight: bold;
+    font-size: 1.3em;
+    color: var(--accent-color);
+}
+
+.form-row,
+.conv-row {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    align-items: flex-end;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+input,
+select {
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+button {
+    padding: 10px 20px;
+    background: var(--accent-color);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #cf6d17;
+}
+
+.resultado {
+    margin-top: 15px;
+    padding: 12px;
+    border-radius: 5px;
+    display: none;
+}
+
+.valido {
+    background: #d4edda;
+    color: #155724;
+}
+
+.invalido {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+.info {
+    background: #d1ecf1;
+    color: #0c5460;
+}
+
+.resumo-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.resumo-item {
+    background: #f8f9fa;
+    padding: 12px;
+    border-radius: 6px;
+}
+
+.label {
+    font-size: 0.8em;
+    color: #777;
+}
+
+.valor {
+    font-size: 1.2em;
+    font-weight: bold;
+}
+
+#lista-convidados {
+    list-style: none;
+    padding: 0;
+}
+
+.convidado-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.convidado-nome.chegou {
+    text-decoration: line-through;
+    color: #aaa;
+}
+
+.btns-convidado {
+    display: flex;
+    gap: 5px;
+}
+
+.lista-vazia {
+    text-align: center;
+    color: #aaa;
+}
