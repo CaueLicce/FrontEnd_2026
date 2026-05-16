@@ -4,11 +4,30 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Laboratório FrontEnd</title>
-
     <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
+
+<a href="../" style="
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    color: #38bdf8;
+    text-decoration: none;
+    border: 1px solid rgba(56,189,248,0.3);
+    padding: 6px 14px;
+    border-radius: 8px;
+    margin: 20px 20px 0;
+    display: inline-flex;
+    transition: background 0.2s, border-color 0.2s;
+" onmouseover="this.style.background='rgba(56,189,248,0.08)';this.style.borderColor='#38bdf8';"
+   onmouseout="this.style.background='transparent';this.style.borderColor='rgba(56,189,248,0.3)';">
+    ← central de estudos
+</a>
 
 <div class="container">
 
@@ -18,146 +37,73 @@
     </header>
 
     <section class="question-card">
-
-        <div class="question-header">
-            ⚡ Exercício 01: Validador de CPF
-        </div>
-
-        <div class="intro-box">
-            Validação de CPF utilizando dígitos verificadores.
-        </div>
-
+        <div class="question-header">⚡ Exercício 01: Validador de CPF</div>
+        <div class="intro-box">Validação de CPF utilizando dígitos verificadores.</div>
         <input type="text" id="cpf-input" placeholder="000.000.000-00">
-
-        <button onclick="validarCPF()">
-            Validar CPF
-        </button>
-
+        <button onclick="validarCPF()">Validar CPF</button>
         <div class="resultado-box" id="cpf-resultado"></div>
-
     </section>
 
     <section class="question-card">
-
-        <div class="question-header">
-            🌡️ Exercício 02: Conversor Dinâmico
-        </div>
-
-        <div class="intro-box">
-            Conversão em tempo real entre Celsius e Fahrenheit.
-        </div>
-
+        <div class="question-header">🌡️ Exercício 02: Conversor Dinâmico</div>
+        <div class="intro-box">Conversão em tempo real entre Celsius e Fahrenheit.</div>
         <label>Celsius</label>
         <input type="number" id="celsius" oninput="converterCelsius()">
-
         <label>Fahrenheit</label>
         <input type="number" id="fahrenheit" oninput="converterFahrenheit()">
-
     </section>
 
     <section class="question-card">
-
-        <div class="question-header">
-            🎓 Exercício 03: Média Escolar
-        </div>
-
+        <div class="question-header">🎓 Exercício 03: Média Escolar</div>
         <input type="text" id="aluno-nome" placeholder="Nome do aluno">
-
         <input type="number" id="nota1" placeholder="Nota 1">
-
         <input type="number" id="nota2" placeholder="Nota 2">
-
         <input type="number" id="nota3" placeholder="Nota 3">
-
-        <button onclick="calcularMedia()">
-            Calcular Média
-        </button>
-
+        <button onclick="calcularMedia()">Calcular Média</button>
         <div class="resultado-box" id="media-resultado"></div>
-
     </section>
 
     <section class="question-card">
-
-        <div class="question-header">
-            💳 Exercício 04: Taxas Infinity Bank
-        </div>
-
+        <div class="question-header">💳 Exercício 04: Taxas Infinity Bank</div>
         <select id="bandeira">
-            <option value="visa">Visa</option>
-            <option value="master">Mastercard</option>
-            <option value="elo">Elo</option>
+            <option value="visa">Visa (2%)</option>
+            <option value="master">Mastercard (1.85%)</option>
+            <option value="elo">Elo (3%)</option>
         </select>
-
-        <input type="number" id="valor-venda" placeholder="Valor da venda">
-
+        <input type="number" id="valor-venda" placeholder="Valor da venda (R$)">
         <input type="number" id="parcelas" placeholder="Parcelas">
-
-        <button onclick="calcularTaxas()">
-            Calcular
-        </button>
-
+        <button onclick="calcularTaxas()">Calcular</button>
         <div class="resultado-box" id="bank-resultado"></div>
-
     </section>
 
     <section class="question-card">
-
-        <div class="question-header">
-            👥 Exercício 05: Gestão de Convidados VIP
-        </div>
-
-        <input type="text" id="convidado-input" placeholder="Nome do convidado">
-
-        <button onclick="adicionarConvidado()">
-            Adicionar
-        </button>
-
+        <div class="question-header">👥 Exercício 05: Gestão de Convidados VIP</div>
+        <input type="text" id="convidado-input" placeholder="Nome do convidado"
+               onkeydown="if(event.key==='Enter') adicionarConvidado()">
+        <button onclick="adicionarConvidado()">Adicionar</button>
         <ul id="lista-convidados"></ul>
-
     </section>
 
     <section class="question-card">
-
-        <div class="question-header">
-            🎉 Exercício 06: Crédito para Eventos
-        </div>
-
+        <div class="question-header">🎉 Exercício 06: Crédito para Eventos</div>
         <select id="pacote">
-            <option value="50">Standard</option>
-            <option value="80">Premium</option>
-            <option value="120">Infinity Deluxe</option>
+            <option value="50">Standard — R$50/pessoa</option>
+            <option value="80">Premium — R$80/pessoa</option>
+            <option value="120">Infinity Deluxe — R$120/pessoa</option>
         </select>
-
         <input type="number" id="pessoas" placeholder="Quantidade de pessoas">
-
-        <button onclick="calcularEvento()">
-            Calcular Orçamento
-        </button>
-
+        <button onclick="calcularEvento()">Calcular Orçamento</button>
         <div class="resultado-box" id="resultado-evento"></div>
-
     </section>
 
     <section class="question-card">
-
-        <div class="question-header">
-            🛡️ Exercício 07: Validador de Cartão
-        </div>
-
-        <input type="text" id="cartao" placeholder="0000 0000 0000 0000">
-
-        <button onclick="validarCartao()">
-            Analisar Cartão
-        </button>
-
+        <div class="question-header">🛡️ Exercício 07: Validador de Cartão</div>
+        <input type="text" id="cartao" placeholder="0000 0000 0000 0000" maxlength="19">
+        <button onclick="validarCartao()">Analisar Cartão</button>
         <div class="resultado-box" id="resultado-cartao"></div>
-
     </section>
 
-    <footer>
-        Desenvolvido com ❤️
-    </footer>
+    <footer>Desenvolvido com ❤️</footer>
 
 </div>
 
