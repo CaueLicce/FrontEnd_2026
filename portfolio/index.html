@@ -6,26 +6,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Portfólio de Tarefas</title>
   <style>
-    #btn-hub {
-    position: fixed;
-    top: 14px; left: 16px;
-    font-family: 'Courier New', monospace;
-    font-size: 0.7rem;
-    letter-spacing: 0.1em;
-    color: #005514;
-    text-decoration: none;
-    border: 1px solid #1a2e1a;
-    padding: 4px 10px;
-    z-index: 10001;
-    transition: color 0.2s, border-color 0.2s, background 0.2s;
-  }
- 
-  #btn-hub:hover {
-    color: #00ff41;
-    border-color: #005514;
-    background: rgba(0,255,65,0.04);
-  }
-    
     :root {
       --verde:       #00ff41;
       --verde-dim:   #00aa2a;
@@ -149,9 +129,12 @@
       text-transform: uppercase;
       letter-spacing: 0.15em;
       margin-bottom: 1.5rem;
+      margin-top: 2.5rem;
       padding-bottom: 0.5rem;
       border-bottom: 1px dashed var(--borda);
     }
+
+    h2:first-of-type { margin-top: 0; }
 
     h2::before { content: '## '; color: var(--verde-muted); }
 
@@ -443,7 +426,6 @@
   </style>
 </head>
 <body>
-  <a id="btn-hub" href="../">← hub</a>
 
   <div id="tv-blackout"></div>
   <div id="tv-rgb-r"></div>
@@ -473,7 +455,7 @@
   </header>
 
   <main>
-    <h2>Tarefas publicadas</h2>
+    <h2>1º Bimestre — Tarefas</h2>
     <div class="grid">
 
       <a class="card" href="tarefa1/">
@@ -526,16 +508,21 @@
         <div class="card-inner">
           <div class="numero">// tarefa 06</div>
           <h3>Tamagotchi</h3>
-          <p>Fazer um Tamagotchi usando JavaScript</p>
+          <p>Fazer um Tamagotchi usando JavaScript.</p>
         </div>
       </a>
+
+    </div>
+
+    <h2>1º Bimestre — Provas Práticas</h2>
+    <div class="grid">
 
       <a class="card" href="prova1_ex1/">
         <div class="card-overlay"></div>
         <div class="card-inner">
           <div class="numero">// prova 01</div>
           <h3>Ex1</h3>
-          <p>Refazer a prova</p>
+          <p>Refazer a prova.</p>
         </div>
       </a>
 
@@ -544,7 +531,7 @@
         <div class="card-inner">
           <div class="numero">// prova 01</div>
           <h3>Ex4</h3>
-          <p>Refazer a prova</p>
+          <p>Refazer a prova.</p>
         </div>
       </a>
 
@@ -553,7 +540,7 @@
         <div class="card-inner">
           <div class="numero">// prova 02</div>
           <h3>Ex1</h3>
-          <p>Refazer a prova</p>
+          <p>Refazer a prova.</p>
         </div>
       </a>
 
@@ -562,7 +549,7 @@
         <div class="card-inner">
           <div class="numero">// prova 02</div>
           <h3>Ex4</h3>
-          <p>Refazer a prova</p>
+          <p>Refazer a prova.</p>
         </div>
       </a>
 
@@ -571,7 +558,7 @@
         <div class="card-inner">
           <div class="numero">// prova 03</div>
           <h3>Ex1</h3>
-          <p>Refazer a prova</p>
+          <p>Refazer a prova.</p>
         </div>
       </a>
 
@@ -580,20 +567,26 @@
         <div class="card-inner">
           <div class="numero">// prova 03</div>
           <h3>Ex4</h3>
-          <p>Refazer a prova</p>
+          <p>Refazer a prova.</p>
         </div>
       </a>
+
+    </div>
+
+    <h2>2º Bimestre — Tarefas</h2>
+    <div class="grid">
 
       <a class="card" href="tarefa7/">
         <div class="card-overlay"></div>
         <div class="card-inner">
           <div class="numero">// tarefa 07</div>
           <h3>Atividades em casa</h3>
-          <p>Atividades feitas em casa para contar presença</p>
+          <p>Atividades feitas em casa para contar presença.</p>
         </div>
       </a>
 
     </div>
+
   </main>
 
   <footer>
@@ -900,4 +893,3 @@
 
 </body>
 </html>
-
