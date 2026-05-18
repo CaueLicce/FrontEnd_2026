@@ -6,6 +6,25 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Portfólio de Tarefas</title>
   <style>
+    #btn-hub {
+    position: fixed;
+    top: 14px; left: 16px;
+    font-family: 'Courier New', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    color: #005514;
+    text-decoration: none;
+    border: 1px solid #1a2e1a;
+    padding: 4px 10px;
+    z-index: 10001;
+    transition: color 0.2s, border-color 0.2s, background 0.2s;
+  }
+ 
+  #btn-hub:hover {
+    color: #00ff41;
+    border-color: #005514;
+    background: rgba(0,255,65,0.04);
+  }
     :root {
       --verde:       #00ff41;
       --verde-dim:   #00aa2a;
@@ -426,6 +445,7 @@
   </style>
 </head>
 <body>
+  <a id="btn-hub" href="../">← hub</a>
 
   <div id="tv-blackout"></div>
   <div id="tv-rgb-r"></div>
