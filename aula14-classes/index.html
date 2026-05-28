@@ -1,0 +1,1151 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aula 14 — Diagrama de Classes</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Source+Serif+4:ital,wght@0,300;0,400;0,600;1,400&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink: #12100e;
+  --parchment: #f4efe6;
+  --warm: #faf7f2;
+  --accent: #8b1a00;
+  --accent2: #c4391a;
+  --gold: #c9941a;
+  --gold-light: #e8b84b;
+  --mid: #5c4a32;
+  --light: #a08060;
+  --border: #d4c5a9;
+  --tag: #f0e8d8;
+  --code: #2c1f10;
+  --green-dark: #1a3a1a;
+  --green: #7ec87e;
+  --blue-dark: #1a1f3a;
+  --blue: #7ea8e3;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:'Source Serif 4',Georgia,serif;background:var(--warm);color:var(--ink);line-height:1.78;}
+
+/* HERO */
+.hero{background:var(--ink);padding:68px 40px 56px;text-align:center;position:relative;overflow:hidden;}
+.hero::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(45deg,transparent,transparent 48px,rgba(255,255,255,0.012) 48px,rgba(255,255,255,0.012) 96px);pointer-events:none;}
+.hero-label{font-family:'JetBrains Mono',monospace;font-size:.7rem;letter-spacing:.28em;text-transform:uppercase;color:var(--gold);margin-bottom:18px;}
+.hero h1{font-family:'Playfair Display',serif;font-size:clamp(2rem,5vw,3.2rem);font-weight:900;color:var(--parchment);line-height:1.1;margin-bottom:16px;}
+.hero h1 span{color:var(--gold-light);}
+.hero-sub{font-size:1.05rem;color:#c0b8a8;font-style:italic;max-width:520px;margin:0 auto 36px;}
+.hero-tags{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;font-family:'JetBrains Mono',monospace;font-size:.7rem;letter-spacing:.1em;color:#7a6a58;}
+.hero-tags span{padding:5px 14px;border:1px solid #2e2218;border-radius:3px;}
+
+/* NAV */
+.nav{position:sticky;top:0;z-index:100;background:var(--ink);border-bottom:2px solid var(--accent);display:flex;overflow-x:auto;scrollbar-width:none;}
+.nav::-webkit-scrollbar{display:none;}
+.nav a{padding:11px 18px;font-family:'JetBrains Mono',monospace;font-size:.66rem;letter-spacing:.08em;text-transform:uppercase;color:#7a6a58;text-decoration:none;white-space:nowrap;border-right:1px solid #281e12;transition:all .2s;}
+.nav a:hover{color:var(--gold-light);background:#1e1408;}
+
+/* LAYOUT */
+.page{max-width:920px;margin:0 auto;padding:0 28px;}
+.section{padding:64px 0 52px;border-bottom:1px solid var(--border);}
+.section:last-child{border-bottom:none;}
+.section-tag{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:.62rem;letter-spacing:.22em;text-transform:uppercase;color:var(--accent);border:1px solid var(--accent);padding:3px 10px;margin-bottom:16px;border-radius:2px;}
+.section-title{font-family:'Playfair Display',serif;font-size:clamp(1.6rem,3vw,2.2rem);font-weight:700;color:var(--ink);margin-bottom:26px;line-height:1.2;}
+.section-title .a{color:var(--accent);}
+p{margin-bottom:16px;font-size:1.04rem;}
+p:last-child{margin-bottom:0;}
+h2.sub{font-family:'Playfair Display',serif;font-size:1.35rem;color:var(--accent);margin:36px 0 14px;padding-bottom:6px;border-bottom:1px solid var(--border);}
+ul.cl{padding-left:22px;margin-bottom:18px;}
+ul.cl li{margin-bottom:8px;font-size:1rem;}
+
+/* CLASS BOX (UML) */
+.uml-class{display:inline-block;border:2px solid var(--mid);border-radius:4px;overflow:hidden;min-width:200px;font-size:.9rem;margin:8px 4px;vertical-align:top;}
+.uml-class .cn{background:#f0e8d0;padding:8px 16px;text-align:center;font-weight:700;font-family:'Playfair Display',serif;border-bottom:1px solid var(--mid);}
+.uml-class .cn.abs{font-style:italic;}
+.uml-class .ca{padding:10px 16px;border-bottom:1px solid var(--mid);font-family:'JetBrains Mono',monospace;font-size:.78rem;line-height:1.9;}
+.uml-class .co{padding:10px 16px;font-family:'JetBrains Mono',monospace;font-size:.78rem;line-height:1.9;}
+.uml-class .ca span,.uml-class .co span{font-size:.82rem;}
+.pub{color:#155215;}
+.priv{color:#8b1a00;}
+.prot{color:#1a1a8b;}
+.pkg{color:#6a4a00;}
+.static-prop{text-decoration:underline;}
+
+/* DIAGRAM CONTAINER */
+.dbox{background:var(--parchment);border:1px solid var(--border);border-radius:8px;padding:32px 24px;margin:28px 0;text-align:center;overflow-x:auto;}
+.dbox p.caption{font-size:.82rem;color:var(--light);font-style:italic;margin-top:14px;}
+
+/* CARDS */
+.card{background:var(--parchment);border:1px solid var(--border);border-left:4px solid var(--accent);border-radius:4px;padding:22px 26px;margin:22px 0;}
+.card h3{font-family:'Playfair Display',serif;font-size:1.15rem;color:var(--accent);margin-bottom:10px;}
+.card.gold{border-left-color:var(--gold);}
+.card.gold h3{color:var(--mid);}
+
+/* ANALOGY */
+.analogy{background:linear-gradient(135deg,#1a1008,#2c1810);color:var(--parchment);border-radius:8px;padding:26px 30px 26px 50px;margin:26px 0;position:relative;}
+.analogy::before{content:'💡';position:absolute;left:16px;top:22px;font-size:1.4rem;}
+.analogy-t{font-family:'Playfair Display',serif;font-size:.95rem;color:var(--gold);margin-bottom:8px;font-style:italic;}
+.analogy p{color:#d0c8be;font-size:.97rem;margin-bottom:0;}
+.analogy strong{color:var(--gold-light);}
+
+/* NOTE */
+.note{background:#fff8e8;border:1px solid #e0c878;border-left:4px solid var(--gold);border-radius:4px;padding:14px 18px;font-size:.95rem;margin:18px 0;}
+.note strong{color:var(--mid);}
+
+/* RELATION GRID */
+.rgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:18px;margin:24px 0;}
+.rcard{border:1px solid var(--border);border-radius:6px;overflow:hidden;}
+.rcard-h{padding:13px 18px;font-family:'Playfair Display',serif;font-size:1.05rem;font-weight:700;display:flex;align-items:center;gap:8px;}
+.rcard-h.h{background:#1a3a1a;color:#7ec87e;}
+.rcard-h.c{background:#3a1818;color:#e88080;}
+.rcard-h.g{background:#281a38;color:#c0a0e8;}
+.rcard-h.d{background:#1a2a3a;color:#80b8e8;}
+.rcard-body{padding:14px 18px;font-size:.95rem;line-height:1.65;}
+.rcard-rule{margin-top:10px;padding:9px 12px;background:var(--tag);border-radius:3px;font-family:'JetBrains Mono',monospace;font-size:.72rem;color:var(--mid);border-left:3px solid var(--gold);}
+
+/* TABLE */
+.tb{width:100%;border-collapse:collapse;margin:22px 0;font-size:.94rem;}
+.tb th{text-align:left;padding:9px 14px;background:var(--ink);color:var(--gold-light);font-family:'JetBrains Mono',monospace;font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;}
+.tb td{padding:11px 14px;border-bottom:1px solid var(--border);vertical-align:top;}
+.tb tr:last-child td{border-bottom:none;}
+.tb tr:nth-child(even) td{background:#f7f2eb;}
+.sym{font-family:'JetBrains Mono',monospace;font-size:.82rem;color:var(--accent);font-weight:500;}
+
+/* SUMMARY */
+.sum-bg{background:var(--ink);padding:56px 0;}
+.sum-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:16px;margin-top:30px;}
+.sum-card{background:#1e1408;border:1px solid #2e1e0e;border-top:3px solid var(--accent);border-radius:6px;padding:18px 16px;}
+.sum-card h4{font-family:'Playfair Display',serif;font-size:.95rem;color:var(--gold-light);margin-bottom:8px;}
+.sum-card p{font-size:.83rem;color:#907868;line-height:1.55;margin:0;}
+
+/* QUIZ */
+.quiz-bg{background:#f0ebe0;padding:52px 0;}
+.qi{background:white;border:1px solid var(--border);border-radius:6px;padding:20px 24px;margin-bottom:14px;cursor:pointer;}
+.qi:hover{border-color:var(--accent);}
+.qi-q{font-weight:600;font-size:.98rem;margin-bottom:0;}
+.qi-a{display:none;background:#f5f0e8;border-left:3px solid var(--accent);padding:12px 16px;font-size:.93rem;border-radius:0 4px 4px 0;margin-top:12px;}
+.qi-a.show{display:block;}
+.qi-hint{font-family:'JetBrains Mono',monospace;font-size:.66rem;color:var(--light);margin-top:6px;}
+
+/* MISC */
+.tag{display:inline-block;background:var(--tag);border:1px solid var(--border);padding:1px 7px;border-radius:3px;font-family:'JetBrains Mono',monospace;font-size:.76rem;color:var(--mid);}
+.vis-grid{display:flex;flex-wrap:wrap;gap:12px;margin:18px 0;}
+.vis-badge{border-radius:6px;padding:12px 18px;text-align:center;min-width:120px;}
+.vis-badge .sym2{font-family:'JetBrains Mono',monospace;font-size:1.4rem;font-weight:700;display:block;margin-bottom:4px;}
+.vis-badge .name{font-size:.82rem;font-weight:600;margin-bottom:3px;}
+.vis-badge .desc{font-size:.74rem;opacity:.8;}
+.vp{background:#e8f5e8;border:1px solid #90c890;}.vp .sym2{color:#155215;}
+.vr{background:#f5e8e8;border:1px solid #c89090;}.vr .sym2{color:#8b1a00;}
+.vb{background:#e8e8f5;border:1px solid #9090c8;}.vb .sym2{color:#1a1a8b;}
+.vy{background:#f5f0e0;border:1px solid #c8b868;}.vy .sym2{color:#6a4a00;}
+
+/* ARROWS SVG */
+.arrow-demo{display:flex;flex-wrap:wrap;gap:16px;margin:18px 0;align-items:flex-start;}
+.arrow-item{background:var(--parchment);border:1px solid var(--border);border-radius:6px;padding:14px 18px;min-width:200px;flex:1;}
+.arrow-item h4{font-family:'Playfair Display',serif;font-size:.9rem;color:var(--accent);margin-bottom:8px;}
+.arrow-item p{font-size:.85rem;color:var(--mid);margin:0;}
+
+@media(max-width:600px){.page{padding:0 16px;}.hero{padding:48px 18px 40px;}.rgrid{grid-template-columns:1fr;}.vis-grid{flex-direction:column;}}
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-label">Análise e Projeto Orientado a Objetos · UniCesumar · Aula 14</div>
+  <h1>Diagrama de <span>Classes</span></h1>
+  <p class="hero-sub">O diagrama estrutural mais importante da UML — mapeando o esqueleto do seu sistema</p>
+  <div class="hero-tags">
+    <span>Profª Ana Letícia Mania Feijó</span>
+    <span>Diagrama Estrutural</span>
+    <span>Orientação a Objetos</span>
+    <span>Eduardo Bezerra — UML</span>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav class="nav">
+  <a href="#intro">01 · Intro</a>
+  <a href="#conceitos">02 · OO & Classe</a>
+  <a href="#estrutura">03 · Estrutura</a>
+  <a href="#visibilidade">04 · Visibilidade</a>
+  <a href="#heranca">05 · Herança</a>
+  <a href="#associacoes">06 · Associações</a>
+  <a href="#mult">07 · Multiplicidade</a>
+  <a href="#tipos-assoc">08 · Tipos de Assoc.</a>
+  <a href="#agcomp">09 · Agr. vs Comp.</a>
+  <a href="#dep">10 · Dependência</a>
+  <a href="#especiais">11 · Especiais</a>
+  <a href="#como-achar">12 · Como Achar</a>
+  <a href="#resumo">13 · Resumo</a>
+  <a href="#quiz">14 · Quiz</a>
+</nav>
+
+<main>
+
+<!-- 01 INTRO -->
+<section id="intro" class="section">
+<div class="page">
+  <div class="section-tag">01 · Contexto</div>
+  <h1 class="section-title">O que é o <span class="a">Diagrama de Classes</span>?</h1>
+
+  <p>Lembra da grande divisão da UML entre diagramas estruturais e de comportamento? O <strong>Diagrama de Classes</strong> é o principal representante dos <em>diagramas estruturais</em>. Ele responde: <em>"Como o sistema está organizado por dentro?"</em></p>
+
+  <div class="dbox">
+    <svg viewBox="0 0 560 120" xmlns="http://www.w3.org/2000/svg" font-family="'Source Serif 4',Georgia,serif">
+      <rect width="560" height="120" fill="#f5f0e8" rx="8"/>
+      <rect x="20" y="20" width="240" height="80" rx="6" fill="#e8e0d0" stroke="#c9941a" stroke-width="1.5"/>
+      <text x="140" y="42" text-anchor="middle" font-size="11" font-weight="600" fill="#8b1a00">Diagrama de Estruturas</text>
+      <rect x="36" y="54" width="100" height="32" rx="4" fill="#c9941a" stroke="#8b4500" stroke-width="1.5"/>
+      <text x="86" y="74" text-anchor="middle" font-size="11" font-weight="700" fill="#fff">Diagrama de Classes ←</text>
+      <rect x="150" y="54" width="96" height="32" rx="4" fill="#e0d8c8" stroke="#a08060" stroke-width="1"/>
+      <text x="198" y="74" text-anchor="middle" font-size="10" fill="#5c4a32">Componentes...</text>
+      <rect x="310" y="20" width="230" height="80" rx="6" fill="#e8e0d0" stroke="#5c7a5c" stroke-width="1.5"/>
+      <text x="425" y="42" text-anchor="middle" font-size="11" font-weight="600" fill="#2a5a2a">Diagrama de Comportamentos</text>
+      <rect x="326" y="54" width="85" height="32" rx="4" fill="#e0d8c8" stroke="#a08060" stroke-width="1"/>
+      <text x="368" y="74" text-anchor="middle" font-size="10" fill="#5c4a32">Casos de Uso...</text>
+      <rect x="424" y="54" width="100" height="32" rx="4" fill="#e0d8c8" stroke="#a08060" stroke-width="1"/>
+      <text x="474" y="74" text-anchor="middle" font-size="10" fill="#5c4a32">Sequência...</text>
+    </svg>
+    <p class="caption">Diagrama de Classes fica dentro dos Diagramas de Estruturas.</p>
+  </div>
+
+  <p>Um Diagrama de Classes é um modelo <strong>estático</strong> — ele não mostra o que acontece no tempo, mas sim <em>o que existe</em>: as classes do sistema, seus atributos, suas operações e como elas se relacionam entre si.</p>
+
+  <div class="card">
+    <h3>Para que serve?</h3>
+    <ul class="cl">
+      <li>Ajuda a compreender os <strong>requisitos do domínio</strong> do problema.</li>
+      <li>Descreve exatamente <strong>como o sistema funciona</strong> internamente.</li>
+      <li>Mostra a <strong>estrutura e hierarquia de herança</strong> entre classes.</li>
+      <li>Serve de base para a <strong>geração de código</strong> em linguagens OO como Java, Python, C#...</li>
+    </ul>
+  </div>
+</div>
+</section>
+
+<!-- 02 CONCEITOS OO -->
+<section id="conceitos" class="section">
+<div class="page">
+  <div class="section-tag">02 · Conceitos Fundamentais</div>
+  <h1 class="section-title">Orientação a Objetos & <span class="a">Classes</span></h1>
+
+  <p>Antes de falar do diagrama, precisamos solidificar três conceitos da OO que aparecem em toda classe UML.</p>
+
+  <div class="analogy">
+    <div class="analogy-t">Analogia: a fôrma de biscoito</div>
+    <p><strong>Classe</strong> é a fôrma (o molde). <strong>Objeto</strong> é o biscoito em si. Uma única fôrma "Cachorro" pode criar infinitos objetos: Rex, Bolinha, Totó — cada um com seus próprios valores de atributos (nome, raça, peso), mas todos compartilhando o mesmo comportamento (latir, andar, brincar).</p>
+  </div>
+
+  <h2 class="sub">Classe</h2>
+  <p>Representa a <strong>abstração de um conjunto de objetos do mundo real</strong> que possuem comportamentos e características comuns. Por exemplo: a classe <em>Cachorro</em> abstrai todos os cachorros possíveis.</p>
+
+  <h2 class="sub">Atributos</h2>
+  <p>São as <strong>características</strong> que os objetos de uma classe possuem, mas cada objeto assume valores diferentes. São os dados que o objeto carrega.</p>
+  <ul class="cl">
+    <li>Classe Cachorro → atributos: <em>nome, raça, peso</em></li>
+    <li>Classe Cliente → atributos: <em>cpf, nome, sexo</em></li>
+    <li>Cada cachorro tem seu próprio nome — por isso é um atributo, não um método.</li>
+  </ul>
+
+  <h2 class="sub">Operações (e Métodos)</h2>
+  <p>São as <strong>ações que os objetos sabem fazer</strong>. Operação é o nome da ação (o contrato); método é a implementação interna (o código em si). No diagrama UML, usamos o termo "operação".</p>
+  <ul class="cl">
+    <li>Classe Cachorro → operações: <em>latir( ), andar( ), brincar( )</em></li>
+    <li>As operações são <em>tudo o que os objetos fazem, e nada além disso</em>.</li>
+    <li>O <strong>método</strong> é o algoritmo interno — ex: o código de <code>public int somar(int a, int b){ return a+b; }</code> é o método da operação <em>somar</em>.</li>
+  </ul>
+
+  <div class="note">
+    <strong>Resumo rápido:</strong> Atributo = <em>o que o objeto TEM</em>. Operação = <em>o que o objeto FAZ</em>. Método = <em>como ele faz</em> (o código por dentro).
+  </div>
+</div>
+</section>
+
+<!-- 03 ESTRUTURA -->
+<section id="estrutura" class="section">
+<div class="page">
+  <div class="section-tag">03 · Notação</div>
+  <h1 class="section-title">Estrutura de uma <span class="a">Classe no Diagrama</span></h1>
+
+  <p>No diagrama de classes, cada classe é representada por um retângulo dividido em <strong>três partições</strong>:</p>
+
+  <div class="dbox">
+    <svg viewBox="0 0 380 220" xmlns="http://www.w3.org/2000/svg" font-family="'JetBrains Mono',monospace">
+      <rect width="380" height="220" fill="#f5f0e8" rx="8"/>
+      <!-- Class box -->
+      <rect x="100" y="18" width="200" height="180" rx="4" fill="white" stroke="#5c4a32" stroke-width="2"/>
+      <!-- Partition 1: Name -->
+      <rect x="100" y="18" width="200" height="42" rx="4" fill="#f0e8d0" stroke="#5c4a32" stroke-width="2"/>
+      <line x1="100" y1="60" x2="300" y2="60" stroke="#5c4a32" stroke-width="1.5"/>
+      <text x="200" y="44" text-anchor="middle" font-size="14" font-weight="700" fill="#1a1008" font-family="'Playfair Display',serif">NomeDaClasse</text>
+      <!-- Partition 2: Attributes -->
+      <line x1="100" y1="126" x2="300" y2="126" stroke="#5c4a32" stroke-width="1.5"/>
+      <text x="116" y="78" font-size="11" fill="#155215">+ atribPublico : tipo</text>
+      <text x="116" y="96" font-size="11" fill="#1a1a8b"># atribProtegido : tipo</text>
+      <text x="116" y="114" font-size="11" fill="#8b1a00">- atribPrivado : tipo</text>
+      <!-- Partition 3: Operations -->
+      <text x="116" y="144" font-size="11" fill="#155215">+ operacao(arg) : retorno</text>
+      <text x="116" y="162" font-size="11" fill="#8b1a00">- operacaoPriv() : void</text>
+      <!-- Labels -->
+      <text x="310" y="42" font-size="11" fill="#8b1a00" font-family="'Source Serif 4',serif">① Nome</text>
+      <text x="310" y="92" font-size="11" fill="#8b1a00" font-family="'Source Serif 4',serif">② Atributos</text>
+      <text x="310" y="152" font-size="11" fill="#8b1a00" font-family="'Source Serif 4',serif">③ Operações</text>
+      <!-- Lines pointing -->
+      <line x1="300" y1="39" x2="308" y2="39" stroke="#8b1a00" stroke-width="1" stroke-dasharray="2,2"/>
+      <line x1="300" y1="90" x2="308" y2="90" stroke="#8b1a00" stroke-width="1" stroke-dasharray="2,2"/>
+      <line x1="300" y1="150" x2="308" y2="150" stroke="#8b1a00" stroke-width="1" stroke-dasharray="2,2"/>
+    </svg>
+    <p class="caption">As três partições de uma classe UML: Nome, Atributos e Operações.</p>
+  </div>
+
+  <div class="rgrid">
+    <div class="rcard">
+      <div class="rcard-h h">① Nome da Classe</div>
+      <div class="rcard-body">Aparece na primeira partição, em negrito, sempre com inicial maiúscula. Se a classe for <strong>abstrata</strong>, o nome fica em <em>itálico</em>.
+        <div class="rcard-rule">Ex: Cliente, Pedido, <em>Animal</em> (abstrata)</div>
+      </div>
+    </div>
+    <div class="rcard">
+      <div class="rcard-h c">② Atributos</div>
+      <div class="rcard-body">Na segunda partição. Notação: <code>visibilidade nome : tipo</code><br><br>O tipo vem após os dois pontos. Ex: <code>- nome : String</code>, <code>- cpf : int</code>.
+        <div class="rcard-rule">Tipo pode ser: int, String, Date, char, boolean...</div>
+      </div>
+    </div>
+    <div class="rcard">
+      <div class="rcard-h g">③ Operações</div>
+      <div class="rcard-body">Na terceira partição. Notação: <code>visibilidade nome(parâmetros) : tipoRetorno</code><br><br>Ex: <code>+ realizarCompra() : void</code>, <code>+ calcularTotal(qtd : int) : double</code>.
+        <div class="rcard-rule">void = não retorna nada. O tipo de retorno vem após os dois pontos.</div>
+      </div>
+    </div>
+  </div>
+
+  <h2 class="sub">Exemplo real da aula</h2>
+  <div class="dbox">
+    <div style="display:flex;gap:24px;flex-wrap:wrap;justify-content:center;">
+      <div class="uml-class">
+        <div class="cn">Cliente</div>
+        <div class="ca">
+          <span class="priv">- cpf : int</span><br>
+          <span class="priv">- nome : String</span><br>
+          <span class="priv">- sexo : char</span>
+        </div>
+        <div class="co">
+          <span class="pub">+ realizarCompra() : void</span><br>
+          <span class="pub">+ realizarTroca() : void</span>
+        </div>
+      </div>
+      <div class="uml-class">
+        <div class="cn">Cachorro</div>
+        <div class="ca">
+          <span class="priv">- nome : String</span><br>
+          <span class="priv">- raça : String</span><br>
+          <span class="priv">- peso : double</span>
+        </div>
+        <div class="co">
+          <span class="pub">+ latir() : void</span><br>
+          <span class="pub">+ andar() : void</span><br>
+          <span class="pub">+ brincar() : void</span>
+        </div>
+      </div>
+    </div>
+    <p class="caption">Dois exemplos de classes completas com atributos e operações.</p>
+  </div>
+</div>
+</section>
+
+<!-- 04 VISIBILIDADE -->
+<section id="visibilidade" class="section">
+<div class="page">
+  <div class="section-tag">04 · Encapsulamento</div>
+  <h1 class="section-title">Visibilidade — <span class="a">Encapsulamento</span></h1>
+
+  <p>O símbolo que antecede cada atributo ou operação indica o seu <strong>nível de acessibilidade</strong> — ou seja, quem pode ver e usar aquele elemento. Isso é o <em>encapsulamento</em> em ação.</p>
+
+  <div class="vis-grid">
+    <div class="vis-badge vp">
+      <span class="sym2">+</span>
+      <div class="name">Public (Público)</div>
+      <div class="desc">Qualquer classe do sistema pode acessar</div>
+    </div>
+    <div class="vis-badge vb">
+      <span class="sym2">#</span>
+      <div class="name">Protected (Protegido)</div>
+      <div class="desc">Apenas a própria classe e suas subclasses</div>
+    </div>
+    <div class="vis-badge vr">
+      <span class="sym2">−</span>
+      <div class="name">Private (Privado)</div>
+      <div class="desc">Apenas a própria classe. O mais indicado para atributos!</div>
+    </div>
+    <div class="vis-badge vy">
+      <span class="sym2">~</span>
+      <div class="name">Package (Pacote)</div>
+      <div class="desc">Classes do mesmo pacote podem acessar</div>
+    </div>
+  </div>
+
+  <table class="tb">
+    <tr><th>Símbolo</th><th>Nome</th><th>Atributos</th><th>Operações</th></tr>
+    <tr>
+      <td><span class="sym pub">+</span></td>
+      <td>Public</td>
+      <td>Qualquer classe pode manipular o atributo. <em>Evitar usar para atributos.</em></td>
+      <td>Funcionalidades visíveis por todas as classes. <em>Mais comum para operações.</em></td>
+    </tr>
+    <tr>
+      <td><span class="sym priv">−</span></td>
+      <td>Private</td>
+      <td>Somente a própria classe. <strong>Indicado na maioria dos casos para atributos.</strong></td>
+      <td>Funcionalidades internas de apoio da própria classe.</td>
+    </tr>
+    <tr>
+      <td><span class="sym prot">#</span></td>
+      <td>Protected</td>
+      <td>A classe e suas subclasses.</td>
+      <td>Funcionalidades que precisam ser estendidas por subclasses (frameworks).</td>
+    </tr>
+    <tr>
+      <td><span class="sym pkg">~</span></td>
+      <td>Package</td>
+      <td>Classes do mesmo pacote.</td>
+      <td>Funcionalidades de apoio a outras classes do mesmo componente.</td>
+    </tr>
+  </table>
+
+  <div class="analogy">
+    <div class="analogy-t">Analogia: o cofre da empresa</div>
+    <p><strong>Private (−)</strong> é como o cofre do diretor — só ele abre. <strong>Protected (#)</strong> é como a sala dos gerentes — o diretor e seus herdeiros entram. <strong>Public (+)</strong> é a recepção — qualquer um acessa. <strong>Package (~)</strong> é o andar do escritório — quem trabalha naquele setor entra.</p>
+  </div>
+
+  <div class="note">
+    <strong>Regra de ouro:</strong> Na prática, <strong>todos os atributos devem ser privados (−)</strong>. O acesso a eles é feito por métodos públicos (getters e setters). Isso é o princípio do encapsulamento!
+  </div>
+</div>
+</section>
+
+<!-- 05 HERANÇA -->
+<section id="heranca" class="section">
+<div class="page">
+  <div class="section-tag">05 · Relacionamento</div>
+  <h1 class="section-title">Herança — <span class="a">Generalização / Especialização</span></h1>
+
+  <p>A herança é representada por uma <strong>seta com ponta triangular vazia</strong> apontando da subclasse para a superclasse. A leitura é sempre "<strong>é um</strong>".</p>
+
+  <p>Se Gerente <em>é um</em> Funcionário → então Gerente herda todos os atributos e operações (não privadas) de Funcionário. Toda instância de Gerente pode ser usada em qualquer lugar que se espera um Funcionário.</p>
+
+  <div class="dbox">
+    <svg viewBox="0 0 500 280" xmlns="http://www.w3.org/2000/svg" font-family="'JetBrains Mono',monospace">
+      <rect width="500" height="280" fill="#f5f0e8" rx="8"/>
+
+      <!-- Cliente (superclasse) -->
+      <rect x="155" y="16" width="190" height="100" rx="4" fill="white" stroke="#5c4a32" stroke-width="2"/>
+      <rect x="155" y="16" width="190" height="30" rx="4" fill="#f0e8d0" stroke="#5c4a32" stroke-width="2"/>
+      <line x1="155" y1="46" x2="345" y2="46" stroke="#5c4a32" stroke-width="1.5"/>
+      <line x1="155" y1="78" x2="345" y2="78" stroke="#5c4a32" stroke-width="1.5"/>
+      <text x="250" y="36" text-anchor="middle" font-size="13" font-weight="700" fill="#1a1008" font-family="'Playfair Display',serif">Cliente</text>
+      <text x="170" y="61" font-size="10" fill="#8b1a00">- nome : String</text>
+      <text x="170" y="73" font-size="10" fill="#8b1a00">- uf : char   - CEP : int</text>
+      <text x="170" y="91" font-size="10" fill="#155215">+ realizarCompra() : void</text>
+      <text x="170" y="103" font-size="10" fill="#155215">+ realizarTroca() : void</text>
+
+      <!-- Arrow up (generalização) -->
+      <line x1="175" y1="168" x2="208" y2="118" stroke="#5c4a32" stroke-width="2"/>
+      <line x1="325" y1="168" x2="292" y2="118" stroke="#5c4a32" stroke-width="2"/>
+      <!-- Triangle tip -->
+      <polygon points="250,116 208,118 292,118" fill="white" stroke="#5c4a32" stroke-width="2"/>
+
+      <!-- Pessoa_Fisica -->
+      <rect x="20" y="168" width="180" height="90" rx="4" fill="white" stroke="#5c4a32" stroke-width="2"/>
+      <rect x="20" y="168" width="180" height="28" rx="4" fill="#f0e8d0" stroke="#5c4a32" stroke-width="2"/>
+      <line x1="20" y1="196" x2="200" y2="196" stroke="#5c4a32" stroke-width="1.5"/>
+      <line x1="20" y1="228" x2="200" y2="228" stroke="#5c4a32" stroke-width="1.5"/>
+      <text x="110" y="186" text-anchor="middle" font-size="12" font-weight="700" fill="#1a1008" font-family="'Playfair Display',serif">Pessoa_Fisica</text>
+      <text x="36" y="212" font-size="10" fill="#8b1a00">- CPF : int   - rg : int</text>
+      <text x="36" y="224" font-size="10" fill="#8b1a00">- sexo : char</text>
+      <text x="36" y="242" font-size="10" fill="#155215">+ validarCPF() : void</text>
+
+      <!-- Pessoa_Juridica -->
+      <rect x="300" y="168" width="180" height="90" rx="4" fill="white" stroke="#5c4a32" stroke-width="2"/>
+      <rect x="300" y="168" width="180" height="28" rx="4" fill="#f0e8d0" stroke="#5c4a32" stroke-width="2"/>
+      <line x1="300" y1="196" x2="480" y2="196" stroke="#5c4a32" stroke-width="1.5"/>
+      <line x1="300" y1="228" x2="480" y2="228" stroke="#5c4a32" stroke-width="1.5"/>
+      <text x="390" y="186" text-anchor="middle" font-size="12" font-weight="700" fill="#1a1008" font-family="'Playfair Display',serif">Pessoa_Juridica</text>
+      <text x="316" y="212" font-size="10" fill="#8b1a00">- CNPJ : int</text>
+      <text x="316" y="224" font-size="10" fill="#8b1a00">- razaoSocial : String</text>
+      <text x="316" y="242" font-size="10" fill="#155215">+ ValidadeCNPJ() : void</text>
+
+      <!-- Herda labels -->
+      <text x="110" y="148" text-anchor="middle" font-size="10" fill="#8b1a00" font-style="italic" font-family="'Source Serif 4',serif">Pessoa_Fisica "é um" Cliente</text>
+      <text x="390" y="148" text-anchor="middle" font-size="10" fill="#8b1a00" font-style="italic" font-family="'Source Serif 4',serif">Pessoa_Juridica "é um" Cliente</text>
+    </svg>
+    <p class="caption">Herança: Pessoa_Fisica e Pessoa_Juridica herdam os atributos e operações de Cliente.</p>
+  </div>
+
+  <div class="card">
+    <h3>O que é herdado?</h3>
+    <p>Todos os atributos e operações <strong>não privados</strong> da superclasse ficam disponíveis na subclasse automaticamente. No exemplo: Pessoa_Fisica tem CPF, RG, sexo (próprios) + nome, uf, CEP, realizarCompra(), realizarTroca() (herdados de Cliente).</p>
+  </div>
+
+  <div class="note">
+    <strong>Efeito no código:</strong> Quando o diagrama de classes é traduzido para código (Java, Python...), a herança gera automaticamente herança de código e <strong>polimorfismo</strong> — o objeto filho pode ser tratado como o pai.
+  </div>
+</div>
+</section>
+
+<!-- 06 ASSOCIAÇÕES -->
+<section id="associacoes" class="section">
+<div class="page">
+  <div class="section-tag">06 · Relacionamentos</div>
+  <h1 class="section-title">Associações — <span class="a">Como as Classes se Conectam</span></h1>
+
+  <p>Associação é a forma como objetos de uma mesma classe ou de classes diferentes <strong>se conectam e colaboram</strong>. É representada por uma linha entre as classes, podendo ter setas (direção de navegação), multiplicidades, nomes e papéis.</p>
+
+  <div class="arrow-demo">
+    <div class="arrow-item">
+      <h4>Associação Simples (→)</h4>
+      <p>Linha com seta em uma direção. A indica que A conhece B, mas B não necessariamente conhece A.</p>
+    </div>
+    <div class="arrow-item">
+      <h4>Associação Bidirecional (↔)</h4>
+      <p>Linha com setas nos dois sentidos ou sem seta. A conhece B e B conhece A.</p>
+    </div>
+    <div class="arrow-item">
+      <h4>Agregação (◇→)</h4>
+      <p>Diamante vazio no "todo". Relação todo-parte fraca — as partes existem sem o todo.</p>
+    </div>
+    <div class="arrow-item">
+      <h4>Composição (◆→)</h4>
+      <p>Diamante preenchido no "todo". Relação todo-parte forte — partes não existem sem o todo.</p>
+    </div>
+  </div>
+
+  <h2 class="sub">Nome, Direção de Leitura e Papéis</h2>
+
+  <div class="dbox">
+    <svg viewBox="0 0 520 110" xmlns="http://www.w3.org/2000/svg" font-family="'JetBrains Mono',monospace">
+      <rect width="520" height="110" fill="#f5f0e8" rx="8"/>
+      <!-- Organização -->
+      <rect x="20" y="35" width="120" height="40" rx="4" fill="white" stroke="#5c4a32" stroke-width="1.5"/>
+      <text x="80" y="60" text-anchor="middle" font-size="12" fill="#1a1008" font-family="'Playfair Display',serif">Organização</text>
+      <!-- Indivíduo -->
+      <rect x="380" y="35" width="120" height="40" rx="4" fill="white" stroke="#5c4a32" stroke-width="1.5"/>
+      <text x="440" y="60" text-anchor="middle" font-size="12" fill="#1a1008" font-family="'Playfair Display',serif">Indivíduo</text>
+      <!-- Association line -->
+      <line x1="140" y1="55" x2="380" y2="55" stroke="#5c4a32" stroke-width="1.5"/>
+      <!-- Arrow (direction) -->
+      <polygon points="380,55 368,50 368,60" fill="#5c4a32"/>
+      <!-- Labels -->
+      <text x="260" y="44" text-anchor="middle" font-size="11" fill="#8b1a00">Contrata ▶</text>
+      <text x="155" y="72" font-size="10" fill="#5c4a32" font-style="italic">contratante</text>
+      <text x="340" y="72" text-anchor="end" font-size="10" fill="#5c4a32" font-style="italic">contratado</text>
+      <text x="148" y="90" font-size="9" fill="#a08060">papel</text>
+      <text x="348" y="90" text-anchor="end" font-size="9" fill="#a08060">papel</text>
+      <text x="248" y="28" text-anchor="middle" font-size="9" fill="#c9941a">← nome da associação</text>
+      <text x="358" y="28" text-anchor="end" font-size="9" fill="#c9941a">direção de leitura →</text>
+    </svg>
+    <p class="caption">Nome da associação ("Contrata"), direção de leitura (▶) e papéis nas extremidades (contratante, contratado).</p>
+  </div>
+
+  <ul class="cl">
+    <li><strong>Nome da associação:</strong> verbo que descreve o relacionamento. Ex: "Contrata", "Trabalha".</li>
+    <li><strong>Direção de leitura (▶):</strong> indica em qual sentido o nome deve ser lido.</li>
+    <li><strong>Papéis:</strong> o papel que cada classe desempenha no relacionamento. Ex: "contratante" e "contratado".</li>
+  </ul>
+</div>
+</section>
+
+<!-- 07 MULTIPLICIDADE -->
+<section id="mult" class="section">
+<div class="page">
+  <div class="section-tag">07 · Multiplicidade</div>
+  <h1 class="section-title">Multiplicidade — <span class="a">Quantos objetos se relacionam</span>?</h1>
+
+  <p>A multiplicidade define <strong>quantos objetos de uma classe podem se relacionar</strong> com objetos da outra classe. É escrita nas extremidades da linha de associação.</p>
+
+  <table class="tb">
+    <tr><th>Notação</th><th>Significado</th></tr>
+    <tr><td><span class="sym">0..1</span></td><td>No mínimo zero, no máximo um. O relacionamento é opcional — pode ou não existir, mas se existir é com apenas um objeto.</td></tr>
+    <tr><td><span class="sym">1..1</span> ou <span class="sym">1</span></td><td>Exatamente um. <strong>Obrigatório e único.</strong></td></tr>
+    <tr><td><span class="sym">0..*</span> ou <span class="sym">*</span></td><td>Zero ou muitos. Pode haver nenhum ou vários.</td></tr>
+    <tr><td><span class="sym">1..*</span></td><td>Um ou muitos. <strong>Pelo menos um</strong> objeto deve estar envolvido.</td></tr>
+    <tr><td><span class="sym">2..5</span></td><td>No mínimo 2, no máximo 5 objetos.</td></tr>
+  </table>
+
+  <div class="note">
+    <strong>Regra de ouro:</strong> Se o início da multiplicidade é <strong>1</strong> (ex: 1, 1..1, 1..*), isso indica <strong>participação obrigatória</strong>. Se começa com <strong>0</strong> (ex: 0..1, 0..*), a participação é opcional.
+  </div>
+
+  <h2 class="sub">Tipos de Conectividade</h2>
+  <table class="tb">
+    <tr><th>Conectividade</th><th>Extremo A</th><th>Extremo B</th><th>Exemplo</th></tr>
+    <tr><td>Um para um</td><td>0..1 ou 1</td><td>0..1 ou 1</td><td>Pessoa ↔ CPF</td></tr>
+    <tr><td>Um para muitos</td><td>0..1 ou 1</td><td>* ou 1..* ou 0..*</td><td>Departamento → Funcionários</td></tr>
+    <tr><td>Muitos para muitos</td><td>* ou 1..*</td><td>* ou 1..*</td><td>Aluno ↔ Disciplina</td></tr>
+  </table>
+
+  <div class="dbox">
+    <svg viewBox="0 0 500 160" xmlns="http://www.w3.org/2000/svg" font-family="'JetBrains Mono',monospace">
+      <rect width="500" height="160" fill="#f5f0e8" rx="8"/>
+      <!-- Empregado 1 para 1 -->
+      <rect x="20" y="20" width="100" height="30" rx="3" fill="white" stroke="#5c4a32" stroke-width="1.5"/>
+      <text x="70" y="39" text-anchor="middle" font-size="11" fill="#1a1008">Empregado</text>
+      <line x1="120" y1="35" x2="260" y2="35" stroke="#5c4a32" stroke-width="1.5"/>
+      <text x="128" y="30" font-size="10" fill="#8b1a00">1</text>
+      <text x="245" y="30" font-size="10" fill="#8b1a00">0..1</text>
+      <rect x="260" y="20" width="110" height="30" rx="3" fill="white" stroke="#5c4a32" stroke-width="1.5"/>
+      <text x="315" y="39" text-anchor="middle" font-size="11" fill="#1a1008">Departamento</text>
+      <text x="390" y="35" text-anchor="middle" font-size="10" fill="#8b1a00" font-family="'Source Serif 4',serif">↑ Um para um</text>
+
+      <!-- Empregado 1 para muitos -->
+      <rect x="20" y="68" width="100" height="30" rx="3" fill="white" stroke="#5c4a32" stroke-width="1.5"/>
+      <text x="70" y="87" text-anchor="middle" font-size="11" fill="#1a1008">Empregado</text>
+      <line x1="120" y1="83" x2="260" y2="83" stroke="#5c4a32" stroke-width="1.5"/>
+      <text x="128" y="78" font-size="10" fill="#8b1a00">0..*</text>
+      <text x="245" y="78" font-size="10" fill="#8b1a00">1</text>
+      <rect x="260" y="68" width="110" height="30" rx="3" fill="white" stroke="#5c4a32" stroke-width="1.5"/>
+      <text x="315" y="87" text-anchor="middle" font-size="11" fill="#1a1008">Departamento</text>
+      <text x="390" y="83" text-anchor="middle" font-size="10" fill="#c9941a" font-family="'Source Serif 4',serif">↑ Um para muitos</text>
+
+      <!-- Muitos para muitos -->
+      <rect x="20" y="116" width="100" height="30" rx="3" fill="white" stroke="#5c4a32" stroke-width="1.5"/>
+      <text x="70" y="135" text-anchor="middle" font-size="11" fill="#1a1008">Empregado</text>
+      <line x1="120" y1="131" x2="260" y2="131" stroke="#5c4a32" stroke-width="1.5"/>
+      <text x="128" y="126" font-size="10" fill="#8b1a00">0..*</text>
+      <text x="240" y="126" font-size="10" fill="#8b1a00">1..*</text>
+      <rect x="260" y="116" width="80" height="30" rx="3" fill="white" stroke="#5c4a32" stroke-width="1.5"/>
+      <text x="300" y="135" text-anchor="middle" font-size="11" fill="#1a1008">Projeto</text>
+      <text x="390" y="131" text-anchor="middle" font-size="10" fill="#8b1a00" font-family="'Source Serif 4',serif">↑ Muitos p/ muitos</text>
+    </svg>
+    <p class="caption">Os três tipos de conectividade com suas multiplicidades.</p>
+  </div>
+</div>
+</section>
+
+<!-- 08 TIPOS DE ASSOCIAÇÃO -->
+<section id="tipos-assoc" class="section">
+<div class="page">
+  <div class="section-tag">08 · Tipos de Associação</div>
+  <h1 class="section-title">Associação Binária, Ternária <span class="a">e Unária</span></h1>
+
+  <h2 class="sub">Associação Binária</h2>
+  <p>A mais comum. Conecta <strong>exatamente duas classes</strong> por meio de uma linha. Exemplo clássico: Cliente possui Pedido de Venda.</p>
+
+  <div class="dbox">
+    <div style="display:flex;align-items:center;justify-content:center;gap:20px;flex-wrap:wrap;">
+      <div class="uml-class">
+        <div class="cn">Cliente</div>
+        <div class="ca">
+          <span class="priv">- nome : String</span><br>
+          <span class="priv">- sexo : char</span><br>
+          <span class="priv">- data_nascimento : Date</span>
+        </div>
+        <div class="co">&nbsp;</div>
+      </div>
+      <div style="text-align:center;">
+        <svg width="120" height="30" viewBox="0 0 120 30">
+          <line x1="0" y1="15" x2="100" y2="15" stroke="#5c4a32" stroke-width="2"/>
+          <text x="5" y="11" font-size="10" fill="#8b1a00" font-family="monospace">0..*</text>
+          <polygon points="100,15 88,10 88,20" fill="#5c4a32"/>
+        </svg>
+        <div style="font-size:.78rem;color:var(--light);font-style:italic;">0 a muitos pedidos</div>
+      </div>
+      <div class="uml-class">
+        <div class="cn">Pedido de Venda</div>
+        <div class="ca">&nbsp;</div>
+        <div class="co">&nbsp;</div>
+      </div>
+    </div>
+    <p class="caption">Associação binária: Cliente possui de 0 a muitos Pedidos de Venda.</p>
+  </div>
+
+  <h2 class="sub">Classe Associativa</h2>
+  <p>Quando uma associação tem multiplicidade <span class="tag">*</span> nos <strong>dois lados</strong> (muitos para muitos), frequentemente precisamos guardar dados sobre a associação em si. Para isso criamos uma <strong>classe associativa</strong>, ligada à linha de associação por uma linha tracejada.</p>
+
+  <div class="analogy">
+    <div class="analogy-t">Exemplo: Pessoa trabalha em Empresa</div>
+    <p>Uma Pessoa pode trabalhar em muitas Empresas (*). Uma Empresa pode ter muitos Funcionários (*). O <strong>salário</strong> e a <strong>dataContratação</strong> não pertencem nem à Pessoa nem à Empresa — pertencem ao <em>vínculo</em> entre eles. Por isso criamos a classe associativa <strong>Emprego</strong> para guardar esses dados.</p>
+  </div>
+
+  <div class="dbox">
+    <svg viewBox="0 0 460 180" xmlns="http://www.w3.org/2000/svg" font-family="'JetBrains Mono',monospace">
+      <rect width="460" height="180" fill="#f5f0e8" rx="8"/>
+      <!-- Curso -->
+      <rect x="20" y="50" width="110" height="60" rx="4" fill="white" stroke="#5c4a32" stroke-width="1.5"/>
+      <rect x="20" y="50" width="110" height="26" rx="4" fill="#f0e8d0" stroke="#5c4a32" stroke-width="1.5"/>
+      <line x1="20" y1="76" x2="130" y2="76" stroke="#5c4a32" stroke-width="1"/>
+      <text x="75" y="67" text-anchor="middle" font-size="12" font-weight="700" fill="#1a1008" font-family="'Playfair Display',serif">Curso</text>
+      <text x="30" y="89" font-size="9" fill="#8b1a00">- nome : String</text>
+      <text x="30" y="101" font-size="9" fill="#8b1a00">- area : String</text>
+      <!-- Association line -->
+      <line x1="130" y1="80" x2="330" y2="80" stroke="#5c4a32" stroke-width="1.5"/>
+      <text x="138" y="74" font-size="10" fill="#8b1a00">1..*</text>
+      <text x="310" y="74" font-size="10" fill="#8b1a00">1..*</text>
+      <text x="230" y="72" text-anchor="middle" font-size="10" fill="#c9941a">Disciplina_Curso ▶</text>
+      <!-- Disciplina -->
+      <rect x="330" y="50" width="110" height="60" rx="4" fill="white" stroke="#5c4a32" stroke-width="1.5"/>
+      <rect x="330" y="50" width="110" height="26" rx="4" fill="#f0e8d0" stroke="#5c4a32" stroke-width="1.5"/>
+      <line x1="330" y1="76" x2="440" y2="76" stroke="#5c4a32" stroke-width="1"/>
+      <text x="385" y="67" text-anchor="middle" font-size="12" font-weight="700" fill="#1a1008" font-family="'Playfair Display',serif">Disciplina</text>
+      <text x="340" y="89" font-size="9" fill="#8b1a00">- nome : String</text>
+      <!-- Dashed line to associative class -->
+      <line x1="230" y1="80" x2="230" y2="120" stroke="#5c4a32" stroke-width="1.5" stroke-dasharray="5,3"/>
+      <!-- Disciplina_Curso (associative class) -->
+      <rect x="168" y="120" width="124" height="52" rx="4" fill="white" stroke="#5c4a32" stroke-width="1.5"/>
+      <rect x="168" y="120" width="124" height="26" rx="4" fill="#e8d8f0" stroke="#5c4a32" stroke-width="1.5"/>
+      <line x1="168" y1="146" x2="292" y2="146" stroke="#5c4a32" stroke-width="1"/>
+      <text x="230" y="136" text-anchor="middle" font-size="11" font-weight="700" fill="#1a1008" font-family="'Playfair Display',serif">Disciplina_Curso</text>
+      <text x="178" y="158" font-size="9" fill="#8b1a00">- carga_horaria : int</text>
+      <text x="178" y="168" font-size="9" fill="#8b1a00">- serie : int</text>
+    </svg>
+    <p class="caption">Classe associativa Disciplina_Curso: guarda dados do vínculo entre Curso e Disciplina.</p>
+  </div>
+
+  <div class="note">
+    <strong>Importante:</strong> Uma classe associativa pode ser substituída por uma classe ordinária comum, sem perda de informação. Basta transformar a linha tracejada em duas associações diretas (com multiplicidades). A aula mostra o exemplo Pessoa → Emprego → Empresa.
+  </div>
+
+  <h2 class="sub">Associação Ternária</h2>
+  <p>Quando <strong>três classes</strong> precisam se relacionar ao mesmo tempo, usamos uma associação ternária. É representada por um <strong>losango</strong> no centro, com linhas para cada uma das três classes.</p>
+
+  <div class="card">
+    <h3>Exemplo: Técnico usa Computador em Projeto</h3>
+    <p>Um técnico usa exatamente um computador para cada projeto. Cada computador pertence a um técnico para cada projeto. Um técnico pode trabalhar em muitos projetos e usar computadores diferentes em cada um. Esse cenário <em>não pode</em> ser modelado com associações binárias simples — precisa de uma ternária.</p>
+  </div>
+
+  <h2 class="sub">Associação Unária (Reflexiva)</h2>
+  <p>Ocorre quando uma classe se relaciona consigo mesma — objetos da mesma classe interagem entre si. O exemplo clássico: um <em>Empregado</em> pode supervisionar outros Empregados.</p>
+
+  <div class="note">
+    <strong>Cuidado:</strong> A associação reflexiva <em>não</em> significa que um objeto se associa a ele próprio (um empregado não supervisiona a si mesmo). Indica que objetos da mesma classe se associam entre si — supervisor e supervisionado são instâncias diferentes de Empregado.
+  </div>
+
+  <div class="dbox">
+    <div style="display:flex;gap:24px;flex-wrap:wrap;justify-content:center;">
+      <div class="uml-class">
+        <div class="cn">Funcionários</div>
+        <div class="ca">
+          <span class="priv">- código : int</span><br>
+          <span class="priv">- nome : char</span><br>
+          <span class="priv">- codChefe : int</span>
+        </div>
+        <div class="co">&nbsp;</div>
+      </div>
+      <div style="text-align:center;padding:16px;font-size:.9rem;color:var(--mid);max-width:200px;">
+        <p>↖ A classe Funcionário tem uma autoassociação chamada "Chefia" com multiplicidade 0..* — um funcionário pode chefia 0 a muitos outros funcionários.</p>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- 09 AGR vs COMP -->
+<section id="agcomp" class="section">
+<div class="page">
+  <div class="section-tag">09 · Relacionamentos</div>
+  <h1 class="section-title">Agregação <span class="a">versus</span> Composição</h1>
+
+  <p>Estas são as duas formas de relação <strong>todo-parte</strong> na UML. A diferença essencial é a <em>força do vínculo</em>: a parte pode existir sem o todo?</p>
+
+  <div class="rgrid">
+    <div class="rcard">
+      <div class="rcard-h h">◇ Agregação — todo-parte FRACA</div>
+      <div class="rcard-body">
+        <p>Diamante <strong>vazio</strong> (◇) no lado do "todo". Semântica: "<em>contém</em>".</p>
+        <ul class="cl">
+          <li>O todo <strong>existe sem as partes</strong></li>
+          <li>As partes <strong>existem sem o todo</strong></li>
+          <li>Não há dependência de ciclo de vida</li>
+        </ul>
+        <p><strong>Ex:</strong> Carro (todo) ◇→ Pessoa (passageiro). Se o carro sumir, a pessoa continua existindo.</p>
+        <div class="rcard-rule">Palavra-chave: "tem", "possui", "contém" — mas ambos vivem independentemente</div>
+      </div>
+    </div>
+    <div class="rcard">
+      <div class="rcard-h c">◆ Composição — todo-parte FORTE</div>
+      <div class="rcard-body">
+        <p>Diamante <strong>preenchido</strong> (◆) no lado do "todo". Semântica: "<em>é composto de</em>".</p>
+        <ul class="cl">
+          <li>As partes <strong>não existem sem o todo</strong></li>
+          <li>As partes pertencem a <strong>somente um todo</strong></li>
+          <li>A remoção do todo <strong>implica na remoção das partes</strong></li>
+        </ul>
+        <p><strong>Ex:</strong> Carro (todo) ◆→ Peças. As peças de um carro específico não fazem sentido isoladas.</p>
+        <div class="rcard-rule">Palavra-chave: "é parte de", "não existe sem" — dependência de ciclo de vida</div>
+      </div>
+    </div>
+  </div>
+
+  <table class="tb">
+    <tr><th>Característica</th><th>Agregação ◇</th><th>Composição ◆</th></tr>
+    <tr><td>Dependência</td><td>Objetos vivem separadamente</td><td>Partes dependem do "contêiner"</td></tr>
+    <tr><td>Símbolo UML</td><td>Losango vazio ◇</td><td>Losango preenchido ◆</td></tr>
+    <tr><td>Exemplo (aula)</td><td>Turma e Alunos / Biblioteca e Livros</td><td>Casa e Cômodos / Carro e Motor</td></tr>
+    <tr><td>Exclusividade</td><td>Parte pode pertencer a vários todos</td><td>Parte pertence a somente um todo</td></tr>
+  </table>
+
+  <h2 class="sub">Gabarito dos exercícios da aula</h2>
+  <div class="rgrid">
+    <div class="rcard">
+      <div class="rcard-h h">◇ Turma e Alunos → Agregação</div>
+      <div class="rcard-body">Os alunos existem mesmo sem a turma. Se a turma acabar, os alunos continuam sendo alunos.</div>
+    </div>
+    <div class="rcard">
+      <div class="rcard-h c">◆ Carro e Motor → Composição</div>
+      <div class="rcard-body">O motor não faz sentido existir sem o carro ao qual pertence. A remoção do carro implica remoção do motor.</div>
+    </div>
+    <div class="rcard">
+      <div class="rcard-h h">◇ Departamento e Funcionários → Agregação</div>
+      <div class="rcard-body">Funcionários existem independentemente do departamento. Um funcionário pode ser transferido.</div>
+    </div>
+    <div class="rcard">
+      <div class="rcard-h h">◇ Biblioteca e Livros → Agregação</div>
+      <div class="rcard-body">Livros existem fora da biblioteca. Podem ser emprestados, vendidos, existir em outras bibliotecas.</div>
+    </div>
+    <div class="rcard">
+      <div class="rcard-h c">◆ Pedido e Itens → Composição</div>
+      <div class="rcard-body">Um item de pedido só existe enquanto o pedido existir. Se o pedido for cancelado, os itens deixam de existir.</div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- 10 DEPENDÊNCIA -->
+<section id="dep" class="section">
+<div class="page">
+  <div class="section-tag">10 · Relacionamento</div>
+  <h1 class="section-title"><span class="a">Dependência</span></h1>
+
+  <p>Dependência é representada por uma <strong>linha tracejada com seta</strong> (- - - →). Ela deixa explícito que <em>mudanças em uma classe podem gerar consequências em outra</em>. É o relacionamento mais fraco da UML.</p>
+
+  <div class="dbox">
+    <svg viewBox="0 0 320 80" xmlns="http://www.w3.org/2000/svg" font-family="'JetBrains Mono',monospace">
+      <rect width="320" height="80" fill="#f5f0e8" rx="8"/>
+      <rect x="20" y="20" width="100" height="40" rx="4" fill="white" stroke="#5c4a32" stroke-width="1.5"/>
+      <text x="70" y="44" text-anchor="middle" font-size="13" font-weight="600" fill="#1a1008" font-family="'Playfair Display',serif">A</text>
+      <line x1="120" y1="40" x2="195" y2="40" stroke="#8b1a00" stroke-width="1.5" stroke-dasharray="6,3"/>
+      <polygon points="195,40 183,35 183,45" fill="#8b1a00"/>
+      <rect x="200" y="20" width="100" height="40" rx="4" fill="white" stroke="#5c4a32" stroke-width="1.5"/>
+      <text x="250" y="44" text-anchor="middle" font-size="13" font-weight="600" fill="#1a1008" font-family="'Playfair Display',serif">B</text>
+      <text x="160" y="68" text-anchor="middle" font-size="10" fill="#8b1a00" font-family="'Source Serif 4',serif">Leitura: classe A depende da classe B</text>
+    </svg>
+  </div>
+
+  <h2 class="sub">Quando ocorre dependência?</h2>
+  <ul class="cl">
+    <li>Classe A <strong>chama métodos</strong> de classe B</li>
+    <li>Classe A tem operações que <strong>retornam</strong> objetos de classe B</li>
+    <li>Classe A tem operações que <strong>recebem como parâmetro</strong> objetos de classe B</li>
+    <li>Outros relacionamentos (como associação com navegação) <em>implicitamente determinam</em> dependência</li>
+  </ul>
+
+  <div class="note">
+    <strong>Dica:</strong> A dependência é transitiva — se A depende de B e B depende de C, então A depende de C indiretamente. Quanto menos dependências, mais <em>desacoplado</em> e manutenível é o sistema.
+  </div>
+
+  <h2 class="sub">Restrições sobre Associações</h2>
+  <div class="rgrid">
+    <div class="rcard">
+      <div class="rcard-h d">{subset} — Subconjunto</div>
+      <div class="rcard-body">
+        Indica que uma associação é um subconjunto de outra. No exemplo da aula: "Administra" é um subconjunto de "Reside" — ou seja, toda pessoa que administra um edifício também reside nele.
+        <div class="rcard-rule">Notação: {subset} entre as duas associações</div>
+      </div>
+    </div>
+    <div class="rcard">
+      <div class="rcard-h g">{xor} — Exclusivo</div>
+      <div class="rcard-body">
+        Indica que apenas um dos relacionamentos pode existir ao mesmo tempo. No exemplo: uma ContaBancária pertence a uma Pessoa <strong>ou</strong> a uma Instituição — nunca às duas ao mesmo tempo.
+        <div class="rcard-rule">Notação: {xor} entre as duas associações</div>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- 11 ESPECIAIS -->
+<section id="especiais" class="section">
+<div class="page">
+  <div class="section-tag">11 · Elementos Especiais</div>
+  <h1 class="section-title">Propriedades Estáticas, Derivadas <span class="a">e Classes Abstratas</span></h1>
+
+  <h2 class="sub">Propriedades e Operações Estáticas (sublinhadas)</h2>
+  <p>Propriedades estáticas <strong>não são instanciadas nos objetos</strong> — elas pertencem à classe em si, não a cada objeto individualmente. São acessadas diretamente na classe, sem precisar criar um objeto.</p>
+
+  <div class="dbox">
+    <div style="display:flex;gap:24px;flex-wrap:wrap;justify-content:center;align-items:center;">
+      <div class="uml-class">
+        <div class="cn">Pedido</div>
+        <div class="ca">
+          <span class="priv">- data : Date</span><br>
+          <span class="priv">- numero : int</span><br>
+          <span class="priv">- valor : Money</span>
+        </div>
+        <div class="co">
+          <span class="pub">+ finaliza() : void</span><br>
+          <span class="pub static-prop">+ getProximoNumero() : int</span>
+        </div>
+      </div>
+      <div style="font-size:.9rem;color:var(--mid);max-width:220px;">
+        <p>O método <code>getProximoNumero()</code> está <strong>sublinhado</strong> — é estático. Você pode chamá-lo como <code>Pedido.getProximoNumero()</code> sem criar um objeto Pedido. Ele provavelmente acessa um contador global da classe.</p>
+      </div>
+    </div>
+    <p class="caption">Atributos e operações estáticas são sublinhadas no diagrama de classes.</p>
+  </div>
+
+  <h2 class="sub">Propriedades Derivadas (marcadas com /)</h2>
+  <p>São propriedades que <strong>não existem como atributos reais</strong> no banco de dados — elas são calculadas (derivadas) a partir de outros atributos. O símbolo "/" indica derivação.</p>
+
+  <div class="dbox">
+    <div style="display:flex;gap:24px;flex-wrap:wrap;justify-content:center;align-items:center;">
+      <div class="uml-class">
+        <div class="cn">Período</div>
+        <div class="ca">
+          <span class="pub">+ inicio : Date</span><br>
+          <span class="pub">+ fim : Date</span><br>
+          <span class="pub">+ /duracao : int</span>
+        </div>
+        <div class="co">&nbsp;</div>
+      </div>
+      <div style="font-size:.9rem;color:var(--mid);max-width:220px;">
+        <p><code>duracao</code> é derivada: <code>duracao = fim - inicio</code>. Ela não precisa ser armazenada no banco — é sempre calculada. O "/" avisa ao programador para não criar uma coluna para ela.</p>
+      </div>
+    </div>
+  </div>
+
+  <h2 class="sub">Classes Abstratas (nome em itálico)</h2>
+  <p>Uma classe abstrata é uma classe que <strong>não pode ter instâncias</strong> diretamente — você nunca cria um objeto dela. Ela existe para ser herdada por subclasses concretas, que implementarão seus métodos abstratos.</p>
+
+  <ul class="cl">
+    <li>Usualmente têm operações abstratas — sem implementação interna.</li>
+    <li>As subclasses concretas implementam o comportamento específico.</li>
+    <li>São identificadas pelo <strong>nome em itálico</strong> no diagrama.</li>
+  </ul>
+
+  <div class="dbox">
+    <div style="display:flex;gap:32px;flex-wrap:wrap;justify-content:center;align-items:flex-start;">
+      <div class="uml-class">
+        <div class="cn abs">Animal</div>
+        <div class="ca">&nbsp;</div>
+        <div class="co">
+          <span class="pub">+ <em>fala()</em> : void</span>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:8px;padding-top:20px;">
+        <div style="font-size:.85rem;color:var(--mid);font-style:italic;">herda ↓</div>
+        <div style="display:flex;gap:12px;">
+          <div class="uml-class">
+            <div class="cn">Cachorro</div>
+            <div class="ca">&nbsp;</div>
+            <div class="co"><span class="pub">+ fala() : void</span><br><span style="font-size:.72rem;color:var(--light);">//latir</span></div>
+          </div>
+          <div class="uml-class">
+            <div class="cn">Gato</div>
+            <div class="ca">&nbsp;</div>
+            <div class="co"><span class="pub">+ fala() : void</span><br><span style="font-size:.72rem;color:var(--light);">//miar</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <p class="caption">Animal é abstrata (itálico) — Cachorro e Gato implementam fala() com comportamentos específicos.</p>
+  </div>
+</div>
+</section>
+
+<!-- 12 COMO ACHAR -->
+<section id="como-achar" class="section">
+<div class="page">
+  <div class="section-tag">12 · Processo</div>
+  <h1 class="section-title">Como <span class="a">Encontrar as Classes</span>?</h1>
+
+  <p>A etapa mais difícil é saber <em>o que vira classe</em>. A aula ensina a procurar no documento de requisitos e nos modelos de casos de uso pelos seguintes tipos de elementos:</p>
+
+  <table class="tb">
+    <tr><th>Tipo</th><th>Descrição</th><th>Exemplo</th></tr>
+    <tr><td><span class="sym">Agentes</span></td><td>Pessoas e organizações que interagem com o sistema</td><td>Funcionário, Empresa, Cliente</td></tr>
+    <tr><td><span class="sym">Papéis</span></td><td>Funções que entidades assumem no sistema</td><td>Autor, Contratante, Analista</td></tr>
+    <tr><td><span class="sym">Objetos</span></td><td>Coisas do domínio que são informações compostas</td><td>Livro, Contrato, Produto, Curso</td></tr>
+    <tr><td><span class="sym">Eventos</span></td><td>Acontecimentos que ocorrem durante a operação</td><td>Locação, Matrícula, Reserva, Pedido</td></tr>
+    <tr><td><span class="sym">Lugares</span></td><td>Contextos físicos ou lógicos do problema</td><td>Loja, Filial, Departamento</td></tr>
+    <tr><td><span class="sym">Estruturas</span></td><td>Estruturas definidas no problema</td><td>Estoque, Catálogo, Portfólio</td></tr>
+  </table>
+
+  <div class="note">
+    <strong>Por isso a Análise é tão importante!</strong> Um levantamento de requisitos bem feito — com casos de uso, entrevistas e documentação — é a base para identificar todas as classes corretamente.
+  </div>
+
+  <h2 class="sub">Os 3 Níveis de Abstração do Modelo de Classes</h2>
+  <div class="rgrid">
+    <div class="rcard">
+      <div class="rcard-h h">① Domínio</div>
+      <div class="rcard-body">Construído na <strong>fase de análise</strong>. Representa os termos do negócio. Não considera restrições de tecnologia. Só mostra o nome da classe (sem tipos específicos de linguagem).
+        <div class="rcard-rule">Ex: ContaBancária só com o nome</div>
+      </div>
+    </div>
+    <div class="rcard">
+      <div class="rcard-h c">② Especificação</div>
+      <div class="rcard-body">Adiciona <strong>atributos e operações</strong> conforme a solução de software escolhida. Novos tipos de classes surgem para estruturar a solução técnica.
+        <div class="rcard-rule">Ex: ContaBancária com criar(), bloquear(), número, saldo...</div>
+      </div>
+    </div>
+    <div class="rcard">
+      <div class="rcard-h g">③ Implementação</div>
+      <div class="rcard-body">Detalha os <strong>tipos de dados específicos da linguagem</strong>, visibilidades e assinaturas completas. Está pronto para virar código.
+        <div class="rcard-rule">Ex: -número : String, +creditar(in valor : Quantia)</div>
+      </div>
+    </div>
+  </div>
+
+  <h2 class="sub">Dicas da Profª</h2>
+  <ul class="cl">
+    <li>Comece com um diagrama simples (apenas classes, atributos, operações e associações).</li>
+    <li>Use os recursos avançados (restrições, propriedades derivadas, etc.) somente quando for realmente necessário.</li>
+    <li>Valide o modelo com os requisitos: o diagrama deve ser capaz de responder às perguntas do sistema.</li>
+  </ul>
+</div>
+</section>
+
+<!-- 13 RESUMO -->
+<div class="sum-bg">
+<div class="page">
+  <div class="section-tag" style="border-color:var(--gold);color:var(--gold);">13 · Resumo</div>
+  <h1 class="section-title" style="color:var(--parchment);">Tudo que você aprendeu sobre o <span style="color:var(--gold-light)">Diagrama de Classes</span></h1>
+  <div class="sum-grid">
+    <div class="sum-card">
+      <h4>Estrutura da Classe</h4>
+      <p>3 partições: Nome (1ª), Atributos (2ª), Operações (3ª). Notação: visibilidade nome : tipo</p>
+    </div>
+    <div class="sum-card">
+      <h4>Visibilidade</h4>
+      <p>+ público, − privado (#) protegido, (~) pacote. Atributos quase sempre privados!</p>
+    </div>
+    <div class="sum-card">
+      <h4>Herança</h4>
+      <p>Seta triangular vazia → superclasse. Leitura: "é um". Herda tudo que não é privado.</p>
+    </div>
+    <div class="sum-card">
+      <h4>Associação</h4>
+      <p>Linha entre classes. Pode ter nome, papéis, direção de leitura e multiplicidade.</p>
+    </div>
+    <div class="sum-card">
+      <h4>Multiplicidade</h4>
+      <p>0..1, 1, *, 1..*, 0..*. Início em 1 = obrigatório. Início em 0 = opcional.</p>
+    </div>
+    <div class="sum-card">
+      <h4>Classe Associativa</h4>
+      <p>Necessária quando há * nos dois lados. Guarda atributos do vínculo. Ligada por linha tracejada.</p>
+    </div>
+    <div class="sum-card">
+      <h4>Agregação ◇</h4>
+      <p>Todo-parte fraca. Partes vivem sem o todo. Ex: Turma e Alunos.</p>
+    </div>
+    <div class="sum-card">
+      <h4>Composição ◆</h4>
+      <p>Todo-parte forte. Partes morrem com o todo. Ex: Pedido e Itens.</p>
+    </div>
+    <div class="sum-card">
+      <h4>Dependência</h4>
+      <p>- - → linha tracejada. Mudança em B pode afetar A. Relacionamento mais fraco.</p>
+    </div>
+    <div class="sum-card">
+      <h4>Estático (sublinhado)</h4>
+      <p>Atributos/operações da classe, não dos objetos. Acessados sem instanciar: Classe.metodo()</p>
+    </div>
+    <div class="sum-card">
+      <h4>Derivado (/)</h4>
+      <p>Calculado a partir de outros atributos. Não armazenado. Ex: /duracao = fim - inicio</p>
+    </div>
+    <div class="sum-card">
+      <h4>Classe Abstrata</h4>
+      <p>Nome em itálico. Não pode ser instanciada. Subclasses implementam seus métodos.</p>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- 14 QUIZ -->
+<div class="quiz-bg">
+<div class="page" style="padding-top:52px;padding-bottom:52px;">
+  <div class="section-tag">14 · Fixação</div>
+  <h1 class="section-title">Quiz de <span class="a">Revisão</span></h1>
+  <p style="margin-bottom:28px;font-size:.98rem;">Clique em cada questão para revelar a resposta.</p>
+
+  <div class="qi" onclick="t(this)">
+    <div class="qi-q">1. Qual é a diferença entre Operação e Método no contexto OO?</div>
+    <div class="qi-a"><strong>Operação</strong> é o nome/contrato da ação que um objeto pode executar (aparece no diagrama UML). <strong>Método</strong> é a implementação interna — o código em si (o algoritmo). A operação é o "o quê"; o método é o "como".</div>
+    <div class="qi-hint">↓ clique para revelar</div>
+  </div>
+
+  <div class="qi" onclick="t(this)">
+    <div class="qi-q">2. Quais são os 4 níveis de visibilidade? Para cada um, diga o símbolo e quem pode acessar.</div>
+    <div class="qi-a"><strong>+ (Public):</strong> qualquer classe do sistema.<br><strong>− (Private):</strong> somente a própria classe. Indicado para atributos.<br><strong># (Protected):</strong> a própria classe e suas subclasses.<br><strong>~ (Package):</strong> classes do mesmo pacote.</div>
+    <div class="qi-hint">↓ clique para revelar</div>
+  </div>
+
+  <div class="qi" onclick="t(this)">
+    <div class="qi-q">3. O que é multiplicidade? O que significa 1..* e como é diferente de 0..*?</div>
+    <div class="qi-a">Multiplicidade define quantos objetos de uma classe participam de um relacionamento com outra.<br><br><strong>1..*</strong> significa "pelo menos um e no máximo muitos" — a participação é <strong>obrigatória</strong> (mínimo 1).<br><strong>0..*</strong> significa "nenhum ou muitos" — a participação é <strong>opcional</strong> (pode ser zero).</div>
+    <div class="qi-hint">↓ clique para revelar</div>
+  </div>
+
+  <div class="qi" onclick="t(this)">
+    <div class="qi-q">4. Qual a diferença entre Agregação e Composição? Dê um exemplo de cada.</div>
+    <div class="qi-a"><strong>Agregação (◇):</strong> relação todo-parte FRACA. As partes existem sem o todo. Ex: Biblioteca e Livros — livros existem fora da biblioteca.<br><br><strong>Composição (◆):</strong> relação todo-parte FORTE. As partes não existem sem o todo; a remoção do todo implica remoção das partes. Ex: Pedido e Itens — os itens só existem enquanto o pedido existir.</div>
+    <div class="qi-hint">↓ clique para revelar</div>
+  </div>
+
+  <div class="qi" onclick="t(this)">
+    <div class="qi-q">5. O que é uma Classe Associativa? Quando ela é necessária?</div>
+    <div class="qi-a">Uma classe associativa surge quando uma associação do tipo <strong>muitos-para-muitos (*→*)</strong> precisa armazenar atributos próprios do relacionamento. Por exemplo: Pessoa trabalha em Empresa — o salário e a data de contratação não pertencem nem à Pessoa nem à Empresa, mas ao vínculo entre elas. Por isso criamos a classe Emprego. É representada por uma reta tracejada saindo do meio da associação.</div>
+    <div class="qi-hint">↓ clique para revelar</div>
+  </div>
+
+  <div class="qi" onclick="t(this)">
+    <div class="qi-q">6. O que são propriedades derivadas? Como são marcadas no diagrama?</div>
+    <div class="qi-a">São propriedades que <strong>não existem como atributos armazenados</strong> — são calculadas a partir de outros atributos. Marcadas com o símbolo <strong>/</strong>. Exemplo: a classe Período tem <code>inicio</code> e <code>fim</code> (armazenados). A propriedade <code>/duracao</code> é derivada: duracao = fim − inicio. Ela não precisa de uma coluna no banco de dados.</div>
+    <div class="qi-hint">↓ clique para revelar</div>
+  </div>
+
+  <div class="qi" onclick="t(this)">
+    <div class="qi-q">7. O que é uma Classe Abstrata? Como é identificada no diagrama?</div>
+    <div class="qi-a">Uma classe abstrata é uma classe que <strong>não pode ser instanciada diretamente</strong> — você não pode criar objetos dela. Ela existe para ser herdada por subclasses concretas, que implementarão seus métodos abstratos. É identificada pelo <strong>nome em itálico</strong> no diagrama. Exemplo: a classe <em>Animal</em> com o método <em>fala()</em> — Cachorro implementa latir, Gato implementa miar.</div>
+    <div class="qi-hint">↓ clique para revelar</div>
+  </div>
+
+  <div class="qi" onclick="t(this)">
+    <div class="qi-q">8. Quais são os 3 níveis de abstração do modelo de classes? Qual é a ordem?</div>
+    <div class="qi-a"><strong>1º Domínio:</strong> fase de análise, termos do negócio, sem considerar tecnologia.<br><strong>2º Especificação:</strong> adiciona atributos, operações e classes técnicas conforme a solução escolhida.<br><strong>3º Implementação:</strong> tipos de dados da linguagem, visibilidades, assinaturas completas — pronto para codificar.</div>
+    <div class="qi-hint">↓ clique para revelar</div>
+  </div>
+
+  <div class="qi" onclick="t(this)">
+    <div class="qi-q">9. O que é Associação Unária (Reflexiva)? Dê um exemplo e explique o que ela NÃO significa.</div>
+    <div class="qi-a">Ocorre quando objetos da <strong>mesma classe</strong> se relacionam entre si. Exemplo: Empregado supervisiona outros Empregados — supervisor e supervisionado são instâncias diferentes de Empregado.<br><br><strong>O que ela NÃO significa:</strong> um objeto associado a si mesmo. Um empregado não supervisiona a si próprio — ele supervisiona outros objetos da mesma classe.</div>
+    <div class="qi-hint">↓ clique para revelar</div>
+  </div>
+
+  <div class="qi" onclick="t(this)">
+    <div class="qi-q">10. Quais os tipos de elementos a procurar nos requisitos para identificar as classes?</div>
+    <div class="qi-a"><strong>Agentes:</strong> pessoas e organizações (Funcionário, Cliente).<br><strong>Papéis:</strong> funções assumidas (Autor, Contratante).<br><strong>Objetos:</strong> coisas com informações compostas (Livro, Produto).<br><strong>Eventos:</strong> acontecimentos durante operação (Pedido, Matrícula).<br><strong>Lugares:</strong> contextos do problema (Loja, Filial).<br><strong>Estruturas:</strong> estruturas do domínio (Estoque, Catálogo).</div>
+    <div class="qi-hint">↓ clique para revelar</div>
+  </div>
+
+</div>
+</div>
+
+</main>
+
+<footer style="background:var(--ink);color:#4a3a28;text-align:center;padding:28px 20px;font-family:'JetBrains Mono',monospace;font-size:.7rem;letter-spacing:.1em;">
+  ANÁLISE E PROJETO OO · UNICESUMAR · AULA 14 — DIAGRAMA DE CLASSES<br>
+  <span style="color:#2e1e0e;display:block;margin-top:4px;">Profª Ana Letícia Mania Feijó · Ref: Eduardo Bezerra — Princípios de Análise e Projeto com UML</span>
+</footer>
+
+<script>
+function t(el){
+  const a=el.querySelector('.qi-a');
+  const h=el.querySelector('.qi-hint');
+  a.classList.toggle('show');
+  h.style.display=a.classList.contains('show')?'none':'block';
+}
+</script>
+</body>
+</html>
