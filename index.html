@@ -765,6 +765,31 @@
     .card-lab .card-desc    { color: #64748b; }
     .card-lab .card-arrow   { color: #38bdf8; }
 
+    /* ── CARD ESTRUTURA DE DADOS ── */
+    .card-eds {
+      background: #0F1117;
+      border-color: #2E3358;
+    }
+
+    .card-eds:hover {
+      box-shadow: 0 0 30px rgba(108,99,255,.14), 0 8px 30px rgba(0,0,0,.6);
+      border-color: #6C63FF;
+    }
+
+    .card-eds .card-preview { background: #0F1117; overflow: hidden; }
+
+    .card-eds .preview-svg {
+      position: absolute; inset: 0;
+      width: 100%; height: 100%;
+      opacity: 0.85;
+    }
+
+    .card-eds .card-body    { background: #0F1117; border-top: 1px solid #2E3358; }
+    .card-eds .card-tag     { color: #6C63FF; }
+    .card-eds .card-title   { color: #E8E9F3; }
+    .card-eds .card-desc    { color: #5C5E8A; }
+    .card-eds .card-arrow   { color: #6C63FF; }
+
     /* ── CARD EM BREVE ── */
     .card-soon {
       background: var(--surface);
@@ -1004,6 +1029,55 @@
         <div class="card-title">Plano de Estudo</div>
         <div class="card-desc">Progresso semanal em HTML, CSS, JavaScript e GIT — acompanhe os módulos da disciplina.</div>
         <div class="card-arrow">→ acessar plano</div>
+      </div>
+    </a>
+
+    <a class="card card-eds" href="visualizador-eds/">
+      <div class="card-preview">
+        <svg class="preview-svg" viewBox="0 0 400 160" xmlns="http://www.w3.org/2000/svg">
+          <text x="200" y="22" text-anchor="middle" font-family="JetBrains Mono, monospace"
+                font-size="8" fill="#5C5E8A" letter-spacing="0.15em">PILHA · LIFO</text>
+
+          <!-- Pilha (vertical stack boxes) -->
+          <rect x="40" y="38" width="48" height="34" rx="6" fill="#171A26" stroke="#FF6B6B" stroke-width="1.3"/>
+          <text x="64" y="59" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="13" font-weight="700" fill="#FF6B6B">7</text>
+          <text x="64" y="33" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="7" fill="#FF6B6B" font-weight="600">topo</text>
+
+          <rect x="40" y="76" width="48" height="34" rx="6" fill="#171A26" stroke="#2E3358" stroke-width="1.3"/>
+          <text x="64" y="97" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="13" font-weight="700" fill="#E8E9F3">3</text>
+
+          <rect x="40" y="114" width="48" height="34" rx="6" fill="#171A26" stroke="#2E3358" stroke-width="1.3"/>
+          <text x="64" y="135" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="13" font-weight="700" fill="#E8E9F3">9</text>
+
+          <!-- Fila (horizontal queue boxes) -->
+          <text x="290" y="22" text-anchor="middle" font-family="JetBrains Mono, monospace"
+                font-size="8" fill="#5C5E8A" letter-spacing="0.15em">FILA · FIFO</text>
+
+          <rect x="230" y="60" width="42" height="38" rx="6" fill="#171A26" stroke="#6C63FF" stroke-width="1.3"/>
+          <text x="251" y="84" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="13" font-weight="700" fill="#6C63FF">4</text>
+          <text x="251" y="113" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="7" fill="#6C63FF" font-weight="600">frente</text>
+
+          <line x1="272" y1="79" x2="294" y2="79" stroke="#5C5E8A" stroke-width="1.3"/>
+          <polygon points="294,79 288,75.5 288,82.5" fill="#5C5E8A"/>
+
+          <rect x="296" y="60" width="42" height="38" rx="6" fill="#171A26" stroke="#2E3358" stroke-width="1.3"/>
+          <text x="317" y="84" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="13" font-weight="700" fill="#E8E9F3">8</text>
+
+          <line x1="338" y1="79" x2="358" y2="79" stroke="#5C5E8A" stroke-width="1.3"/>
+          <polygon points="358,79 352,75.5 352,82.5" fill="#5C5E8A"/>
+
+          <rect x="360" y="60" width="34" height="38" rx="6" fill="#171A26" stroke="#00D4B1" stroke-width="1.3"/>
+          <text x="377" y="84" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="13" font-weight="700" fill="#00D4B1">2</text>
+          <text x="377" y="113" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="7" fill="#00D4B1" font-weight="600">fim</text>
+
+          <line x1="120" y1="80" x2="200" y2="80" stroke="#2E3358" stroke-width="1" stroke-dasharray="3,3"/>
+        </svg>
+      </div>
+      <div class="card-body">
+        <div class="card-tag">Estrutura de Dados I · Visualizador</div>
+        <div class="card-title">Visualizador de Estruturas de Dados</div>
+        <div class="card-desc">Pilha, Fila, Listas, Árvores e mais — simulações interativas em C com complexidade Big O.</div>
+        <div class="card-arrow">→ acessar visualizador</div>
       </div>
     </a>
 
